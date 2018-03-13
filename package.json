@@ -9,7 +9,8 @@
     "scripts": {
         "build": "babel src --out-dir lib --ignore '**/__tests__/*,**/__mocks__/*'",
         "lint": "eslint src --cache",
-        "test": "jest src"
+        "test": "jest src",
+        "verify": "yarn lint && yarn test"
     },
     "dependencies": {
         "axios": "^0.18.0",
