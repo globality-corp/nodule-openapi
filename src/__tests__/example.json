@@ -1,0 +1,187 @@
+{
+    "basePath": "/api/v2",
+    "consumes": [
+      "application/json"
+    ],
+    "definitions": {
+      "Chatroom": {
+        "properties": {
+          "createdTimestamp": {
+            "format": "float",
+            "type": "number"
+          }
+        },
+        "required": [
+          "createdTimestamp"
+        ],
+        "type": "object"
+      },
+      "ChatroomList": {
+        "properties": {
+          "_links": {
+            "type": "object"
+          },
+          "count": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/definitions/Chatroom"
+            },
+            "type": "array"
+          },
+          "limit": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "offset": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "count",
+          "items",
+          "limit",
+          "offset"
+        ],
+        "type": "object"
+      },
+      "NewChatroom": {
+        "properties": {
+          "projectId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "workspaceId": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "workspaceId"
+        ],
+        "type": "object"
+      },
+      "Error": {
+        "properties": {
+          "code": {
+            "default": 500,
+            "format": "int32",
+            "type": "integer"
+          },
+          "message": {
+            "default": "Unknown Error",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "type": "object"
+      }
+    },
+    "info": {
+      "title": "oscar",
+      "version": "v2"
+    },
+    "paths": {
+      "/chatroom": {
+        "get": {
+          "operationId": "search",
+          "parameters": [
+            {
+              "format": "uuid",
+              "in": "query",
+              "name": "project_id",
+              "required": false,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Search the collection of all chatrooms",
+              "schema": {
+                "$ref": "#/definitions/ChatroomList"
+              }
+            },
+            "default": {
+              "description": "An error occcurred",
+              "schema": {
+                "$ref": "#/definitions/Error"
+              }
+            }
+          },
+          "tags": [
+            "chatroom"
+          ]
+        },
+        "post": {
+          "operationId": "create",
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "schema": {
+                "$ref": "#/definitions/NewChatroom"
+              }
+            }
+          ],
+          "responses": {
+            "201": {
+              "description": "Create a new chatroom",
+              "schema": {
+                "$ref": "#/definitions/Chatroom"
+              }
+            },
+            "default": {
+              "description": "An error occcurred",
+              "schema": {
+                "$ref": "#/definitions/Error"
+              }
+            }
+          },
+          "tags": [
+            "chatroom"
+          ]
+        }
+      },
+      "/chatroom/{chatroom_id}": {
+        "get": {
+          "operationId": "retrieve",
+          "parameters": [
+            {
+              "format": "uuid",
+              "in": "path",
+              "name": "chatroom_id",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Retrieve a chatroom by id",
+              "schema": {
+                "$ref": "#/definitions/Chatroom"
+              }
+            },
+            "default": {
+              "description": "An error occcurred",
+              "schema": {
+                "$ref": "#/definitions/Error"
+              }
+            }
+          },
+          "tags": [
+            "chatroom"
+          ]
+        }
+      }
+    },
+    "produces": [
+      "application/json"
+    ],
+    "swagger": "2.0"
+  }
