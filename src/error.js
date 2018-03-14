@@ -10,6 +10,7 @@ export function OpenAPIError(message = null, code = 500, data = null) {
     this.code = code;
     this.data = data;
 }
+OpenAPIError.prototype = new Error();
 
 
 /* Extract the most useful fields from an error.
