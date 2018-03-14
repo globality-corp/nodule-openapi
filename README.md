@@ -18,6 +18,8 @@ Opinionated OpenAPI 2.0 (Swagger) Client
  -  HTTP requests are assumed to use camelCase for body parameters and snake_case for path and query string
     parameters; parameter names should be automatically converted from camelCase accordingly.
 
+ -  Extensible most default: most internal behaviors should be overridable via options.
+
 
 ## Usage
 

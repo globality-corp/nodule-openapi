@@ -9,6 +9,10 @@ import CallableOperation from './operation';
 
 
 /* Generate a mapping from (dotted) operation names to callable operations.
+ *
+ * `spec`: An OpenAPI JSON specificiation. Assuumed to be valid.
+ * `serviceName`: A human-friendly name for this API.
+ * `options`: A dictionary of options.
  */
 export default function createClient(spec, serviceName, options = {}) {
     const operations = {};
