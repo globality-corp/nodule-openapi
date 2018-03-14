@@ -2,6 +2,11 @@ import buildError, { OpenAPIError } from '../error';
 
 
 describe('buildError', () => {
+
+    it('is an error', () => {
+        expect(new OpenAPIError('message') instanceof Error).toBe(true);
+    });
+
     it('returns response data', () => {
         try {
             buildError()({
