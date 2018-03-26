@@ -1,5 +1,5 @@
 {
-    "name": "nodule-openapi",
+    "name": "@globality/nodule-openapi",
     "version": "0.3.0",
     "description": "Opinionated OpenAPI (Swagger) Client",
     "main": "lib/",
