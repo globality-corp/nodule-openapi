@@ -11,16 +11,16 @@ import Validator from './validation';
 
 /* Create a new callable operation that return a Promise.
  */
-export default (context, serviceName, operationName) => async (req, args, options) => {
+export default (context, name, operationName) => async (req, args, options) => {
     // validate inputs
     Validator(context)(req, operationName, args);
 
     // allow overiding the http implementation
-    const http = get(context, 'options.http', () => axios)(req, serviceName, operationName);
+    const http = get(context, 'options.http', () => axios)(req, name, operationName);
 
     // enhance the context with service and operation name
     const requestContext = assign({}, context, {
-        serviceName,
+        name,
         operationName,
     });
 
