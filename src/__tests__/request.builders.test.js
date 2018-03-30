@@ -15,7 +15,9 @@ describe('buildData', () => {
         const req = null;
         expect(
             buildData(context, req, {
-                foo: 'bar',
+                body: {
+                    foo: 'bar',
+                },
             }),
         ).toEqual({
             foo: 'bar',
@@ -73,14 +75,34 @@ describe('buildParams', () => {
         );
     });
 
-    it('returns verbatim for get', () => {
+    it('returns underscore for get', () => {
         const context = {
             method: 'get',
         };
         const req = null;
         expect(
-            buildParams(context, req, {}),
+            buildParams(context, req, {
+                fooBar: 'bar',
+            }),
         ).toEqual({
+            foo_bar: 'bar',
+        });
+    });
+
+    it('returns joined arrays for get', () => {
+        const context = {
+            method: 'get',
+        };
+        const req = null;
+        expect(
+            buildParams(context, req, {
+                foo: [
+                    'bar',
+                    'baz',
+                ],
+            }),
+        ).toEqual({
+            foo: 'bar,baz',
         });
     });
 });

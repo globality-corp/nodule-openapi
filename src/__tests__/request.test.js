@@ -12,7 +12,9 @@ describe('buildRequest', () => {
         const req = null;
         expect(
             buildRequest(context, req, {
-                foo: 'bar',
+                body: {
+                    foo: 'bar',
+                },
             }),
         ).toEqual({
             adapter: null,
@@ -41,7 +43,9 @@ describe('buildRequest', () => {
         const req = null;
         expect(
             buildRequest(context, req, {
-                foo: 'bar',
+                body: {
+                    foo: 'bar',
+                },
             }),
         ).toEqual({
             adapter: null,

@@ -4,6 +4,7 @@ import {
     capitalize,
     get,
     lowerCase,
+    mapKeys,
     mapValues,
 } from 'lodash';
 
@@ -16,10 +17,7 @@ export function buildData(context, req, args) {
     if (lowerCase(context.method) === 'get') {
         return null;
     }
-    // NB: we ought to require a `body` argument here (within `args`) instead of sending
-    // args verbatim; however too many of our mocks break at the moment if we do so
-    // (because the mocks are too naive)
-    return args;
+    return get(args, 'body');
 }
 
 
@@ -45,8 +43,12 @@ export function buildParams(context, req, args) {
     if (lowerCase(context.method) !== 'get') {
         return null;
     }
-    // NB we should use our naming support here; breaks too many mocks to do so yet
-    return args;
+    const options = get(context, 'options', {});
+    return mapValues(
+        mapKeys(args || {}, (value, key) => nameFor(key, 'query', true, options)),
+        // NB: join arrays into comma-separated lists
+        value => (Array.isArray(value) ? value.join(',') : value),
+    );
 }
 
 
