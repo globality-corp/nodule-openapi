@@ -32,4 +32,22 @@ describe('validation', () => {
             'Required argument: "chatroomId" not passed to: "chatroom.retrieve"',
         );
     });
+
+    it('enforces that required parameters are non-null', () => {
+        const method = 'get';
+        const path = '/chatroom/{chatroom_id}';
+        const validate = Validator({ spec, method, path });
+
+        expect(() => validate(req, 'chatroom.retrieve', { chatroomId: null })).toThrow(
+            'Required argument: "chatroomId" not passed to: "chatroom.retrieve"',
+        );
+    });
+
+    it('enforces that required falsey parameters pass', () => {
+        const method = 'get';
+        const path = '/chatroom/{chatroom_id}';
+        const validate = Validator({ spec, method, path });
+
+        expect(validate(req, 'chatroom.retrieve', { chatroomId: 0 })).toBe(true);
+    });
 });
