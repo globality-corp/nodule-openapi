@@ -1,6 +1,6 @@
 /* Validate request arguments.
  */
-import { get, omit } from 'lodash';
+import { get, isNil, omit } from 'lodash';
 
 import { OpenAPIError } from './error';
 import nameFor from './naming';
@@ -37,7 +37,7 @@ function validateQueryAndPathParameters(operation, operationName, args, options)
 
     // there should be no missing required arguments
     Object.keys(parameters).forEach((name) => {
-        if (parameters[name] && !(queryAndPathArgs[name])) {
+        if (parameters[name] && isNil(queryAndPathArgs[name])) {
             const message = `Required argument: "${name}" not passed to: "${operationName}"`;
             throw new OpenAPIError(message);
         }
