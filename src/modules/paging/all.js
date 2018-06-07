@@ -1,4 +1,4 @@
-import { flatten, range } from 'lodash';
+import { flatten, range, isNil } from 'lodash';
 import { getConfig } from '@globality/nodule-config';
 import { MaxLimitReached } from '../../error';
 import concurrentPaginate from '../concurrency';
@@ -19,7 +19,7 @@ export default async function all(
         offset: offset || 0,
     };
     const firstPage = await searchRequest(req, params);
-    if (!firstPage.offset || !firstPage.limit || !firstPage.count) {
+    if (isNil(firstPage.offset) || isNil(firstPage.limit) || isNil(firstPage.count)) {
         return firstPage.items;
     }
     if (firstPage.offset + firstPage.limit >= firstPage.count) {
