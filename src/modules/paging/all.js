@@ -19,6 +19,9 @@ export default async function all(
         offset: offset || 0,
     };
     const firstPage = await searchRequest(req, params);
+    if (!firstPage.offset || !firstPage.limit || !firstPage.count) {
+        return firstPage.items;
+    }
     if (firstPage.offset + firstPage.limit >= firstPage.count) {
         return firstPage.items;
     }
