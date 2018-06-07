@@ -71,7 +71,7 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@globality/nodule-config@>= 2.3.0 < 3":
+"@globality/nodule-config@^2.3.0":
   version "2.10.1"
   resolved "https://registry.yarnpkg.com/@globality/nodule-config/-/nodule-config-2.10.1.tgz#fd9210a509726e22a13f7b5225d8d55d8808a53f"
   dependencies:

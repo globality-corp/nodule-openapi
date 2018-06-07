@@ -1,6 +1,9 @@
 import { flatten, range } from 'lodash';
+import { getConfig } from '@globality/nodule-config';
 import { MaxLimitReached } from '../../error';
 import concurrentPaginate from '../concurrency';
+
+const DEFAULT_LIMIT = 20;
 
 export default async function all(
     req,
@@ -8,9 +11,11 @@ export default async function all(
 ) {
     const { limit, offset, ...searchArgs } = args;
 
+    const defaultLimit = getConfig('defaultLmit') || DEFAULT_LIMIT;
+
     const params = {
         ...searchArgs,
-        limit: limit || 20,
+        limit: limit || defaultLimit,
         offset: offset || 0,
     };
     const firstPage = await searchRequest(req, params);
