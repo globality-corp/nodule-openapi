@@ -1,6 +1,6 @@
 {
     "name": "@globality/nodule-openapi",
-    "version": "0.8.0",
+    "version": "0.8.1",
     "description": "Opinionated OpenAPI (Swagger) Client",
     "main": "lib/",
     "repository": "git@github.com:globality-corp/nodule-openapi.git",
