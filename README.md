@@ -30,3 +30,8 @@ In pseudo-code:
 
     const client = OpenAPI(spec, 'petstore');
     client.pet.search().then(...).catch(...);
+
+## createOpenAPIClient
+
+The `nodule-openapi` includes a function (createOpenAPIClient) that allows the wrapping of the OpenAPI
+swagger client into callable functions. See the README in the src/clients for more information.

@@ -14,4 +14,9 @@ export {
     none,
     one,
 } from './modules';
+export {
+    mockError,
+    mockResponse,
+} from './testing';
+export { createOpenAPIClient } from './clients';
 export default Client;
