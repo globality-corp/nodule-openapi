@@ -13,9 +13,11 @@
         "verify": "yarn lint && yarn test"
     },
     "dependencies": {
-        "@globality/nodule-config": "^2.3.0",        
+        "@globality/nodule-config": "^2.3.0",
+        "@globality/nodule-logging": "^1.2.2",
         "axios": "^0.18.0",
         "http-status-codes": "^1.3.0",
+        "jsonwebtoken": "^8.2.2",
         "lodash": "^4.17.5",
         "throat": "^4.1.0"
     },
