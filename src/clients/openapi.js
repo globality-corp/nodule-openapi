@@ -1,13 +1,8 @@
 import { get } from 'lodash';
 
-import { getConfig, getMetadata } from '@globality/nodule-config';
+import { getConfig, getMetadata, getContainer } from '@globality/nodule-config';
 import axios from 'axios';
 import OpenAPI from '../client';
-import {
-    buildRequestLogs,
-    logFailure,
-    logSuccess,
-} from './logging';
 
 /* Inject mock and testing adapters.
  */
@@ -30,32 +25,42 @@ export function buildAdapter(context) {
     };
 }
 
-
-/* Inject standard headers.
- */
-export function buildHeaders(context, req) {
-    const headers = {
-        'Content-Type': 'application/json; charset=utf-8',
-    };
+function defaultExtendHeaders(req, headers) {
+    const extendHeaders = {};
 
     // pass the current service's name
     const metadata = getMetadata();
-    headers['X-Request-Service'] = metadata.name;
+    extendHeaders['X-Request-Service'] = metadata.name;
 
     // pass a unique identifier from the requestId middleware
     const requestId = get(req, 'id');
     if (requestId) {
-        headers['X-Request-Id'] = requestId;
+        extendHeaders['X-Request-Id'] = requestId;
     }
 
     // pass the request start time (usually injected by the morgan library)
     const startTime = get(req, '_startTime', new Date());
-    headers['X-Request-Started-At'] = startTime.toISOString();
+    extendHeaders['X-Request-Started-At'] = startTime.toISOString();
 
     // pass the current user (if any)
     const userId = get(req, 'locals.user.id');
     if (userId) {
-        headers['X-Request-User'] = userId;
+        extendHeaders['X-Request-User'] = userId;
+    }
+
+    return Object.assign(headers, extendHeaders);
+}
+
+/* Inject standard headers.
+ */
+export function buildHeaders(context, req) {
+    let headers = {
+        'Content-Type': 'application/json; charset=utf-8',
+    };
+
+    const extendHeaders = getContainer('extendHeaders') || defaultExtendHeaders;
+    if (extendHeaders) {
+        headers = extendHeaders(req, headers);
     }
 
     return headers;
@@ -70,15 +75,23 @@ export function http(req, serviceName, operationName) {
             );
         }
         const executeStartTime = process.hrtime();
-        const requestLogs = buildRequestLogs(req, serviceName, operationName, request);
+        const { buildRequestLogs, logSuccess, logFailure } = getContainer('logging');
+
+        const requestLogs = buildRequestLogs ?
+            buildRequestLogs(req, serviceName, operationName, request) :
+            null;
 
         return axios(
             request,
         ).then((response) => {
-            logSuccess(req, request, response, requestLogs, executeStartTime);
+            if (logSuccess) {
+                logSuccess(req, request, response, requestLogs, executeStartTime);
+            }
             return response;
         }).catch((error) => {
-            logFailure(req, request, error, requestLogs);
+            if (logFailure) {
+                logFailure(req, request, error, requestLogs);
+            }
 
             // re-raise
             throw error;

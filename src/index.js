@@ -17,8 +17,6 @@ export {
 export {
     mockError,
     mockResponse,
-    signSymmetric,
-    signPrivate,
 } from './testing';
 export { createOpenAPIClient } from './clients';
 export default Client;
