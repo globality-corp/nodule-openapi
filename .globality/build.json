@@ -1,0 +1,7 @@
+{
+  "type": "node-module",
+  "params": {
+    "name": "nodule-openapi",
+    "open_source": true
+  }
+}
