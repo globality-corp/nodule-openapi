@@ -1,6 +1,5 @@
 import { flatten, range, isNil } from 'lodash';
 import { getConfig } from '@globality/nodule-config';
-import { MaxLimitReached } from '../../error';
 import concurrentPaginate from '../concurrency';
 
 const DEFAULT_LIMIT = 20;
@@ -25,14 +24,23 @@ export default async function all(
     if (firstPage.offset + firstPage.limit >= firstPage.count) {
         return firstPage.items;
     }
-    if (maxLimit && firstPage.count > maxLimit) {
-        throw new MaxLimitReached('Count of items exceeds maximum limit');
+    if (maxLimit && firstPage.items.length >= maxLimit) {
+        return firstPage.items.slice(0, maxLimit);
     }
 
-    const offsets = range(firstPage.offset + firstPage.limit, firstPage.count, firstPage.limit);
+    let rangeEnd = firstPage.count;
+    if (maxLimit) {
+        rangeEnd = Math.min(firstPage.count, maxLimit);
+    }
+    const offsets = range(firstPage.offset + firstPage.limit, rangeEnd, firstPage.limit);
     const nextPages = await concurrentPaginate(
         offsets.map(pageOffset => searchRequest(req, { ...params, offset: pageOffset })),
         concurrencyLimit,
     );
-    return flatten([firstPage, ...nextPages].map(page => page.items));
+
+    const items = flatten([firstPage, ...nextPages].map(page => page.items));
+    if (maxLimit) {
+        return items.slice(0, maxLimit);
+    }
+    return items;
 }

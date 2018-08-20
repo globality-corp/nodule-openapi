@@ -50,6 +50,32 @@ describe('Pagination', () => {
         });
     });
 
+    it('test search all items, maxLimit reached on first page', async () => {
+        const res = await all(req, { searchRequest, args: { limit: 40 }, maxLimit: 25 });
+        expect(res).toEqual(items.slice(0, 25));
+
+        expect(searchRequest).toHaveBeenCalledTimes(1);
+        expect(searchRequest).toHaveBeenCalledWith(req, {
+            offset: 0,
+            limit: 40,
+        });
+    });
+
+    it('test search all items until maxLimit', async () => {
+        const res = await all(req, { searchRequest, args: { limit: 40 }, maxLimit: 45 });
+        expect(res).toEqual(items.slice(0, 45));
+
+        expect(searchRequest).toHaveBeenCalledTimes(2);
+        expect(searchRequest).toHaveBeenCalledWith(req, {
+            offset: 0,
+            limit: 40,
+        });
+        expect(searchRequest).toHaveBeenCalledWith(req, {
+            offset: 40,
+            limit: 40,
+        });
+    });
+
     it('test search items passes params', async () => {
         const res = await all(req, { searchRequest, args: { limit: 200, param: 'eter' } });
         expect(res).toEqual(items);
