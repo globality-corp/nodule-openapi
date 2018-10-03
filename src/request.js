@@ -3,6 +3,7 @@
 import {
     capitalize,
     get,
+    includes,
     lowerCase,
     mapKeys,
     mapValues,
@@ -40,9 +41,10 @@ export function buildMethod(context) {
 /* Build request params.
  */
 export function buildParams(context, req, args) {
-    if (lowerCase(context.method) !== 'get') {
+    if (!includes(['get', 'delete'], lowerCase(context.method))) {
         return null;
     }
+
     const options = get(context, 'options', {});
     return mapValues(
         mapKeys(args || {}, (value, key) => nameFor(key, 'query', true, options)),
