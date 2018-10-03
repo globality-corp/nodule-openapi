@@ -1,6 +1,6 @@
 {
     "name": "@globality/nodule-openapi",
-    "version": "0.9.3",
+    "version": "0.10.0",
     "description": "Opinionated OpenAPI (Swagger) Client",
     "main": "lib/",
     "repository": "git@github.com:globality-corp/nodule-openapi.git",
@@ -21,7 +21,7 @@
     },
     "peerDependencies": {
         "@globality/nodule-config": ">= 2.3.0 < 3"
-    },    
+    },
     "devDependencies": {
         "babel-cli": "^6.26.0",
         "babel-eslint": "^8.2.2",
