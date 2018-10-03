@@ -66,8 +66,10 @@ describe('buildMethod', () => {
 
 
 describe('buildParams', () => {
-    it('returns null for non-get', () => {
-        const context = {};
+    it('returns null if not get or delete', () => {
+        const context = {
+            method: 'post',
+        };
         expect(
             buildParams(context),
         ).toEqual(
