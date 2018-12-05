@@ -66,13 +66,23 @@ export function buildHeaders(context, req) {
     return headers;
 }
 
+function validateResponse(response) {
+    const contentType = get(response, 'headers["content-type"]');
+    if (contentType !== 'application/json') {
+        throw new Error(`${contentType} is not a valid response content-type`);
+    }
+}
+
 export function http(req, serviceName, operationName) {
     return (request) => {
         const metadata = getMetadata();
         if (metadata.testing) {
             return axios(
                 request,
-            );
+            ).then((response) => {
+                validateResponse(response);
+                return response;
+            });
         }
         const executeStartTime = process.hrtime();
         const { buildRequestLogs, logSuccess, logFailure } = getContainer('logging');
@@ -84,6 +94,7 @@ export function http(req, serviceName, operationName) {
         return axios(
             request,
         ).then((response) => {
+            validateResponse(response);
             if (logSuccess) {
                 logSuccess(req, request, response, requestLogs, executeStartTime);
             }
