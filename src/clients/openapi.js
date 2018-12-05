@@ -79,7 +79,10 @@ export function http(req, serviceName, operationName) {
         if (metadata.testing) {
             return axios(
                 request,
-            );
+            ).then((response) => {
+                validateResponse(response);
+                return response;
+            });
         }
         const executeStartTime = process.hrtime();
         const { buildRequestLogs, logSuccess, logFailure } = getContainer('logging');
