@@ -116,4 +116,20 @@ describe('createOpenAPIClient', () => {
 
         expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(0);
     });
+
+    it('raises an error if an invalid response content-type header is returned', async () => {
+        const config = await Nodule.testing().fromObject(
+            mockResponse('petstore', 'pet.search', '', {
+                'content-type': 'text/html',
+            }),
+        ).load();
+
+        const client = createOpenAPIClient('petstore', spec);
+
+        await expect(client.pet.search(req)).rejects.toThrow(
+            'text/html is not a valid response content-type',
+        );
+
+        expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(1);
+    });
 });
