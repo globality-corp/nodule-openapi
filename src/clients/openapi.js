@@ -66,11 +66,13 @@ export function buildHeaders(context, req) {
     return headers;
 }
 
-function validateResponse(response) {
+export function validateResponse(response) {
     const contentType = get(response, 'headers["content-type"]');
     if (contentType !== 'application/json') {
-        throw new Error(`${contentType} is not a valid response content-type`);
+        const message = `${contentType} is not a valid response content-type`;
+        return [false, message];
     }
+    return [true, null];
 }
 
 export function http(req, serviceName, operationName) {
@@ -80,7 +82,10 @@ export function http(req, serviceName, operationName) {
             return axios(
                 request,
             ).then((response) => {
-                validateResponse(response);
+                const [validResponse, message] = validateResponse(response);
+                if (!validResponse) {
+                    throw new Error(message);
+                }
                 return response;
             });
         }
@@ -94,7 +99,17 @@ export function http(req, serviceName, operationName) {
         return axios(
             request,
         ).then((response) => {
-            validateResponse(response);
+            const [validResponse, message] = validateResponse(response);
+            if (!validResponse) {
+                if (logFailure) {
+                    const error = {
+                        message,
+                        status: response.status,
+                    };
+                    logFailure(req, request, error, requestLogs);
+                }
+                throw new Error(message);
+            }
             if (logSuccess) {
                 logSuccess(req, request, response, requestLogs, executeStartTime);
             }
