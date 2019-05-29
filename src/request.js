@@ -100,7 +100,7 @@ export function buildUrl(context, req, args) {
 }
 
 export function buildTimeout(context) {
-    return parseInt(get(context, 'options.timeout', 5000));
+    return parseInt(get(context, 'options.timeout', 5000), 10);
 }
 
 
