@@ -155,7 +155,7 @@ describe('buildTimeout', () => {
         const context = {
             spec,
             options: {
-                timeout: 1000,
+                timeout: "1000",
             },
         };
         expect(
