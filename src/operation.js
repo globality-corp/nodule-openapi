@@ -15,7 +15,7 @@ export default (context, name, operationName) => async (req, args, options) => {
     // validate inputs
     Validator(context)(req, operationName, args);
 
-    // allow overiding the http implementation
+    // allow overriding the http implementation
     const http = get(context, 'options.http', () => axios)(req, name, operationName);
 
     // enhance the context with service and operation name

@@ -99,6 +99,10 @@ export function buildUrl(context, req, args) {
     return `${baseUrl}${spec.basePath}${expandedPath}`;
 }
 
+export function buildTimeout(context) {
+    return get(context, 'options.timeout', 5000);
+}
+
 
 /* Build base request (to be overridden by other builders).
  */
@@ -123,6 +127,7 @@ const DEFAULT_BUILDERS = {
     method: buildMethod,
     params: buildParams,
     url: buildUrl,
+    timeout: buildTimeout,
 };
 
 
