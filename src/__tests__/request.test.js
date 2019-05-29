@@ -28,6 +28,7 @@ describe('buildRequest', () => {
             method: 'post',
             params: null,
             url: 'http://localhost/api/v2/chatroom',
+            timeout: 5000,
         });
     });
 
@@ -59,6 +60,7 @@ describe('buildRequest', () => {
             method: 'post',
             params: null,
             url: 'http://localhost/api/v2/chatroom',
+            timeout: 5000,
         });
     });
 });
