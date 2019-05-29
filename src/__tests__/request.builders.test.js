@@ -4,6 +4,7 @@ import {
     buildHeaders,
     buildMethod,
     buildParams,
+    buildTimeout,
     buildUrl,
     expandPath,
 } from '../request';
@@ -134,6 +135,33 @@ describe('buildUrl', () => {
             buildUrl(context),
         ).toEqual(
             'https://example.com/api/v2/foo',
+        );
+    });
+});
+
+describe('buildTimeout', () => {
+    it('constructs a timeout', () => {
+        const context = {
+            spec,
+            path: '/foo',
+        };
+        expect(
+            buildTimeout(context),
+        ).toEqual(
+            5000,
+        );
+    });
+    it('accepts an override timeout', () => {
+        const context = {
+            spec,
+            options: {
+                timeout: '1000',
+            },
+        };
+        expect(
+            buildTimeout(context),
+        ).toEqual(
+            1000,
         );
     });
 });

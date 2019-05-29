@@ -27,6 +27,7 @@ describe('buildRequest', () => {
             maxContentLength: -1,
             method: 'post',
             params: null,
+            timeout: 5000,
             url: 'http://localhost/api/v2/chatroom',
         });
     });
@@ -58,6 +59,7 @@ describe('buildRequest', () => {
             maxContentLength: -1,
             method: 'post',
             params: null,
+            timeout: 5000,
             url: 'http://localhost/api/v2/chatroom',
         });
     });
