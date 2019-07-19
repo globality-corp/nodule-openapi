@@ -8,12 +8,13 @@ import {
 } from 'http-status-codes';
 
 export class OpenAPIError extends Error {
-    constructor(message = null, code = 500, data = null) {
+    constructor(message = null, code = 500, data = null, headers = null) {
         super(message);
         Error.captureStackTrace(this, this.constructor);
         this.name = this.constructor.name;
         this.code = code;
         this.data = data;
+        this.headers = headers;
     }
 }
 
@@ -45,8 +46,10 @@ export function normalizeError(error) {
     const data = get(error, 'response.data', null);
     const message = get(data, 'message') || get(error, 'message', null);
     const code = get(data, 'code') || get(error, 'response.status') || get(error, 'code', null);
+    const req = get(error, 'request', null);
+    const headers = req && req.getHeaders ? req.getHeaders() : null;
 
-    return new OpenAPIError(message, code, data);
+    return new OpenAPIError(message, code, data, headers);
 }
 
 
