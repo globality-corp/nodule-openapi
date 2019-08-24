@@ -63,4 +63,32 @@ describe('buildRequest', () => {
             url: 'http://localhost/api/v2/chatroom',
         });
     });
+
+    it('Make sure we are not passing the same argument as both query parameter and body argument', () => {
+        const context = {
+            spec,
+            path: '/chatroom/{chatroom_id}',
+            method: 'get',
+        };
+        const req = null;
+        expect(
+            buildRequest(context, req, {
+                chatroomId: 'bar',
+                projectId: 'baz',
+            }),
+        ).toEqual({
+            adapter: null,
+            data: null,
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+            },
+            maxContentLength: -1,
+            method: 'get',
+            params: {
+                project_id: 'baz',
+            },
+            timeout: 5000,
+            url: 'http://localhost/api/v2/chatroom/bar',
+        });
+    });
 });
