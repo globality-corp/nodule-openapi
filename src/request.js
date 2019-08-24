@@ -63,18 +63,25 @@ export function expandPathWithKeyValue(path, key, value, options) {
 
 
 /* Expand paths with variable substitutions.
+   Remove used vairable from args
  */
 export function expandPath(context, path, args) {
     const options = get(context, 'options', {});
     let expandedPath = path;
-    Object.keys(args || {}).forEach((key) => {
+    const keys = Object.keys(args || {});
+    keys.forEach((key) => {
         const value = args[key];
         if (typeof (value) === 'string') {
             // URI encode the value; handling embedded `/`
             const expandedValue = value.split('/').map(
                 part => encodeURIComponent(part),
             ).join('/');
-            expandedPath = expandPathWithKeyValue(expandedPath, key, expandedValue, options);
+            const newPath = expandPathWithKeyValue(expandedPath, key, expandedValue, options);
+            if (expandedPath !== newPath) {
+                expandedPath = newPath;
+                // eslint-disable-next-line no-param-reassign
+                delete args[key];
+            }
         }
     });
     return expandedPath;
@@ -119,14 +126,16 @@ export function buildAdapter(context) {
     return get(context, 'options.adapter', null);
 }
 
-
+/*  Transform open-api to request using the following methods
+    Order matters! We want to build the url before assigning args
+*/
 const DEFAULT_BUILDERS = {
     adapter: buildAdapter,
-    data: buildData,
     headers: buildHeaders,
     method: buildMethod,
-    params: buildParams,
     url: buildUrl,
+    data: buildData,
+    params: buildParams,
     timeout: buildTimeout,
 };
 
@@ -146,9 +155,11 @@ export default (context, req, args, options) => {
         options,
     );
 
+    // Shallow copy args. Some builder functions might affect args.
+    const builderArgs = Object.assign({}, args);
     return Object.keys(builders).reduce(
         (obj, key) => Object.assign(obj, {
-            [key]: builders[key](context, req, args, options),
+            [key]: builders[key](context, req, builderArgs, options),
         }),
         baseRequest,
     );
