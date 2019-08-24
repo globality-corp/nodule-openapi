@@ -50,6 +50,7 @@ describe('buildError', () => {
         } catch (error) {
             expect(error.code).toEqual('error');
             expect(error.data).toEqual(null);
+            expect(error.headers).toEqual(null);
         }
     });
 
@@ -77,6 +78,28 @@ describe('buildError', () => {
         } catch (error) {
             expect(error.code).toEqual(200);
             expect(error.message).toEqual('id');
+            expect(error.headers).toEqual(null);
+        }
+    });
+
+    it('return error with headers', () => {
+        try {
+            buildError()({
+                request: {
+                    getHeaders: () => ({
+                        'x-foo': 100,
+                        'x-bar': 200,
+                    }),
+                },
+            });
+            throw new Error('no error thrown');
+        } catch (error) {
+            expect(error.code).toEqual(null);
+            expect(error.data).toEqual(null);
+            expect(error.headers).toEqual(expect.objectContaining({
+                'x-foo': 100,
+                'x-bar': 200,
+            }));
         }
     });
 });
