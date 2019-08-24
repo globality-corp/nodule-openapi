@@ -79,6 +79,8 @@ export function expandPath(context, path, args) {
             const newPath = expandPathWithKeyValue(expandedPath, key, expandedValue, options);
             if (expandedPath !== newPath) {
                 expandedPath = newPath;
+                // Make sure we are not passing the same argument as both query parameter and
+                // body argument
                 // eslint-disable-next-line no-param-reassign
                 delete args[key];
             }
