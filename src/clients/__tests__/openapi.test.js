@@ -42,9 +42,9 @@ describe('createOpenAPIClient', () => {
         });
     });
 
-    it('supports mocking a response with a function', async () => {
+    it('supports mocking a response with a function based on params', async () => {
         const config = await Nodule.testing().fromObject(
-            mockResponse('petstore', 'pet.search', ({ name }) => ({ items: [name] })),
+            mockResponse('petstore', 'pet.search', ({ params }) => ({ items: [params.name] })),
         ).load();
 
         const client = createOpenAPIClient('petstore', spec);
@@ -62,9 +62,26 @@ describe('createOpenAPIClient', () => {
         });
     });
 
+    it('supports mocking a response with a function based on url', async () => {
+        const config = await Nodule.testing().fromObject(
+            mockResponse('petstore', 'pet.retrieve', ({ url }) => ({ id: url.split('pet/')[1] })),
+        ).load();
+
+        const client = createOpenAPIClient('petstore', spec);
+
+        const result = await client.pet.retrieve(req, { petId: 'pet-id' });
+        expect(result).toEqual({
+            id: 'pet-id',
+        });
+
+        expect(config.clients.mock.petstore.pet.retrieve).toHaveBeenCalledTimes(1);
+    });
+
     it('supports mocking a post response with a function', async () => {
         const config = await Nodule.testing().fromObject(
-            mockResponse('petstore', 'pet.create', body => ({ items: [body.name] })),
+            mockResponse('petstore', 'pet.create', ({ data }) => ({
+                items: [JSON.parse(data).name],
+            })),
         ).load();
 
         const client = createOpenAPIClient('petstore', spec);
