@@ -44,7 +44,7 @@ describe('createOpenAPIClient', () => {
 
     it('supports mocking a response with a function based on params', async () => {
         const config = await Nodule.testing().fromObject(
-            mockResponse('petstore', 'pet.search', ({ params }) => ({ items: [params.name] })),
+            mockResponse('petstore', 'pet.search', params => ({ items: [params.name] })),
         ).load();
 
         const client = createOpenAPIClient('petstore', spec);
@@ -64,7 +64,7 @@ describe('createOpenAPIClient', () => {
 
     it('supports mocking a response with a function based on url', async () => {
         const config = await Nodule.testing().fromObject(
-            mockResponse('petstore', 'pet.retrieve', ({ url }) => ({ id: url.split('pet/')[1] })),
+            mockResponse('petstore', 'pet.retrieve', (_, url) => ({ id: url.split('pet/')[1] })),
         ).load();
 
         const client = createOpenAPIClient('petstore', spec);
@@ -79,8 +79,8 @@ describe('createOpenAPIClient', () => {
 
     it('supports mocking a post response with a function', async () => {
         const config = await Nodule.testing().fromObject(
-            mockResponse('petstore', 'pet.create', ({ data }) => ({
-                items: [JSON.parse(data).name],
+            mockResponse('petstore', 'pet.create', body => ({
+                items: [body.name],
             })),
         ).load();
 
