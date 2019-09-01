@@ -1,5 +1,6 @@
 /* Request building.
  */
+import { getConfig } from '@globality/nodule-config';
 import {
     capitalize,
     get,
@@ -10,6 +11,9 @@ import {
 } from 'lodash';
 
 import nameFor from './naming';
+
+
+const DEFAULT_TIMEOUT = 5000;
 
 
 /* Build request JSON data.
@@ -107,7 +111,15 @@ export function buildUrl(context, req, args) {
 }
 
 export function buildTimeout(context) {
-    return parseInt(get(context, 'options.timeout', 5000), 10);
+    const contextTimeout = get(context, 'options.timeout');
+    if (contextTimeout) {
+        return parseInt(contextTimeout, 10);
+    }
+    const configTimeout = getConfig('defaultTimeout');
+    if (configTimeout) {
+        return parseInt(configTimeout, 10);
+    }
+    return DEFAULT_TIMEOUT;
 }
 
 
