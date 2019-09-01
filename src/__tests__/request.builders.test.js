@@ -1,3 +1,4 @@
+import { Nodule } from '@globality/nodule-config';
 import spec from './example.json';
 import {
     buildData,
@@ -162,6 +163,19 @@ describe('buildTimeout', () => {
             buildTimeout(context),
         ).toEqual(
             1000,
+        );
+    });
+    it('accepts a configured timeout', async () => {
+        await Nodule.testing().fromObject({
+            defaultTimeout: '2000',
+        }).load();
+        const context = {
+            spec,
+        };
+        expect(
+            buildTimeout(context),
+        ).toEqual(
+            2000,
         );
     });
 });
