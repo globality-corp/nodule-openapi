@@ -1,6 +1,7 @@
 /* Callable operations.
  */
 import { assign, get } from 'lodash';
+import { getContainer } from '@globality/nodule-config';
 import axios from 'axios';
 
 import buildError from './error';
@@ -24,26 +25,39 @@ export default (context, name, operationName) => async (req, args, options) => {
         operationName,
     });
 
-    return http(
-        buildRequest(
-            requestContext,
-            req,
-            args,
-            options,
-        ),
-    ).then(
-        response => buildResponse(requestContext)(
-            response,
-            requestContext,
-            req,
-            options,
-        ),
-    ).catch(
-        error => buildError(requestContext)(
-            error,
-            requestContext,
-            req,
-            options,
-        ),
+    const request = buildRequest(
+        requestContext,
+        req,
+        args,
+        options,
+    );
+    const retries = get(request, 'retries', 0);
+    const attempts = retries + 1;
+
+    const { logger } = getContainer();
+    let errorResponse;
+    for (let attempt = 0; attempt < attempts; attempt++) {
+        try {
+            /* eslint-disable no-await-in-loop */
+            const response = await http(request);
+            return buildResponse(requestContext)(
+                response,
+                requestContext,
+                req,
+                options,
+            );
+        } catch (error) {
+            if (logger) {
+                logger.warning(req, `API request failed; attempt ${attempt + 1}`);
+            }
+            errorResponse = error;
+        }
+    }
+
+    return buildError(requestContext)(
+        errorResponse,
+        requestContext,
+        req,
+        options,
     );
 };
