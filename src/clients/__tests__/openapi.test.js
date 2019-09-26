@@ -97,7 +97,9 @@ describe('createOpenAPIClient', () => {
     it('supports mocking errors', async () => {
         const config = await Nodule.testing().fromObject(
             mockError('petstore', 'pet.search', 'Not Found', 404),
-        ).load();
+        ).fromObject({
+            defaultRetries: 1,
+        }).load();
 
         const client = createOpenAPIClient('petstore', spec);
 
@@ -139,7 +141,9 @@ describe('createOpenAPIClient', () => {
             mockResponse('petstore', 'pet.search', '', {
                 'content-type': 'text/html',
             }),
-        ).load();
+        ).fromObject({
+            defaultRetries: 1,
+        }).load();
 
         const client = createOpenAPIClient('petstore', spec);
 

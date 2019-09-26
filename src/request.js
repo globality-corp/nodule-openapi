@@ -14,6 +14,7 @@ import nameFor from './naming';
 
 
 const DEFAULT_TIMEOUT = 5000;
+const DEFAULT_RETRIES = 3;
 
 
 /* Build request JSON data.
@@ -122,6 +123,18 @@ export function buildTimeout(context) {
     return DEFAULT_TIMEOUT;
 }
 
+export function buildRetries(context) {
+    const contextRetries = get(context, 'options.retries');
+    if (contextRetries) {
+        return parseInt(contextRetries, 10);
+    }
+    const configRetries = getConfig('defaultRetries');
+    if (configRetries) {
+        return parseInt(configRetries, 10);
+    }
+    return DEFAULT_RETRIES;
+}
+
 
 /* Build base request (to be overridden by other builders).
  */
@@ -149,6 +162,7 @@ const DEFAULT_BUILDERS = {
     data: buildData,
     params: buildParams,
     timeout: buildTimeout,
+    retries: buildRetries,
 };
 
 

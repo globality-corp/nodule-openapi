@@ -24,26 +24,34 @@ export default (context, name, operationName) => async (req, args, options) => {
         operationName,
     });
 
-    return http(
-        buildRequest(
-            requestContext,
-            req,
-            args,
-            options,
-        ),
-    ).then(
-        response => buildResponse(requestContext)(
-            response,
-            requestContext,
-            req,
-            options,
-        ),
-    ).catch(
-        error => buildError(requestContext)(
-            error,
-            requestContext,
-            req,
-            options,
-        ),
+    const request = buildRequest(
+        requestContext,
+        req,
+        args,
+        options,
+    );
+    const retries = get(request, 'retries');
+
+    let errorResponse;
+    for (let attempts = 0; attempts < retries; attempts++) {
+        try {
+            /* eslint-disable no-await-in-loop */
+            const response = await http(request);
+            return buildResponse(requestContext)(
+                response,
+                requestContext,
+                req,
+                options,
+            );
+        } catch (error) {
+            errorResponse = error;
+        }
+    }
+
+    return buildError(requestContext)(
+        errorResponse,
+        requestContext,
+        req,
+        options,
     );
 };
