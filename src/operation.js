@@ -48,7 +48,7 @@ export default (context, name, operationName) => async (req, args, options) => {
             );
         } catch (error) {
             if (logger) {
-                logger.warning(req, `API request failed; attempt ${attempt}`);
+                logger.warning(req, `API request failed; attempt ${attempt + 1}`);
             }
             errorResponse = error;
         }
