@@ -14,7 +14,7 @@ import nameFor from './naming';
 
 
 const DEFAULT_TIMEOUT = 5000;
-const DEFAULT_RETRIES = 3;
+const DEFAULT_RETRIES = 0;
 
 
 /* Build request JSON data.

@@ -27,7 +27,7 @@ describe('buildRequest', () => {
             maxContentLength: -1,
             method: 'post',
             params: null,
-            retries: 3,
+            retries: 0,
             timeout: 5000,
             url: 'http://localhost/api/v2/chatroom',
         });
@@ -60,7 +60,7 @@ describe('buildRequest', () => {
             maxContentLength: -1,
             method: 'post',
             params: null,
-            retries: 3,
+            retries: 0,
             timeout: 5000,
             url: 'http://localhost/api/v2/chatroom',
         });
@@ -89,7 +89,7 @@ describe('buildRequest', () => {
             params: {
                 project_id: 'baz',
             },
-            retries: 3,
+            retries: 0,
             timeout: 5000,
             url: 'http://localhost/api/v2/chatroom/bar',
         });

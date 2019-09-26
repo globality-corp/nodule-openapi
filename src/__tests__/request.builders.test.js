@@ -1,10 +1,11 @@
-import { Nodule } from '@globality/nodule-config';
+import { Nodule, clearBinding } from '@globality/nodule-config';
 import spec from './example.json';
 import {
     buildData,
     buildHeaders,
     buildMethod,
     buildParams,
+    buildRetries,
     buildTimeout,
     buildUrl,
     expandPath,
@@ -166,6 +167,7 @@ describe('buildTimeout', () => {
         );
     });
     it('accepts a configured timeout', async () => {
+        clearBinding();
         await Nodule.testing().fromObject({
             defaultTimeout: '2000',
         }).load();
@@ -176,6 +178,47 @@ describe('buildTimeout', () => {
             buildTimeout(context),
         ).toEqual(
             2000,
+        );
+    });
+});
+
+describe('buildRetries', () => {
+    it('constructs retries', () => {
+        const context = {
+            spec,
+            path: '/foo',
+        };
+        expect(
+            buildRetries(context),
+        ).toEqual(
+            0,
+        );
+    });
+    it('accepts override retries', () => {
+        const context = {
+            spec,
+            options: {
+                retries: 5,
+            },
+        };
+        expect(
+            buildRetries(context),
+        ).toEqual(
+            5,
+        );
+    });
+    it('accepts configured retries', async () => {
+        clearBinding('config');
+        await Nodule.testing().fromObject({
+            defaultRetries: '10',
+        }).load();
+        const context = {
+            spec,
+        };
+        expect(
+            buildRetries(context),
+        ).toEqual(
+            10,
         );
     });
 });

@@ -134,7 +134,7 @@ export function http(req, serviceName, operationName) {
 export function createOpenAPIClient(name, spec) {
     const metadata = getMetadata();
     const config = getConfig(`clients.${name}`) || {};
-    const { baseUrl, timeout } = config;
+    const { baseUrl, timeout, retries } = config;
 
     if (!baseUrl && !metadata.testing && !metadata.debug) {
         throw new Error(`OpenAPI client ${name} does not have a configured baseUrl`);
@@ -146,6 +146,7 @@ export function createOpenAPIClient(name, spec) {
         buildHeaders,
         http,
         timeout,
+        retries,
     };
     return OpenAPI(spec, name, options);
 }
