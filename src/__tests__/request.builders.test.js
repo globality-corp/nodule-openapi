@@ -167,7 +167,7 @@ describe('buildTimeout', () => {
         );
     });
     it('accepts a configured timeout', async () => {
-        clearBinding();
+        clearBinding('config');
         await Nodule.testing().fromObject({
             defaultTimeout: '2000',
         }).load();
