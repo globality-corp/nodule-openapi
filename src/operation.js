@@ -30,7 +30,49 @@ function getRetries(request) {
     return get(request, 'retries', 0);
 }
 
-function isErrorRetryable() {
+function getErrorResponseCode(error) {
+    if (get(error, 'data.code')) {
+        // Case: error directly from the service
+        return error.data.code;
+    }
+    if (get(error, 'response.status')) {
+        // Case: error from the a proxy service
+        return error.response.status;
+    }
+
+    return null;
+}
+
+function isErrorRetryable(error) {
+    if (
+        includes(
+            [
+                'econnaborted',
+                'econnreset',
+            ],
+            lowerCase(error.code),
+        )
+    ) {
+        // Client timeout, retry
+        return true;
+    }
+
+    const errorCode = getErrorResponseCode(error);
+
+    if (
+        includes(
+            [
+                502,
+                503,
+                504,
+            ],
+            errorCode,
+        )
+    ) {
+        // 50x responses are retryable
+        return true;
+    }
+
     return false;
 }
 
@@ -72,9 +114,11 @@ export default (context, name, operationName) => async (req, args, options) => {
             );
         } catch (error) {
             errorResponse = error;
+
             if (!isErrorRetryable(error)) {
                 break;
             }
+
             if (logger) {
                 logger.warning(
                     req,

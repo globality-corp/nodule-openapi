@@ -152,7 +152,7 @@ describe('createOpenAPIClient', () => {
 
     it('retries read operations on error', async () => {
         const config = await Nodule.testing().fromObject(
-            mockError('petstore', 'pet.search', 'Not Found', 404),
+            mockError('petstore', 'pet.search', 'Timeout', 504),
         ).fromObject({
             defaultRetries: 2,
         }).load();
@@ -163,12 +163,12 @@ describe('createOpenAPIClient', () => {
             'Not Found',
         );
 
-        expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(3);
+        expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(1);
     });
 
     it('does not attempt to retry on write operations', async () => {
         const config = await Nodule.testing().fromObject(
-            mockError('petstore', 'pet.create', 'Not Found', 404),
+            mockError('petstore', 'pet.create', 'Not Found', 504),
         ).fromObject({
             defaultRetries: 2,
         }).load();

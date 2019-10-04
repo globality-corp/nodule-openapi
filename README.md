@@ -45,3 +45,5 @@ it as retryable:
 * The operation itself is retryable. As of this writing, this will only include read operations
 
 By default, retries are not enabled.
+
+XXX: Due to a bug in nodule-config, retry values of 0/1 will not work. 2+ will all be valid.
