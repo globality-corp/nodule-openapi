@@ -53,7 +53,7 @@ function isErrorRetryable(error) {
             lowerCase(error.code),
         )
     ) {
-        // Client timeout, retry
+        // Client timeout/error, retry
         return true;
     }
 
