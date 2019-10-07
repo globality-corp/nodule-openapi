@@ -31,7 +31,7 @@ function getRetries(request) {
 }
 
 function isErrorRetryable(error) {
-    const openApiError = normalizeError(error)
+    const openApiError = normalizeError(error);
 
     if (
         includes(
