@@ -35,3 +35,15 @@ In pseudo-code:
 
 The `nodule-openapi` includes a function (createOpenAPIClient) that allows the wrapping of the OpenAPI
 swagger client into callable functions. See the README in the src/clients for more information.
+
+## Retries
+
+Clients can additionally be configured to automatically retry failed requests, after having met some criteria to qualify
+it as retryable:
+
+* The raised error is retryable (e.g. 50x response codes, client exceptions)
+* The operation itself is retryable. As of this writing, this will only include read operations
+
+By default, retries are not enabled.
+
+XXX: Due to a bug in nodule-config, retry values of 0/1 will not work. 2+ will all be valid.
