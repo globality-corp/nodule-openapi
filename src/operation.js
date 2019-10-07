@@ -4,7 +4,7 @@ import { assign, get, includes, lowerCase } from 'lodash';
 import { getContainer } from '@globality/nodule-config';
 import axios from 'axios';
 
-import buildError from './error';
+import buildError, { normalizeError } from './error';
 import buildRequest from './request';
 import buildResponse from './response';
 import Validator from './validation';
@@ -30,34 +30,21 @@ function getRetries(request) {
     return get(request, 'retries', 0);
 }
 
-function getErrorResponseCode(error) {
-    if (get(error, 'data.code')) {
-        // Case: error directly from the service
-        return error.data.code;
-    }
-    if (get(error, 'response.status')) {
-        // Case: error from the a proxy service
-        return error.response.status;
-    }
-
-    return null;
-}
-
 function isErrorRetryable(error) {
+    const openApiError = normalizeError(error)
+
     if (
         includes(
             [
                 'econnaborted',
                 'econnreset',
             ],
-            lowerCase(error.code),
+            lowerCase(openApiError.code),
         )
     ) {
         // Client timeout/error, retry
         return true;
     }
-
-    const errorCode = getErrorResponseCode(error);
 
     if (
         includes(
@@ -66,7 +53,7 @@ function isErrorRetryable(error) {
                 503,
                 504,
             ],
-            errorCode,
+            openApiError.code,
         )
     ) {
         // 50x responses are retryable

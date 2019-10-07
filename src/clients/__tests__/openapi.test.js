@@ -160,10 +160,10 @@ describe('createOpenAPIClient', () => {
         const client = createOpenAPIClient('petstore', spec);
 
         await expect(client.pet.search(req)).rejects.toThrow(
-            'Not Found',
+            'Timeout',
         );
 
-        expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(1);
+        expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(3);
     });
 
     it('does not attempt to retry on write operations', async () => {
@@ -184,7 +184,7 @@ describe('createOpenAPIClient', () => {
 
     it('does not attempt to retry errors that shouldnt be retried', async () => {
         const config = await Nodule.testing().fromObject(
-            mockError('petstore', 'pet.search', 'Not retryable', 405),
+            mockError('petstore', 'pet.search', 'Not Found', 404),
         ).fromObject({
             defaultRetries: 2,
         }).load();
@@ -196,5 +196,21 @@ describe('createOpenAPIClient', () => {
         );
 
         expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(1);
+    });
+
+    it('retries client-side errors', async () => {
+        const config = await Nodule.testing().fromObject(
+            mockError('petstore', 'pet.search', 'Connection aborted', 'ECONNABORTED'),
+        ).fromObject({
+            defaultRetries: 2,
+        }).load();
+
+        const client = createOpenAPIClient('petstore', spec);
+
+        await expect(client.pet.search(req)).rejects.toThrow(
+            'Connection aborted',
+        );
+
+        expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(3);
     });
 });
