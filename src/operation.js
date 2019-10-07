@@ -1,14 +1,67 @@
 /* Callable operations.
  */
-import { assign, get } from 'lodash';
+import { assign, get, includes, lowerCase } from 'lodash';
 import { getContainer } from '@globality/nodule-config';
 import axios from 'axios';
 
-import buildError from './error';
+import buildError, { normalizeError } from './error';
 import buildRequest from './request';
 import buildResponse from './response';
 import Validator from './validation';
 
+
+function getRetries(request) {
+    if (
+        includes(
+            [
+                'post',
+                'patch',
+                'put',
+                'delete',
+            ],
+            lowerCase(request.method),
+        )
+    ) {
+        // Mutations will be retried on explicit initiation,
+        // instead of implicitly retried
+        return 0;
+    }
+
+    return get(request, 'retries', 0);
+}
+
+function isErrorRetryable(error) {
+    const openApiError = normalizeError(error);
+
+    if (
+        includes(
+            [
+                'econnaborted',
+                'econnreset',
+            ],
+            lowerCase(openApiError.code),
+        )
+    ) {
+        // Client timeout/error, retry
+        return true;
+    }
+
+    if (
+        includes(
+            [
+                502,
+                503,
+                504,
+            ],
+            openApiError.code,
+        )
+    ) {
+        // 50x responses are retryable
+        return true;
+    }
+
+    return false;
+}
 
 /* Create a new callable operation that return a Promise.
  */
@@ -31,7 +84,7 @@ export default (context, name, operationName) => async (req, args, options) => {
         args,
         options,
     );
-    const retries = get(request, 'retries', 0);
+    const retries = getRetries(request);
     const attempts = retries + 1;
 
     const { logger } = getContainer();
@@ -47,10 +100,19 @@ export default (context, name, operationName) => async (req, args, options) => {
                 options,
             );
         } catch (error) {
-            if (logger) {
-                logger.warning(req, `API request failed; attempt ${attempt + 1}`);
-            }
             errorResponse = error;
+
+            if (!isErrorRetryable(error)) {
+                break;
+            }
+
+            if (logger) {
+                logger.warning(
+                    req,
+                    `API request failed; attempt ${attempt + 1}`,
+                    { method: request.method, url: request.url },
+                );
+            }
         }
     }
 
