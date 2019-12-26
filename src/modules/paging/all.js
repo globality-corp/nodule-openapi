@@ -4,21 +4,37 @@ import { MaxLimitReached } from '../../error';
 import concurrentPaginate from '../concurrency';
 
 const DEFAULT_LIMIT = 20;
+function buildSearchRequestParams(searchArgs, limit, offset, sendBodyToSearchRequest) {
+    // Deliver params according to target search request - in args or in body
+    const paramsValues = {
+        ...searchArgs,
+        limit,
+        offset,
+    };
+    const paramsWrapper = (sendBodyToSearchRequest) ? { body: paramsValues } : paramsValues;
+    return paramsWrapper;
+}
 
-export default async function all(
+async function all(
     req,
-    { searchRequest, args = {}, maxLimit = null, concurrencyLimit = 1 },
+    { searchRequest, args = {}, body = null, maxLimit = null, concurrencyLimit = 1 },
 ) {
-    const { limit, offset, ...searchArgs } = args;
-
+    if (!isEmpty(args) && !isEmpty(body)) {
+        throw new BadRequest('all() function handles either args or body, no support for both yet');
+    }
+    const sendBodyToSearchRequest = body != null;
+    const paramsSource = sendBodyToSearchRequest ? body : args;
+    const { limit, offset, ...searchArgs } = paramsSource;
     const defaultLimit = getConfig('defaultLmit') || DEFAULT_LIMIT;
 
-    const params = {
-        ...searchArgs,
-        limit: limit || defaultLimit,
-        offset: offset || 0,
-    };
+    let params = buildSearchRequestParams(
+        searchArgs,
+        limit || defaultLimit,
+        offset || 0,
+        sendBodyToSearchRequest,
+    );
     const firstPage = await searchRequest(req, params);
+
     if (isNil(firstPage.offset) || isNil(firstPage.limit) || isNil(firstPage.count)) {
         return firstPage.items;
     }
@@ -28,10 +44,17 @@ export default async function all(
     if (maxLimit && firstPage.count > maxLimit) {
         throw new MaxLimitReached('Count of items exceeds maximum limit');
     }
-
     const offsets = range(firstPage.offset + firstPage.limit, firstPage.count, firstPage.limit);
     const nextPages = await concurrentPaginate(
-        offsets.map(pageOffset => searchRequest(req, { ...params, offset: pageOffset })),
+        offsets.map(async (pageOffset) => {
+            params = buildSearchRequestParams(
+                searchArgs,
+                limit || defaultLimit,
+                pageOffset,
+                sendBodyToSearchRequest,
+            );
+            return searchRequest(req, params);
+        }),
         concurrencyLimit,
     );
     return flatten([firstPage, ...nextPages].map(page => page.items));
