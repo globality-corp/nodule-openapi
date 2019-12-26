@@ -1,4 +1,4 @@
-import { flatten, range, isNil, isEmpty } from 'lodash';
+import { flatten, range, isNil } from 'lodash';
 import { getConfig } from '@globality/nodule-config';
 import { MaxLimitReached } from '../../error';
 import concurrentPaginate from '../concurrency';
@@ -9,7 +9,7 @@ const DEFAULT_LIMIT = 20;
  * Pagination for search requests that takes parameters in the body (for example in batch endpoints)
  * @body search requests args. Can optionally contain initial 'limit' and 'offset' values
  */
-export default async function allForBodySearchRequest(
+export async function allForBodySearchRequest(
     req,
     { searchRequest, body = {}, maxLimit = null, concurrencyLimit = 1 },
 ) {
