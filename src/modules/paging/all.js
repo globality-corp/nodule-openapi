@@ -1,9 +1,10 @@
-import { flatten, range, isNil } from 'lodash';
+import { flatten, range, isNil, isEmpty } from 'lodash';
 import { getConfig } from '@globality/nodule-config';
 import { MaxLimitReached } from '../../error';
 import concurrentPaginate from '../concurrency';
 
 const DEFAULT_LIMIT = 20;
+
 function buildSearchRequestParams(searchArgs, limit, offset, sendBodyToSearchRequest) {
     // Deliver params according to target search request - in args or in body
     const paramsValues = {
@@ -15,12 +16,12 @@ function buildSearchRequestParams(searchArgs, limit, offset, sendBodyToSearchReq
     return paramsWrapper;
 }
 
-async function all(
+export default async function all(
     req,
     { searchRequest, args = {}, body = null, maxLimit = null, concurrencyLimit = 1 },
 ) {
     if (!isEmpty(args) && !isEmpty(body)) {
-        throw new BadRequest('all() function handles either args or body, no support for both yet');
+        throw new Error('all() function handles either args or body, no support for both yet');
     }
     const sendBodyToSearchRequest = body != null;
     const paramsSource = sendBodyToSearchRequest ? body : args;
