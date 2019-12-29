@@ -1,5 +1,6 @@
 export {
     all,
+    allForBodySearchRequest,
     any,
     first,
     none,
