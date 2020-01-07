@@ -8,6 +8,7 @@ export {
 } from './error';
 export {
     all,
+    allForBodySearchRequest,
     any,
     concurrentPaginate,
     first,
