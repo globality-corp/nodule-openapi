@@ -2,11 +2,13 @@ import { range } from 'lodash';
 import { all, any, one, none, first } from '../paging';
 
 const items = range(100).map(id => ({ id }));
+const largeItems = range(201).map(id => ({ id }));
 const req = {};
 let searchRequest;
 let searchRequestNone;
 let searchRequestOne;
 let searchRequestTwo;
+let searchLargeDataSet;
 
 describe('Pagination', () => {
 
@@ -29,6 +31,12 @@ describe('Pagination', () => {
             count: 2,
             items: [{ id: 1 }, { id: 2 }],
         }));
+        searchLargeDataSet = jest.fn(async (_, { limit = 20, offset = 0 }) => ({
+            count: largeItems.length,
+            items: largeItems.slice(offset, offset + limit),
+            limit,
+            offset,
+        }));
     });
 
     it('test search all items', async () => {
@@ -48,6 +56,12 @@ describe('Pagination', () => {
             offset: 80,
             limit: 40,
         });
+    });
+
+    it('test search all items with large dataset logs warning', async () => {
+        const res = await all(req, { searchRequest: searchLargeDataSet, args: { limit: 20 } });
+        expect(res).toEqual(largeItems);
+        expect(searchLargeDataSet).toHaveBeenCalledTimes(11);
     });
 
     it('test search items passes params', async () => {

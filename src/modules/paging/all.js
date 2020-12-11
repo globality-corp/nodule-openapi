@@ -1,9 +1,10 @@
 import { flatten, range, isNil } from 'lodash';
-import { getConfig } from '@globality/nodule-config';
+import { getConfig, getContainer } from '@globality/nodule-config';
 import { MaxLimitReached } from '../../error';
 import concurrentPaginate from '../concurrency';
 
 const DEFAULT_LIMIT = 20;
+const DEFAULT_PAGING_UPPER_BOUND = 200;
 
 export default async function all(
     req,
@@ -11,7 +12,7 @@ export default async function all(
 ) {
     const { limit, offset, ...searchArgs } = args;
 
-    const defaultLimit = getConfig('defaultLmit') || DEFAULT_LIMIT;
+    const defaultLimit = getConfig('defaultLimit') || DEFAULT_LIMIT;
 
     const params = {
         ...searchArgs,
@@ -19,6 +20,20 @@ export default async function all(
         offset: offset || 0,
     };
     const firstPage = await searchRequest(req, params);
+
+    if (limit === defaultLimit && firstPage.count > DEFAULT_PAGING_UPPER_BOUND) {
+        const { logger } = getContainer();
+        logger.warning(
+            req,
+            'A large dataset requested with default limit set.',
+            {
+                searchRequest,
+                numResults: firstPage.count,
+                searchParam: searchArgs,
+            },
+        );
+    }
+
     if (isNil(firstPage.offset) || isNil(firstPage.limit) || isNil(firstPage.count)) {
         return firstPage.items;
     }
