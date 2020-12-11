@@ -1,9 +1,10 @@
-import {
+import { get } from 'lodash';
+import naming, {
     operationNameFor,
     pathParameterNameFor,
     queryParameterNameFor,
+    NAMING_OPTION,
 } from '../naming';
-
 
 describe('operationNameFor', () => {
     it('converts to camelCase', () => {
@@ -82,6 +83,44 @@ describe('queryParameterNameFor', () => {
             queryParameterNameFor('foo_bar', true),
         ).toEqual(
             'foo_bar',
+        );
+    });
+});
+
+describe('overrides', () => {
+    it('accepts an override', () => {
+        const overrides = {
+            path: get(NAMING_OPTION, 'preserveParameterName'),
+            query: get(NAMING_OPTION, 'preserveParameterName'),
+        };
+
+        const context = {
+            options: {
+                naming: {
+                    ...overrides,
+                },
+            },
+        };
+        const options = get(context, 'options', {});
+        expect(
+            naming('companyId', 'query', true, options),
+        ).toEqual(
+            'companyId',
+        );
+        expect(
+            naming('company_id', 'query', true, options),
+        ).toEqual(
+            'company_id',
+        );
+        expect(
+            naming('companyId', 'path', true, options),
+        ).toEqual(
+            'companyId',
+        );
+        expect(
+            naming('company_id', 'path', true, options),
+        ).toEqual(
+            'company_id',
         );
     });
 });

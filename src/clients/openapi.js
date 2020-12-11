@@ -3,6 +3,7 @@ import { get } from 'lodash';
 import { getConfig, getMetadata, getContainer } from '@globality/nodule-config';
 import axios from 'axios';
 import OpenAPI from '../client';
+import { NAMING_OPTION } from '../naming';
 
 /* Inject mock and testing adapters.
  */
@@ -134,11 +135,16 @@ export function http(req, serviceName, operationName) {
 export function createOpenAPIClient(name, spec) {
     const metadata = getMetadata();
     const config = getConfig(`clients.${name}`) || {};
-    const { baseUrl, timeout, retries } = config;
+    const { baseUrl, timeout, retries, namingOverride, namingPath, namingQuery } = config;
 
     if (!baseUrl && !metadata.testing && !metadata.debug) {
         throw new Error(`OpenAPI client ${name} does not have a configured baseUrl`);
     }
+
+    const naming = namingOverride ? {
+        path: get(NAMING_OPTION, namingPath),
+        query: get(NAMING_OPTION, namingQuery),
+    } : {};
 
     const options = {
         baseUrl,
@@ -147,6 +153,7 @@ export function createOpenAPIClient(name, spec) {
         http,
         timeout,
         retries,
+        naming,
     };
     return OpenAPI(spec, name, options);
 }

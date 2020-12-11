@@ -37,12 +37,21 @@ export function queryParameterNameFor(value, fromUser) {
     return fromUser ? snakeCase(value) : camelCase(value);
 }
 
+/* Preserve parameter name
+ *
+ */
+const preserveParameterName = value => value;
 
 const DEFAULT_NAMING = {
     path: pathParameterNameFor,
     query: queryParameterNameFor,
 };
 
+const NAMING_OPTION = {
+    preserveParameterName,
+    pathParameterNameFor,
+    queryParameterNameFor,
+};
 
 /* Resolve the name for something.
  */
@@ -51,3 +60,5 @@ export default (name, type, fromUser, options) => {
     const nameFor = get(overrides, type, DEFAULT_NAMING[type]);
     return nameFor ? nameFor(name, fromUser) : name;
 };
+
+exports.NAMING_OPTION = NAMING_OPTION;
