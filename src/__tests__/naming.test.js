@@ -4,7 +4,6 @@ import {
     queryParameterNameFor,
 } from '../naming';
 
-
 describe('operationNameFor', () => {
     it('converts to camelCase', () => {
         expect(
@@ -21,7 +20,6 @@ describe('operationNameFor', () => {
         );
     });
 });
-
 
 describe('pathParameterNameFor', () => {
     it('converts to camelCase', () => {
@@ -53,7 +51,6 @@ describe('pathParameterNameFor', () => {
         );
     });
 });
-
 
 describe('queryParameterNameFor', () => {
     it('converts to camelCase', () => {

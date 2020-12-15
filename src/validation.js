@@ -5,11 +5,9 @@ import { get, isNil, omit } from 'lodash';
 import { OpenAPIError } from './error';
 import nameFor from './naming';
 
-
 function isQueryOrPathParameter(parameter) {
     return parameter.in === 'path' || parameter.in === 'query';
 }
-
 
 function buildRequiredParameters(operation, filterFunc, options) {
     return get(operation, 'parameters', []).filter(
@@ -21,7 +19,6 @@ function buildRequiredParameters(operation, filterFunc, options) {
         {},
     );
 }
-
 
 function validateQueryAndPathParameters(operation, operationName, args, options) {
     const parameters = buildRequiredParameters(operation, isQueryOrPathParameter, options);
@@ -43,7 +40,6 @@ function validateQueryAndPathParameters(operation, operationName, args, options)
         }
     });
 }
-
 
 export default ({ spec, method, path, options }) => (req, operationName, args) => {
     const operation = spec.paths[path][method];

@@ -1,6 +1,5 @@
 import buildError, { OpenAPIError } from '../error';
 
-
 describe('buildError', () => {
 
     it('is an error', () => {

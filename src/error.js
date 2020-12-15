@@ -1,11 +1,8 @@
 /* Error handling.
  */
+/* eslint max-classes-per-file: 0 */
 import { get } from 'lodash';
-import {
-    INTERNAL_SERVER_ERROR,
-    NOT_FOUND,
-    GATEWAY_TIMEOUT,
-} from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 
 export class OpenAPIError extends Error {
     constructor(message = null, code = 500, data = null, headers = null) {
@@ -18,27 +15,23 @@ export class OpenAPIError extends Error {
     }
 }
 
-
 export class TooManyResults extends OpenAPIError {
     constructor(message = 'Too Many Results') {
-        super(message, INTERNAL_SERVER_ERROR);
+        super(message, StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
-
 
 export class NoResults extends OpenAPIError {
     constructor(message = 'No Results') {
-        super(message, NOT_FOUND);
+        super(message, StatusCodes.NOT_FOUND);
     }
 }
-
 
 export class MaxLimitReached extends OpenAPIError {
     constructor(message = 'Max Limit Reached') {
-        super(message, GATEWAY_TIMEOUT);
+        super(message, StatusCodes.GATEWAY_TIMEOUT);
     }
 }
-
 
 /* Extract the most useful fields from an error.
  */
@@ -52,10 +45,9 @@ export function normalizeError(error) {
     return new OpenAPIError(message, code, data, headers);
 }
 
-
 /* Build error from response data.
  */
-export default context => get(
+export default (context) => get(
     context,
     'options.buildError',
     (error) => {

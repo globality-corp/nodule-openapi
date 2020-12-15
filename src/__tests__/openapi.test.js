@@ -1,7 +1,6 @@
 import spec from './example.json';
 import OpenAPI from '..';
 
-
 describe('OpenAPI initialization', () => {
     it('generates client with dotted operation names', () => {
         const client = OpenAPI(spec);
@@ -15,7 +14,6 @@ describe('OpenAPI initialization', () => {
         });
     });
 });
-
 
 describe('OpenAPI invocation', () => {
     it('returns json', async () => {

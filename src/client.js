@@ -7,7 +7,6 @@ import { set } from 'lodash';
 import { operationNameFor } from './naming';
 import CallableOperation from './operation';
 
-
 /* Generate a mapping from (dotted) operation names to callable operations.
  *
  * `spec`: An OpenAPI JSON specificiation. Assuumed to be valid.

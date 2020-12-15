@@ -92,9 +92,9 @@ export function http(req, serviceName, operationName) {
         const executeStartTime = process.hrtime();
         const { buildRequestLogs, logSuccess, logFailure } = getContainer('logging');
 
-        const requestLogs = buildRequestLogs ?
-            buildRequestLogs(req, serviceName, operationName, request) :
-            null;
+        const requestLogs = buildRequestLogs
+            ? buildRequestLogs(req, serviceName, operationName, request)
+            : null;
 
         return axios(
             request,

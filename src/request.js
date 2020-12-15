@@ -12,10 +12,8 @@ import {
 
 import nameFor from './naming';
 
-
 const DEFAULT_TIMEOUT = 5000;
 const DEFAULT_RETRIES = 0;
-
 
 /* Build request JSON data.
  */
@@ -26,7 +24,6 @@ export function buildData(context, req, args) {
     return get(args, 'body');
 }
 
-
 /* Build request headers.
  */
 export function buildHeaders() {
@@ -35,13 +32,11 @@ export function buildHeaders() {
     };
 }
 
-
 /* Build request method.
  */
 export function buildMethod(context) {
     return context.method;
 }
-
 
 /* Build request params.
  */
@@ -54,10 +49,9 @@ export function buildParams(context, req, args) {
     return mapValues(
         mapKeys(args || {}, (value, key) => nameFor(key, 'query', true, options)),
         // NB: join arrays into comma-separated lists
-        value => (Array.isArray(value) ? value.join(',') : value),
+        (value) => (Array.isArray(value) ? value.join(',') : value),
     );
 }
-
 
 /* Expand path with a specific key/value.
  */
@@ -65,7 +59,6 @@ export function expandPathWithKeyValue(path, key, value, options) {
     const name = nameFor(key, 'path', true, options);
     return path.replace(`{${name}}`, value);
 }
-
 
 /* Expand paths with variable substitutions.
    Remove used vairable from args
@@ -79,7 +72,7 @@ export function expandPath(context, path, args) {
         if (typeof (value) === 'string') {
             // URI encode the value; handling embedded `/`
             const expandedValue = value.split('/').map(
-                part => encodeURIComponent(part),
+                (part) => encodeURIComponent(part),
             ).join('/');
             const newPath = expandPathWithKeyValue(expandedPath, key, expandedValue, options);
             if (expandedPath !== newPath) {
@@ -93,7 +86,6 @@ export function expandPath(context, path, args) {
     });
     return expandedPath;
 }
-
 
 /* Build request url, expanding path variables.
  */
@@ -137,7 +129,6 @@ export function buildRetries(context) {
     return DEFAULT_RETRIES;
 }
 
-
 /* Build base request (to be overridden by other builders).
  */
 export function buildBaseRequest() {
@@ -145,7 +136,6 @@ export function buildBaseRequest() {
         maxContentLength: -1,
     };
 }
-
 
 /* Build request adapter (useful for mocks).
  */
@@ -167,7 +157,6 @@ const DEFAULT_BUILDERS = {
     retries: buildRetries,
 };
 
-
 /* Build a request.
  */
 export default (context, req, args, options) => {
@@ -184,7 +173,7 @@ export default (context, req, args, options) => {
     );
 
     // Shallow copy args. Some builder functions might affect args.
-    const builderArgs = Object.assign({}, args);
+    const builderArgs = { ...args };
     return Object.keys(builders).reduce(
         (obj, key) => Object.assign(obj, {
             [key]: builders[key](context, req, builderArgs, options),

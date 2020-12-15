@@ -1,7 +1,6 @@
 import spec from './example.json';
 import Validator from '../validation';
 
-
 describe('validation', () => {
     const req = {};
 

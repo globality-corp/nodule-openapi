@@ -3,7 +3,6 @@ import { clearBinding, Nodule } from '@globality/nodule-config';
 import spec from '../../testing/petstore.json';
 import { createOpenAPIClient, mockError, mockResponse } from '../../index';
 
-
 describe('createOpenAPIClient', () => {
     const req = {};
 
@@ -44,7 +43,7 @@ describe('createOpenAPIClient', () => {
 
     it('supports mocking a response with a function based on params', async () => {
         const config = await Nodule.testing().fromObject(
-            mockResponse('petstore', 'pet.search', params => ({ items: [params.name] })),
+            mockResponse('petstore', 'pet.search', (params) => ({ items: [params.name] })),
         ).load();
 
         const client = createOpenAPIClient('petstore', spec);
@@ -79,7 +78,7 @@ describe('createOpenAPIClient', () => {
 
     it('supports mocking a post response with a function', async () => {
         const config = await Nodule.testing().fromObject(
-            mockResponse('petstore', 'pet.create', body => ({
+            mockResponse('petstore', 'pet.create', (body) => ({
                 items: [body.name],
             })),
         ).load();

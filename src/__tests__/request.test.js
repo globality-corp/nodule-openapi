@@ -1,7 +1,6 @@
 import spec from './example.json';
 import buildRequest from '../request';
 
-
 describe('buildRequest', () => {
     it('uses default builders', () => {
         const context = {

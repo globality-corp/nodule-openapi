@@ -59,7 +59,7 @@ export async function allForBodySearchRequest(
         }),
         concurrencyLimit,
     );
-    return flatten([firstPage, ...nextPages].map(page => page.items));
+    return flatten([firstPage, ...nextPages].map((page) => page.items));
 }
 
 /**
@@ -92,8 +92,8 @@ export default async function all(
 
     const offsets = range(firstPage.offset + firstPage.limit, firstPage.count, firstPage.limit);
     const nextPages = await concurrentPaginate(
-        offsets.map(pageOffset => searchRequest(req, { ...params, offset: pageOffset })),
+        offsets.map((pageOffset) => searchRequest(req, { ...params, offset: pageOffset })),
         concurrencyLimit,
     );
-    return flatten([firstPage, ...nextPages].map(page => page.items));
+    return flatten([firstPage, ...nextPages].map((page) => page.items));
 }

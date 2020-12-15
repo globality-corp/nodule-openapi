@@ -1,6 +1,5 @@
 import buildResponse from '../response';
 
-
 describe('buildRequest', () => {
     it('uses default builder', () => {
         expect(

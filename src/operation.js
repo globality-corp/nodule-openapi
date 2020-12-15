@@ -9,7 +9,6 @@ import buildRequest from './request';
 import buildResponse from './response';
 import Validator from './validation';
 
-
 function getRetries(request) {
     if (
         includes(
