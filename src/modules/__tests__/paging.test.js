@@ -10,6 +10,21 @@ let searchRequestOne;
 let searchRequestTwo;
 let searchLargeDataSet;
 
+const mockWarning = jest.fn();
+jest.mock('@globality/nodule-config', () => ({
+    getMetadata: () => ({
+        testing: false,
+    }),
+    bind: () => {},
+    setDefaults: () => {},
+    getConfig: () => null,
+    getContainer: () => ({
+        logger: {
+            warning: mockWarning,
+        },
+    }),
+}));
+
 describe('Pagination', () => {
 
     beforeEach(() => {
@@ -62,6 +77,16 @@ describe('Pagination', () => {
         const res = await all(req, { searchRequest: searchLargeDataSet, args: { limit: 20 } });
         expect(res).toEqual(largeItems);
         expect(searchLargeDataSet).toHaveBeenCalledTimes(11);
+        expect(mockWarning).toHaveBeenCalledTimes(1);
+        expect(mockWarning).toHaveBeenCalledWith(
+            req,
+            'A large dataset requested with default limit set.',
+            {
+                numResults: 201,
+                searchParam: {},
+                searchRequest: searchLargeDataSet,
+            },
+        );
     });
 
     it('test search items passes params', async () => {
