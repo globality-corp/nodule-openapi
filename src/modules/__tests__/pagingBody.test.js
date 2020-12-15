@@ -1,7 +1,7 @@
 import { range } from 'lodash';
 import { allForBodySearchRequest } from '../paging';
 
-const items = range(100).map((id) => ({ id }));
+const items = range(100).map(id => ({ id }));
 const req = {};
 let searchRequest;
 

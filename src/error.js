@@ -47,7 +47,7 @@ export function normalizeError(error) {
 
 /* Build error from response data.
  */
-export default (context) => get(
+export default context => get(
     context,
     'options.buildError',
     (error) => {

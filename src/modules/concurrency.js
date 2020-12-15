@@ -19,6 +19,6 @@ export default function concurrentPaginate(promises, concurrencyLimit = null) {
     const concurrency = getConcurrency(concurrencyLimit);
     const funneledThroat = throatWithPromise(concurrency);
     return Promise.all(
-        promises.map((promise) => funneledThroat(() => promise)),
+        promises.map(promise => funneledThroat(() => promise)),
     );
 }

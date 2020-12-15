@@ -1,7 +1,7 @@
 import { range } from 'lodash';
 import { all, any, one, none, first } from '../paging';
 
-const items = range(100).map((id) => ({ id }));
+const items = range(100).map(id => ({ id }));
 const req = {};
 let searchRequest;
 let searchRequestNone;

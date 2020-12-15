@@ -49,7 +49,7 @@ export function buildParams(context, req, args) {
     return mapValues(
         mapKeys(args || {}, (value, key) => nameFor(key, 'query', true, options)),
         // NB: join arrays into comma-separated lists
-        (value) => (Array.isArray(value) ? value.join(',') : value),
+        value => (Array.isArray(value) ? value.join(',') : value),
     );
 }
 
@@ -72,7 +72,7 @@ export function expandPath(context, path, args) {
         if (typeof (value) === 'string') {
             // URI encode the value; handling embedded `/`
             const expandedValue = value.split('/').map(
-                (part) => encodeURIComponent(part),
+                part => encodeURIComponent(part),
             ).join('/');
             const newPath = expandPathWithKeyValue(expandedPath, key, expandedValue, options);
             if (expandedPath !== newPath) {
