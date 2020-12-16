@@ -22,7 +22,8 @@ jobs:
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "yarn.lock" }}
-          - v1-dependencies-
+          # Removing this for now. We can enable partial cache again after the major upgrade is in to avoid causing other branches' build to fail
+          # - v1-dependencies-
 
       - run:
           name: Install Dependencies
