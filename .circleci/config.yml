@@ -95,14 +95,22 @@ workflows:
 
   build:
     jobs:
-      - checkout
+      - checkout:
+          context: 
+          - Globality-Common
       - lint:
+          context: 
+          - Globality-Common
           requires:
             - checkout
       - test:
+          context: 
+          - Globality-Common
           requires:
             - checkout
       - build:
+          context: 
+          - Globality-Common
           requires:
             - lint
             - test
@@ -110,12 +118,16 @@ workflows:
   release:
     jobs:
       - checkout:
+          context: 
+          - Globality-Common
           filters:
             tags:
               only: /[0-9]+(\.[0-9]+)*/
             branches:
               ignore: /.*/
       - lint:
+          context: 
+          - Globality-Common
           filters:
             tags:
               only: /[0-9]+(\.[0-9]+)*/
@@ -124,6 +136,8 @@ workflows:
           requires:
             - checkout
       - test:
+          context: 
+          - Globality-Common
           filters:
             tags:
               only: /[0-9]+(\.[0-9]+)*/
@@ -132,6 +146,8 @@ workflows:
           requires:
             - checkout
       - build:
+          context: 
+          - Globality-Common
           filters:
             tags:
               only: /[0-9]+(\.[0-9]+)*/
@@ -140,6 +156,8 @@ workflows:
           requires:
             - test
       - deploy:
+          context: 
+          - Globality-Common
           filters:
             tags:
               only: /[0-9]+(\.[0-9]+)*/
