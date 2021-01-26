@@ -68,7 +68,7 @@ export function expandPathWithKeyValue(path, key, value, options) {
 
 
 /* Expand paths with variable substitutions.
-   Remove used vairable from args
+   Remove used variable from args
  */
 export function expandPath(context, path, args) {
     const options = get(context, 'options', {});

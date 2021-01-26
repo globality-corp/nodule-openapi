@@ -17,6 +17,7 @@
         "axios": "^0.18.1",
         "http-status-codes": "^1.3.0",
         "lodash": "^4.17.5",
+        "swagger-object-validator": "^1.4.0",
         "throat": "^4.1.0"
     },
     "peerDependencies": {

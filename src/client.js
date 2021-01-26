@@ -49,15 +49,12 @@ export default function createClient(spec, name, options = {}) {
                     method,
                     operationId,
                 };
-                // create a callable operation
-                set(
-                    operations,
-                    operationName,
-                    CallableOperation(context, name, operationName),
-                );
+                // create a callable operation, attaching the original spec
+                const callableOperation = CallableOperation(context, name, operationName);
+                callableOperation.context = context;
+                set(operations, operationName, callableOperation);
             });
         });
     });
-
     return operations;
 }
