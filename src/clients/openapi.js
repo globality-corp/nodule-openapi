@@ -1,9 +1,9 @@
-import { get } from 'lodash';
-
-import { getConfig, getMetadata, getContainer } from '@globality/nodule-config';
+import { getConfig, getContainer, getMetadata } from '@globality/nodule-config';
 import axios from 'axios';
+import { get } from 'lodash';
 import OpenAPI from '../client';
 import { NAMING_OPTION } from '../naming';
+
 
 /* Inject mock and testing adapters.
  */
@@ -48,6 +48,10 @@ function defaultExtendHeaders(req, headers) {
     if (userId) {
         extendHeaders['X-Request-User'] = userId;
     }
+
+    // pass the jwt
+    const jwt = get(req, 'locals.jwt');
+    extendHeaders.jwt = JSON.stringify(jwt);
 
     return Object.assign(headers, extendHeaders);
 }
