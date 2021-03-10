@@ -50,8 +50,10 @@ function defaultExtendHeaders(req, headers) {
     }
 
     // pass the jwt
-    const jwt = get(req, 'locals.jwt');
-    extendHeaders.jwt = JSON.stringify(jwt);
+    const jwt = get(req, 'cookies.idToken');
+    if (jwt) {
+        extendHeaders.Authorization = `Bearer ${jwt}`;
+    }
 
     return Object.assign(headers, extendHeaders);
 }
