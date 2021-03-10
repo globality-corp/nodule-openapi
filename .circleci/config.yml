@@ -4,8 +4,7 @@ defaults: &defaults
     - image: circleci/node:8.11.3
 
 whitelist: &whitelist
-  paths:
-    .
+  paths: .
 
 version: 2
 jobs:
@@ -18,10 +17,12 @@ jobs:
       - run:
           name: Authenticate NPM
           command: |
-            echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}" > .npmrc
+            touch .npmrc
+            curl -u$JFROG_AUTH https://globality.jfrog.io/globality/api/npm/auth > .npmrc
+            echo "registry=https://globality.jfrog.io/globality/api/npm/npm" >> .npmrc
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "yarn.lock" }}
+            - v1-dependencies-{{ checksum "yarn.lock" }}
           # Removing this for now. We can enable partial cache again after the major upgrade is in to avoid causing other branches' build to fail
           # - v1-dependencies-
 
@@ -79,6 +80,19 @@ jobs:
           root: ~/repo
           <<: *whitelist
 
+  deploy_rc:
+    <<: *defaults
+
+    steps:
+      - attach_workspace:
+          at: ~/repo
+
+      - run:
+          name: Publish to NPM
+          command: |
+            sed  -i '/version/s/[^.]*$/'"0-dev${CIRCLE_BUILD_NUM}\",/" package.json
+            npm publish
+
   deploy:
     <<: *defaults
 
@@ -96,38 +110,43 @@ workflows:
   build:
     jobs:
       - checkout:
-          context: 
-          - Globality-Common
+          context:
+            - Globality-Common
       - lint:
-          context: 
-          - Globality-Common
+          context:
+            - Globality-Common
           requires:
             - checkout
       - test:
-          context: 
-          - Globality-Common
+          context:
+            - Globality-Common
           requires:
             - checkout
       - build:
-          context: 
-          - Globality-Common
+          context:
+            - Globality-Common
           requires:
             - lint
             - test
+      - deploy_rc:
+          context:
+            - Globality-Common
+          requires:
+            - build
 
   release:
     jobs:
       - checkout:
-          context: 
-          - Globality-Common
+          context:
+            - Globality-Common
           filters:
             tags:
               only: /[0-9]+(\.[0-9]+)*/
             branches:
               ignore: /.*/
       - lint:
-          context: 
-          - Globality-Common
+          context:
+            - Globality-Common
           filters:
             tags:
               only: /[0-9]+(\.[0-9]+)*/
@@ -136,8 +155,8 @@ workflows:
           requires:
             - checkout
       - test:
-          context: 
-          - Globality-Common
+          context:
+            - Globality-Common
           filters:
             tags:
               only: /[0-9]+(\.[0-9]+)*/
@@ -146,8 +165,8 @@ workflows:
           requires:
             - checkout
       - build:
-          context: 
-          - Globality-Common
+          context:
+            - Globality-Common
           filters:
             tags:
               only: /[0-9]+(\.[0-9]+)*/
@@ -156,8 +175,8 @@ workflows:
           requires:
             - test
       - deploy:
-          context: 
-          - Globality-Common
+          context:
+            - Globality-Common
           filters:
             tags:
               only: /[0-9]+(\.[0-9]+)*/
