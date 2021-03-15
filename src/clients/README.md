@@ -27,6 +27,7 @@ If a given function is not specified, the code defaults to the following set of 
 * X-Request-Id: Taken from `req.id`
 * X-Request-Started-At: Taken from `req._startAt` or the current datetime
 * X-Request-User: Taken from `req.locals.user.id`
+* Jwt: A JSON stringifed representation of `req.locals.jwt`
 
 ## Logging
 
