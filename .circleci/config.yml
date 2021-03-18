@@ -1,7 +1,7 @@
 defaults: &defaults
   working_directory: ~/repo
   docker:
-    - image: circleci/node:8.11.3
+    - image: circleci/node:14.15.4
 
 whitelist: &whitelist
   paths: .
@@ -20,9 +20,7 @@ jobs:
             echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}" > .npmrc
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "yarn.lock" }}
-          # Removing this for now. We can enable partial cache again after the major upgrade is in to avoid causing other branches' build to fail
-          # - v1-dependencies-
+          - v1-dependencies-{{ checksum "yarn.lock" }}
 
       - run:
           name: Install Dependencies
@@ -78,7 +76,20 @@ jobs:
           root: ~/repo
           <<: *whitelist
 
-  deploy:
+  deploy_rc:
+    <<: *defaults
+
+    steps:
+      - attach_workspace:
+          at: ~/repo
+
+      - run:
+          name: Publish to NPM
+          command: |
+            sed  -i '/version/s/[^.]*$/'"0-dev${CIRCLE_BUILD_NUM}\",/" package.json
+            npm publish
+
+  publish_library_to_npmjs:
     <<: *defaults
 
     steps:
@@ -88,6 +99,20 @@ jobs:
       - run:
           name: Publish to NPM
           command: npm publish
+
+  publish_library_to_jfrog:
+    <<: *defaults
+
+    steps:
+      - attach_workspace:
+          at: ~/repo
+
+      - run:
+          name: Publish to JFrog
+          command: |
+            curl -s -u$JFROG_AUTH https://globality.jfrog.io/globality/api/npm/auth > .npmrc
+            echo "registry=https://globality.jfrog.io/globality/api/npm/npm"       >> .npmrc
+            npm publish
 
 workflows:
   version: 2
@@ -113,6 +138,11 @@ workflows:
           requires:
             - lint
             - test
+      - deploy_rc:
+          context:
+            - Globality-Common
+          requires:
+            - build
 
   release:
     jobs:
@@ -154,7 +184,17 @@ workflows:
               ignore: /.*/
           requires:
             - test
-      - deploy:
+      - publish_library_to_npmjs:
+          context:
+            - Globality-Common
+          filters:
+            tags:
+              only: /[0-9]+(\.[0-9]+)*/
+            branches:
+              ignore: /.*/
+          requires:
+            - build
+      - publish_library_to_jfrog:
           context:
             - Globality-Common
           filters:
