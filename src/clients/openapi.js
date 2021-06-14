@@ -143,6 +143,10 @@ export function createOpenAPIClient(name, spec) {
     const config = getConfig(`clients.${name}`) || {};
     const { baseUrl, timeout, retries, namingOverride, namingPath, namingQuery } = config;
 
+    if (!baseUrl && (metadata.testing || metadata.debug)){
+        console.warn("This is a warning - be warned...")
+    }
+
     if (!baseUrl && !metadata.testing && !metadata.debug) {
         throw new Error(`OpenAPI client ${name} does not have a configured baseUrl`);
     }
