@@ -144,7 +144,7 @@ export function createOpenAPIClient(name, spec) {
     const { baseUrl, timeout, retries, namingOverride, namingPath, namingQuery } = config;
 
     if (!baseUrl && (metadata.testing || metadata.debug)) {
-        console.warn('This is a warning - be warned...');
+        console.warn(`Warning - no base url found for client '${name}' - initializing a client in a non-development environment without a base url present would lead to an exception being raised`);
     }
 
     if (!baseUrl && !metadata.testing && !metadata.debug) {
