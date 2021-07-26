@@ -1,11 +1,22 @@
 /* Error handling.
  */
-import { get } from 'lodash';
 import {
+    GATEWAY_TIMEOUT,
     INTERNAL_SERVER_ERROR,
     NOT_FOUND,
-    GATEWAY_TIMEOUT,
 } from 'http-status-codes';
+import { get, omit } from 'lodash';
+
+// We are accidentally leaking auth headers to loggly when throwing
+// an OpenAPIError. We want to fix this properly in the long term,
+// but as a short term solution we are simply going to omit the headers
+// from the error here. This operation is case insensitive.
+function pruneAuthorizationHeaders(headers) {
+    if (!headers || !Object.keys(headers).map(key => key.toLowerCase()).includes('authorization')) {
+        return headers;
+    }
+    return omit(headers, ['authorization', 'Authorization']);
+}
 
 export class OpenAPIError extends Error {
     constructor(message = null, code = 500, data = null, headers = null) {
@@ -14,7 +25,7 @@ export class OpenAPIError extends Error {
         this.name = this.constructor.name;
         this.code = code;
         this.data = data;
-        this.headers = headers;
+        this.headers = pruneAuthorizationHeaders(headers);
     }
 }
 
