@@ -110,8 +110,8 @@ describe('buildError', () => {
                     getHeaders: () => ({
                         'x-foo': 100,
                         'x-bar': 200,
-                        'Authorization': 'baz',
-                        'authorization': 'baz',
+                        Authorization: 'baz',
+                        aUthOriZation: 'baz',
                     }),
                 },
             });

@@ -5,17 +5,19 @@ import {
     INTERNAL_SERVER_ERROR,
     NOT_FOUND,
 } from 'http-status-codes';
-import { get, omit } from 'lodash';
+import { get, omitBy } from 'lodash';
 
 // We are accidentally leaking auth headers to loggly when throwing
 // an OpenAPIError. We want to fix this properly in the long term,
 // but as a short term solution we are simply going to omit the headers
 // from the error here. This operation is case insensitive.
 function pruneAuthorizationHeaders(headers) {
-    if (!headers || !Object.keys(headers).map(key => key.toLowerCase()).includes('authorization')) {
+    if (!headers) {
         return headers;
     }
-    return omit(headers, ['authorization', 'Authorization']);
+
+    const disallowed = ['authorization'];
+    return omitBy(headers, (val, key) => disallowed.includes(key.toLowerCase().trim()));
 }
 
 export class OpenAPIError extends Error {
