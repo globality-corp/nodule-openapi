@@ -102,4 +102,25 @@ describe('buildError', () => {
             }));
         }
     });
+
+    it('prunes authorization information from headers', () => {
+        try {
+            buildError()({
+                request: {
+                    getHeaders: () => ({
+                        'x-foo': 100,
+                        'x-bar': 200,
+                        Authorization: 'baz',
+                        aUthOriZation: 'baz',
+                    }),
+                },
+            });
+            throw new Error('no error thrown');
+        } catch (error) {
+            expect(error.headers).toEqual(expect.objectContaining({
+                'x-foo': 100,
+                'x-bar': 200,
+            }));
+        }
+    });
 });
