@@ -20,4 +20,5 @@ export {
     mockResponse,
 } from './testing';
 export { createOpenAPIClient } from './clients';
+export { createOpenAPIClientV2 } from './openApiCodeGenClients';
 export default Client;
