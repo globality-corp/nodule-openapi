@@ -15,6 +15,7 @@ import nameFor from './naming';
 
 const DEFAULT_TIMEOUT = 5000;
 const DEFAULT_RETRIES = 0;
+const DEFAULT_PROXY_RETRIES = 3;
 
 
 /* Build request JSON data.
@@ -137,6 +138,18 @@ export function buildRetries(context) {
     return DEFAULT_RETRIES;
 }
 
+export function buildProxyRetries(context) {
+    const contextProxyRetries = get(context, 'options.proxyRetries');
+    if (contextProxyRetries) {
+        return parseInt(contextProxyRetries, 10);
+    }
+    const configProxyRetries = getConfig('defaultProxyRetries');
+    if (configProxyRetries) {
+        return parseInt(configProxyRetries, 10);
+    }
+    return DEFAULT_PROXY_RETRIES;
+}
+
 
 /* Build base request (to be overridden by other builders).
  */
@@ -165,6 +178,7 @@ const DEFAULT_BUILDERS = {
     params: buildParams,
     timeout: buildTimeout,
     retries: buildRetries,
+    proxyRetries: buildProxyRetries,
 };
 
 
