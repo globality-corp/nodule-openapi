@@ -10,53 +10,61 @@ import buildResponse from './response';
 import Validator from './validation';
 
 
-function getRetries(request) {
-    if (
-        includes(
-            [
-                'post',
-                'patch',
-                'put',
-                'delete',
-            ],
-            lowerCase(request.method),
-        )
-    ) {
-        // Mutations will be retried on explicit initiation,
-        // instead of implicitly retried
-        return 0;
-    }
-
-    return get(request, 'retries', 0);
+function isMutationOperation(request) {
+    return includes(
+        [
+            'post',
+            'patch',
+            'put',
+            'delete',
+        ],
+        lowerCase(request.method),
+    );
 }
 
-function isErrorRetryable(error) {
+function isProxyError(openApiError) {
+    return includes(
+        [
+            501, // Service unable to handle request due to wong routing
+            503, // Service instance does not exist.
+        ],
+        openApiError.code,
+    );
+}
+
+function shouldRetryError(request, error, attempt) {
     const openApiError = normalizeError(error);
+    const maxAttempts = get(request, 'retries', 0) + 1;
+    const maxProxyAttempts = get(request, 'proxyRetries', 0) + 1;
+
+    if (isProxyError(openApiError)) {
+        if (attempt >= Math.max(maxAttempts, maxProxyAttempts)) {
+            return false;
+        }
+
+        // We always want to retry 501 and 503 errors returned by HAProxy
+        return true;
+    }
+
+    if (attempt >= maxAttempts || isMutationOperation(request)) {
+        // Mutations will be retried on explicit initiation,
+        // instead of implicitly retried
+        return false;
+    }
 
     if (
         includes(
             [
+                // Client timeout/error, retry
                 'econnaborted',
                 'econnreset',
+                // 50x responses are retryable
+                '502',
+                '504',
             ],
             lowerCase(openApiError.code),
         )
     ) {
-        // Client timeout/error, retry
-        return true;
-    }
-
-    if (
-        includes(
-            [
-                502,
-                503,
-                504,
-            ],
-            openApiError.code,
-        )
-    ) {
-        // 50x responses are retryable
         return true;
     }
 
@@ -84,12 +92,12 @@ export default (context, name, operationName) => async (req, args, options) => {
         args,
         options,
     );
-    const retries = getRetries(request);
-    const attempts = retries + 1;
 
     const { logger } = getContainer();
+    let attempt = 1;
     let errorResponse;
-    for (let attempt = 0; attempt < attempts; attempt++) {
+
+    while (true) {
         try {
             /* eslint-disable no-await-in-loop */
             const response = await http(request);
@@ -102,17 +110,19 @@ export default (context, name, operationName) => async (req, args, options) => {
         } catch (error) {
             errorResponse = error;
 
-            if (!isErrorRetryable(error)) {
+            if (!shouldRetryError(request, error, attempt)) {
                 break;
             }
 
             if (logger) {
                 logger.warning(
                     req,
-                    `API request failed; attempt ${attempt + 1}`,
+                    `API request failed; attempt ${attempt}`,
                     { method: request.method, url: request.url },
                 );
             }
+
+            attempt += 1;
         }
     }
 

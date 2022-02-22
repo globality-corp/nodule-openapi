@@ -213,4 +213,53 @@ describe('createOpenAPIClient', () => {
 
         expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(3);
     });
+
+    it('retries read operations on proxy error', async () => {
+        const config = await Nodule.testing().fromObject(
+            mockError('petstore', 'pet.search', 'Service Unavailable', 503),
+        ).fromObject({
+            defaultProxyRetries: 3,
+        }).load();
+
+        const client = createOpenAPIClient('petstore', spec);
+
+        await expect(client.pet.search(req)).rejects.toThrow(
+            'Service Unavailable',
+        );
+
+        expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(4);
+    });
+
+    it('retries write operations on proxy error', async () => {
+        const config = await Nodule.testing().fromObject(
+            mockError('petstore', 'pet.create', 'Service Unavailable', 503),
+        ).fromObject({
+            defaultProxyRetries: 2,
+        }).load();
+
+        const client = createOpenAPIClient('petstore', spec);
+
+        await expect(client.pet.create(req)).rejects.toThrow(
+            'Service Unavailable',
+        );
+
+        expect(config.clients.mock.petstore.pet.create).toHaveBeenCalledTimes(3);
+    });
+
+    it('retries operations using maximum number of retries on proxy errors', async () => {
+        const config = await Nodule.testing().fromObject(
+            mockError('petstore', 'pet.search', 'Not Implemented', 501),
+        ).fromObject({
+            defaultProxyRetries: 2,
+            defaultRetries: 5,
+        }).load();
+
+        const client = createOpenAPIClient('petstore', spec);
+
+        await expect(client.pet.search(req)).rejects.toThrow(
+            'Not Implemented',
+        );
+
+        expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(6);
+    });
 });
