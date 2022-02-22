@@ -475,23 +475,27 @@ class ApiClient {
             }
         }
 
-        request.end((error, response) => {
-            if (callback) {
-                let data = null;
-                if (!error) {
-                    try {
-                        data = this.deserialize(response, returnType);
-                        if (this.enableCookies && typeof window === 'undefined') {
-                            this.agent._saveCookies(response);
+        // Adding a callback wrapper
+        if (callback) {
+            console.log('i shouldnt be here');
+            request.end((error, response) => {
+                if (callback) {
+                    let data = null;
+                    if (!error) {
+                        try {
+                            data = this.deserialize(response, returnType);
+                            if (this.enableCookies && typeof window === 'undefined') {
+                                this.agent._saveCookies(response);
+                            }
+                        } catch (err) {
+                            error = err;
                         }
-                    } catch (err) {
-                        error = err;
                     }
-                }
 
-                callback(error, data, response);
-            }
-        });
+                    callback(error, data, response);
+                }
+            });
+        }
 
         return request;
     }

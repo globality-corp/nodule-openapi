@@ -1,5 +1,6 @@
 import { getConfig, getContainer, getMetadata } from '@globality/nodule-config';
 import ApiClient from './apiClient';
+import CallableOperationWrapper from './operation';
 
 export const OpenAPIClient = (options, name, resourceApis) => {
     // This is where we create the ApiClient
@@ -13,6 +14,7 @@ export const OpenAPIClient = (options, name, resourceApis) => {
 
         console.log('resourceApiObj');
         console.log(resourceApiObj);
+        console.log(resourceApiObj.apiClient);
         for (let i = 0; i < operations.length; i++) {
 
             const operationName = operations[i];
@@ -22,15 +24,16 @@ export const OpenAPIClient = (options, name, resourceApis) => {
             console.log(resourceApiFn);
             console.log(operationName);
 
+            const context = {};
             openApiClient = {
                 ...openApiClient,
                 [resourceApiLabel]: {
                     ...openApiClient[resourceApiLabel],
-                    [operationName]: resourceApiFn,
+                    [operationName]: CallableOperationWrapper(ApiClient, ResourceApi, options, context, resourceApiLabel, operationName),
                 },
             };
 
-            console.log('resultig openApiclient object is:');
+            console.log('resulting openApiclient object is:');
             console.log(openApiClient);
         }
     });
