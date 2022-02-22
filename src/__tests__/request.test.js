@@ -28,7 +28,7 @@ describe('buildRequest', () => {
             method: 'post',
             params: null,
             retries: 0,
-            proxyRetries: 3,
+            proxyRetries: 0,
             timeout: 5000,
             url: 'http://localhost/api/v2/chatroom',
         });
@@ -95,7 +95,7 @@ describe('buildRequest', () => {
             },
             retries: 0,
             timeout: 5000,
-            proxyRetries: 3,
+            proxyRetries: 0,
             url: 'http://localhost/api/v2/chatroom/bar',
         });
     });

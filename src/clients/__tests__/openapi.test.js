@@ -217,7 +217,9 @@ describe('createOpenAPIClient', () => {
     it('retries read operations on proxy error', async () => {
         const config = await Nodule.testing().fromObject(
             mockError('petstore', 'pet.search', 'Service Unavailable', 503),
-        ).load();
+        ).fromObject({
+            defaultProxyRetries: 3,
+        }).load();
 
         const client = createOpenAPIClient('petstore', spec);
 
@@ -248,6 +250,7 @@ describe('createOpenAPIClient', () => {
         const config = await Nodule.testing().fromObject(
             mockError('petstore', 'pet.search', 'Not Implemented', 501),
         ).fromObject({
+            defaultProxyRetries: 2,
             defaultRetries: 5,
         }).load();
 
