@@ -10,6 +10,10 @@ import buildResponse from './response';
 import Validator from './validation';
 
 
+function sleep(time) {
+    return new Promise(resolve => setTimeout(resolve, time));
+}
+
 function isMutationOperation(request) {
     return includes(
         [
@@ -32,43 +36,18 @@ function isProxyError(openApiError) {
     );
 }
 
-function shouldRetryError(request, error, attempt) {
-    const openApiError = normalizeError(error);
-    const maxAttempts = get(request, 'retries', 0) + 1;
-    const maxProxyAttempts = get(request, 'proxyRetries', 0) + 1;
-
-    if (isProxyError(openApiError)) {
-        if (attempt >= Math.max(maxAttempts, maxProxyAttempts)) {
-            return false;
-        }
-
-        // We always want to retry 501 and 503 errors returned by HAProxy
-        return true;
-    }
-
-    if (attempt >= maxAttempts || isMutationOperation(request)) {
-        // Mutations will be retried on explicit initiation,
-        // instead of implicitly retried
-        return false;
-    }
-
-    if (
-        includes(
-            [
-                // Client timeout/error, retry
-                'econnaborted',
-                'econnreset',
-                // 50x responses are retryable
-                '502',
-                '504',
-            ],
-            lowerCase(openApiError.code),
-        )
-    ) {
-        return true;
-    }
-
-    return false;
+function isRetryableOperation(openApiError) {
+    return includes(
+        [
+            // Client timeout/error, retry
+            'econnaborted',
+            'econnreset',
+            // 50x responses are retryable
+            '502',
+            '504',
+        ],
+        lowerCase(openApiError.code),
+    );
 }
 
 /* Create a new callable operation that return a Promise.
@@ -94,10 +73,16 @@ export default (context, name, operationName) => async (req, args, options) => {
     );
 
     const { logger } = getContainer();
-    let attempt = 1;
     let errorResponse;
 
-    while (true) {
+    let proxyErrorsCount = 0;
+    let serviceErrorsCount = 0;
+    let attempt = 0;
+    const proxyRetriesCount = get(request, 'proxyRetries', 0);
+    const proxyRetriesDelayTime = get(request, 'proxyRetriesDelay', 0);
+    const retriesCount = isMutationOperation(request) ? 0 : get(request, 'retries', 0);
+
+    while (proxyErrorsCount <= proxyRetriesCount && serviceErrorsCount <= retriesCount) {
         try {
             /* eslint-disable no-await-in-loop */
             const response = await http(request);
@@ -109,20 +94,34 @@ export default (context, name, operationName) => async (req, args, options) => {
             );
         } catch (error) {
             errorResponse = error;
-
-            if (!shouldRetryError(request, error, attempt)) {
-                break;
-            }
-
-            if (logger) {
-                logger.warning(
-                    req,
-                    `API request failed; attempt ${attempt}`,
-                    { method: request.method, url: request.url },
-                );
-            }
-
             attempt += 1;
+            const openApiError = normalizeError(error);
+
+            if (isProxyError(openApiError)) {
+                proxyErrorsCount += 1;
+
+                if (logger) {
+                    logger.warning(
+                        req,
+                        `API request failed; proxy error; attempt ${attempt}`,
+                        { method: request.method, url: request.url },
+                    );
+                }
+
+                await sleep(proxyRetriesDelayTime); // Delay next request
+            } else {
+                if (!isRetryableOperation(openApiError)) break;
+
+                serviceErrorsCount += 1;
+
+                if (logger) {
+                    logger.warning(
+                        req,
+                        `API request failed; attempt ${attempt}`,
+                        { method: request.method, url: request.url },
+                    );
+                }
+            }
         }
     }
 
