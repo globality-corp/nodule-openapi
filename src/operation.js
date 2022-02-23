@@ -104,7 +104,7 @@ export default (context, name, operationName) => async (req, args, options) => {
                     logger.warning(
                         req,
                         `API request failed; proxy error; attempt ${attempt}`,
-                        { method: request.method, url: request.url },
+                        { method: request.method, url: request.url, code: openApiError.code },
                     );
                 }
 
