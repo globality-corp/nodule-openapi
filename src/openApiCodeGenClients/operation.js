@@ -1,13 +1,14 @@
 /* Callable operations.
  */
 import { assign, get, includes, lowerCase } from 'lodash';
+import axios from 'axios';
 // import { getContainer } from '@globality/nodule-config';
 // import axios from 'axios';
 
 
 /* Create a new callable operation that return a Promise.
  */
-export default (ApiClient, ResourceApi, config, context, name, operationName) => async (req, args, options) => {
+export default (axiosInstance, ResourceApi, config, context, name, operationName) => async (req, args, options) => {
     // validate inputs
     // Validator(context)(req, operationName, args);
 
@@ -23,15 +24,12 @@ export default (ApiClient, ResourceApi, config, context, name, operationName) =>
     const fixedBaseUrl = `${config.baseUrl}${version}`;
     console.log(fixedBaseUrl);
 
-    const apiClient = new ApiClient(fixedBaseUrl, config.timeout);
-    const resourceApiObj = new ResourceApi(apiClient);
-    const resourceApiFn = resourceApiObj[operationName];
+    const resourceApiObj = new ResourceApi({}, fixedBaseUrl, axiosInstance);
 
     console.log('Im about to execute...');
-    console.log(resourceApiFn);
     console.log(args);
-
-    return resourceApiObj[operationName](args);
+    const { body } = args;
+    return resourceApiObj[operationName]('', body);
 
     // const request = buildRequest(
     //     requestContext,

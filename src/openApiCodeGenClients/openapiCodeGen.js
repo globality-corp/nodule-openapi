@@ -2,26 +2,25 @@ import { getConfig, getContainer, getMetadata } from '@globality/nodule-config';
 import ApiClient from './apiClient';
 import CallableOperationWrapper from './operation';
 
+import axios from 'axios';
+
 export const OpenAPIClient = (options, name, resourceApis) => {
     // This is where we create the ApiClient
     let openApiClient = {};
     console.log('ApiClient123');
-    const apiClient = new ApiClient(options.baseUrl, options.timeout);
+    const axiosInstance = axios.create({
+        baseURL: options.baseUrl,
+        timeout: options.timeout,
+        headers: { 'X-Custom-Header': 'foobar' },
+    });
     Object.keys(resourceApis).forEach((resourceApiLabel) => {
         console.log(`resourceApiLabel: ${resourceApiLabel}`);
-        const { resourceApi: ResourceApi, operations } = resourceApis[resourceApiLabel];
-        const resourceApiObj = new ResourceApi(apiClient);
-
-        console.log('resourceApiObj');
-        console.log(resourceApiObj);
-        console.log(resourceApiObj.apiClient);
+        const { operations, resourceApi: ResourceApi } = resourceApis[resourceApiLabel];
         for (let i = 0; i < operations.length; i++) {
 
             const operationName = operations[i];
-            const resourceApiFn = resourceApiObj[operationName];
 
             console.log('resourceApiFn + operationName:');
-            console.log(resourceApiFn);
             console.log(operationName);
 
             const context = {};
@@ -29,7 +28,7 @@ export const OpenAPIClient = (options, name, resourceApis) => {
                 ...openApiClient,
                 [resourceApiLabel]: {
                     ...openApiClient[resourceApiLabel],
-                    [operationName]: CallableOperationWrapper(ApiClient, ResourceApi, options, context, resourceApiLabel, operationName),
+                    [operationName]: CallableOperationWrapper(axiosInstance, ResourceApi, options, context, resourceApiLabel, operationName),
                 },
             };
 
