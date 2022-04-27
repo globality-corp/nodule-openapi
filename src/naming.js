@@ -9,7 +9,7 @@ export function operationNameFor(subject, operationId) {
 
   if (isRelation) {
     // use: object.operation.subject
-    const [_, operation, object] = isRelation; // eslint-disable-line no-unused-vars
+    const [, operation, object] = isRelation; // eslint-disable-line no-unused-vars
     return `${camelCase(object)}.${camelCase(operation)}.${camelCase(subject)}`;
   }
   // use: subject.operation

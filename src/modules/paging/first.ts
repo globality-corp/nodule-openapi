@@ -2,7 +2,7 @@ import { NoResults } from "../../error";
 
 export default async function first<
   Item,
-  RequestFunc extends (...args: any) => Promise<{ items: Item[] }>
+  RequestFunc extends (...params: any) => Promise<{ items: Item[] }>
 >(
   req: Parameters<RequestFunc>[0],
   {

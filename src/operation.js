@@ -10,7 +10,9 @@ import buildResponse from "./response";
 import Validator from "./validation";
 
 function sleep(time) {
-  return new Promise((resolve) => setTimeout(resolve, time));
+  return new Promise((resolve) => {
+    setTimeout(resolve, time);
+  });
 }
 
 function isMutationOperation(request) {

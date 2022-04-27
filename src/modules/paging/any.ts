@@ -1,6 +1,6 @@
 export default async function any<
   Item,
-  RequestFunc extends (...args: any) => Promise<{ items: Item[] }>
+  RequestFunc extends (...params: any) => Promise<{ items: Item[] }>
 >(
   req: Parameters<RequestFunc>[0],
   {

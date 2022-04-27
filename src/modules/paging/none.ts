@@ -1,7 +1,7 @@
 import { TooManyResults } from "../../error";
 
 export default async function none<
-  RequestFunc extends (...args: any) => Promise<{ items: unknown[] }>
+  RequestFunc extends (...params: any) => Promise<{ items: unknown[] }>
 >(
   req: Parameters<RequestFunc>[0],
   {
