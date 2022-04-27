@@ -31,8 +31,8 @@ export default function concurrentPaginate<PromiseResult>(
   const concurrency = getConcurrency(concurrencyLimit);
   const funneledThroat = throatWithPromise(concurrency);
   return Promise.all(
-    // @ts-expect-error throat types do not support this call
     promises.map((promise) =>
+      // @ts-expect-error throat types do not support this call
       funneledThroat(() => promise)
     ) as unknown as Promise<PromiseResult>[]
   );
