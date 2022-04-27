@@ -17,4 +17,5 @@ export {
 } from "./modules";
 export { mockError, mockResponse } from "./testing";
 export { createOpenAPIClient } from "./clients";
+export type { MapToCallableOperations } from "./clients";
 export default Client;
