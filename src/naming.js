@@ -1,22 +1,20 @@
 /* Naming conventions.
  */
-import { camelCase, get, snakeCase } from 'lodash';
-
+import { camelCase, get, snakeCase } from "lodash";
 
 /* Generate a suitable dotted operation name.
  */
 export function operationNameFor(subject, operationId) {
-    const isRelation = operationId.match('(.*_for)_(.*)');
+  const isRelation = operationId.match("(.*_for)_(.*)");
 
-    if (isRelation) {
-        // use: object.operation.subject
-        const [_, operation, object] = isRelation; // eslint-disable-line no-unused-vars
-        return `${camelCase(object)}.${camelCase(operation)}.${camelCase(subject)}`;
-    }
-    // use: subject.operation
-    return `${camelCase(subject)}.${camelCase(operationId)}`;
+  if (isRelation) {
+    // use: object.operation.subject
+    const [_, operation, object] = isRelation; // eslint-disable-line no-unused-vars
+    return `${camelCase(object)}.${camelCase(operation)}.${camelCase(subject)}`;
+  }
+  // use: subject.operation
+  return `${camelCase(subject)}.${camelCase(operationId)}`;
 }
-
 
 /* Define naming convention for path parameters.
  *
@@ -24,9 +22,8 @@ export function operationNameFor(subject, operationId) {
  * or vice versa.
  */
 export function pathParameterNameFor(value, fromUser) {
-    return fromUser ? snakeCase(value) : camelCase(value);
+  return fromUser ? snakeCase(value) : camelCase(value);
 }
-
 
 /* Define naming convention for query parameters.
  *
@@ -34,30 +31,29 @@ export function pathParameterNameFor(value, fromUser) {
  * or vice versa.
  */
 export function queryParameterNameFor(value, fromUser) {
-    return fromUser ? snakeCase(value) : camelCase(value);
+  return fromUser ? snakeCase(value) : camelCase(value);
 }
 
 /* Preserve parameter name
  *
  */
-const preserveParameterName = value => value;
+const preserveParameterName = (value) => value;
 
 const DEFAULT_NAMING = {
-    path: pathParameterNameFor,
-    query: queryParameterNameFor,
+  path: pathParameterNameFor,
+  query: queryParameterNameFor,
 };
 
 export const NAMING_OPTION = {
-    preserveParameterName,
-    pathParameterNameFor,
-    queryParameterNameFor,
+  preserveParameterName,
+  pathParameterNameFor,
+  queryParameterNameFor,
 };
 
 /* Resolve the name for something.
  */
 export default (name, type, fromUser, options) => {
-    const overrides = get(options, 'naming', {});
-    const nameFor = get(overrides, type, DEFAULT_NAMING[type]);
-    return nameFor ? nameFor(name, fromUser) : name;
+  const overrides = get(options, "naming", {});
+  const nameFor = get(overrides, type, DEFAULT_NAMING[type]);
+  return nameFor ? nameFor(name, fromUser) : name;
 };
-

@@ -1,23 +1,20 @@
-import Client from './client';
+import Client from "./client";
 
 export {
-    OpenAPIError,
-    MaxLimitReached,
-    TooManyResults,
-    NoResults,
-} from './error';
+  OpenAPIError,
+  MaxLimitReached,
+  TooManyResults,
+  NoResults,
+} from "./error";
 export {
-    all,
-    allForBodySearchRequest,
-    any,
-    concurrentPaginate,
-    first,
-    none,
-    one,
-} from './modules';
-export {
-    mockError,
-    mockResponse,
-} from './testing';
-export { createOpenAPIClient } from './clients';
+  all,
+  allForBodySearchRequest,
+  any,
+  concurrentPaginate,
+  first,
+  none,
+  one,
+} from "./modules";
+export { mockError, mockResponse } from "./testing";
+export { createOpenAPIClient } from "./clients";
 export default Client;

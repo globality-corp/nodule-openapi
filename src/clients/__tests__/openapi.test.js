@@ -1,250 +1,264 @@
-import { clearBinding, Nodule } from '@globality/nodule-config';
+import { clearBinding, Nodule } from "@globality/nodule-config";
 
-import spec from '../../testing/petstore.json';
-import { createOpenAPIClient, mockError, mockResponse } from '../../index';
+import { createOpenAPIClient, mockError, mockResponse } from "../../index";
+import spec from "../../testing/petstore.json";
 
+describe("createOpenAPIClient", () => {
+  const req = {};
 
-describe('createOpenAPIClient', () => {
-    const req = {};
+  const REX = {
+    id: "1",
+    name: "Rex",
+  };
 
-    const REX = {
-        id: '1',
-        name: 'Rex',
-    };
+  beforeEach(() => {
+    clearBinding("config");
+  });
 
-    beforeEach(() => {
-        clearBinding('config');
+  it("supports mocking response", async () => {
+    const config = await Nodule.testing()
+      .fromObject(
+        mockResponse("petstore", "pet.search", {
+          items: [REX],
+        })
+      )
+      .load();
+
+    const client = createOpenAPIClient("petstore", spec);
+
+    const result = await client.pet.search(req);
+    expect(result).toEqual({
+      items: [REX],
     });
 
-    it('supports mocking response', async () => {
-        const config = await Nodule.testing().fromObject(
-            mockResponse('petstore', 'pet.search', {
-                items: [
-                    REX,
-                ],
-            }),
-        ).load();
+    expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(1);
+    expect(
+      config.clients.mock.petstore.pet.search.mock.calls[0][0].headers
+    ).toMatchObject({
+      Accept: "application/json, text/plain, */*",
+      "Content-Type": "application/json; charset=utf-8",
+      "X-Request-Service": "test",
+    });
+  });
 
-        const client = createOpenAPIClient('petstore', spec);
+  it("supports mocking a response with a function based on params", async () => {
+    const config = await Nodule.testing()
+      .fromObject(
+        mockResponse("petstore", "pet.search", (params) => ({
+          items: [params.name],
+        }))
+      )
+      .load();
 
-        const result = await client.pet.search(req);
-        expect(result).toEqual({
-            items: [
-                REX,
-            ],
-        });
+    const client = createOpenAPIClient("petstore", spec);
 
-        expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(1);
-        expect(config.clients.mock.petstore.pet.search.mock.calls[0][0].headers).toMatchObject({
-            Accept: 'application/json, text/plain, */*',
-            'Content-Type': 'application/json; charset=utf-8',
-            'X-Request-Service': 'test',
-        });
+    const result = await client.pet.search(req, { name: "abc" });
+    expect(result).toEqual({
+      items: ["abc"],
     });
 
-    it('supports mocking a response with a function based on params', async () => {
-        const config = await Nodule.testing().fromObject(
-            mockResponse('petstore', 'pet.search', params => ({ items: [params.name] })),
-        ).load();
+    expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(1);
+    expect(
+      config.clients.mock.petstore.pet.search.mock.calls[0][0].headers
+    ).toMatchObject({
+      Accept: "application/json, text/plain, */*",
+      "Content-Type": "application/json; charset=utf-8",
+      "X-Request-Service": "test",
+    });
+  });
 
-        const client = createOpenAPIClient('petstore', spec);
+  it("supports mocking a response with a function based on url", async () => {
+    const config = await Nodule.testing()
+      .fromObject(
+        mockResponse("petstore", "pet.retrieve", (_, url) => ({
+          id: url.split("pet/")[1],
+        }))
+      )
+      .load();
 
-        const result = await client.pet.search(req, { name: 'abc' });
-        expect(result).toEqual({
-            items: ['abc'],
-        });
+    const client = createOpenAPIClient("petstore", spec);
 
-        expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(1);
-        expect(config.clients.mock.petstore.pet.search.mock.calls[0][0].headers).toMatchObject({
-            Accept: 'application/json, text/plain, */*',
-            'Content-Type': 'application/json; charset=utf-8',
-            'X-Request-Service': 'test',
-        });
+    const result = await client.pet.retrieve(req, { petId: "pet-id" });
+    expect(result).toEqual({
+      id: "pet-id",
     });
 
-    it('supports mocking a response with a function based on url', async () => {
-        const config = await Nodule.testing().fromObject(
-            mockResponse('petstore', 'pet.retrieve', (_, url) => ({ id: url.split('pet/')[1] })),
-        ).load();
+    expect(config.clients.mock.petstore.pet.retrieve).toHaveBeenCalledTimes(1);
+  });
 
-        const client = createOpenAPIClient('petstore', spec);
+  it("supports mocking a post response with a function", async () => {
+    const config = await Nodule.testing()
+      .fromObject(
+        mockResponse("petstore", "pet.create", (body) => ({
+          items: [body.name],
+        }))
+      )
+      .load();
 
-        const result = await client.pet.retrieve(req, { petId: 'pet-id' });
-        expect(result).toEqual({
-            id: 'pet-id',
-        });
+    const client = createOpenAPIClient("petstore", spec);
 
-        expect(config.clients.mock.petstore.pet.retrieve).toHaveBeenCalledTimes(1);
+    const result = await client.pet.create(req, { body: { name: "abc" } });
+    expect(result).toEqual({
+      items: ["abc"],
     });
 
-    it('supports mocking a post response with a function', async () => {
-        const config = await Nodule.testing().fromObject(
-            mockResponse('petstore', 'pet.create', body => ({
-                items: [body.name],
-            })),
-        ).load();
+    expect(config.clients.mock.petstore.pet.create).toHaveBeenCalledTimes(1);
+  });
 
-        const client = createOpenAPIClient('petstore', spec);
+  it("supports mocking errors", async () => {
+    const config = await Nodule.testing()
+      .fromObject(mockError("petstore", "pet.search", "Not Found", 404))
+      .load();
 
-        const result = await client.pet.create(req, { body: { name: 'abc' } });
-        expect(result).toEqual({
-            items: ['abc'],
-        });
+    const client = createOpenAPIClient("petstore", spec);
 
-        expect(config.clients.mock.petstore.pet.create).toHaveBeenCalledTimes(1);
-    });
+    await expect(client.pet.search(req)).rejects.toThrow("Not Found");
 
-    it('supports mocking errors', async () => {
-        const config = await Nodule.testing().fromObject(
-            mockError('petstore', 'pet.search', 'Not Found', 404),
-        ).load();
+    expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(1);
+  });
 
-        const client = createOpenAPIClient('petstore', spec);
+  it("raises an error if not mocked", async () => {
+    const client = createOpenAPIClient("petstore", spec);
 
-        await expect(client.pet.search(req)).rejects.toThrow(
-            'Not Found',
-        );
+    await expect(client.pet.search(req)).rejects.toThrow(
+      "OpenAPI operation petstore.pet.search is not mocked"
+    );
+  });
 
-        expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(1);
-    });
+  it("raises an error if invalid argument is passed", async () => {
+    const config = await Nodule.testing()
+      .fromObject(
+        mockResponse("petstore", "pet.search", {
+          items: [REX],
+        })
+      )
+      .load();
 
-    it('raises an error if not mocked', async () => {
-        const client = createOpenAPIClient('petstore', spec);
+    const client = createOpenAPIClient("petstore", spec);
 
-        await expect(client.pet.search(req)).rejects.toThrow(
-            'OpenAPI operation petstore.pet.search is not mocked',
-        );
-    });
+    await expect(client.pet.search(req, { foo: "bar" })).rejects.toThrow(
+      'Unsupported argument: "foo" passed to: "pet.search"'
+    );
 
-    it('raises an error if invalid argument is passed', async () => {
-        const config = await Nodule.testing().fromObject(
-            mockResponse('petstore', 'pet.search', {
-                items: [
-                    REX,
-                ],
-            }),
-        ).load();
+    expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(0);
+  });
 
-        const client = createOpenAPIClient('petstore', spec);
+  it("raises an error if an invalid response content-type header is returned", async () => {
+    const config = await Nodule.testing()
+      .fromObject(
+        mockResponse("petstore", "pet.search", "", {
+          "content-type": "text/html",
+        })
+      )
+      .load();
 
-        await expect(client.pet.search(req, { foo: 'bar' })).rejects.toThrow(
-            'Unsupported argument: "foo" passed to: "pet.search"',
-        );
+    const client = createOpenAPIClient("petstore", spec);
 
-        expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(0);
-    });
+    await expect(client.pet.search(req)).rejects.toThrow(
+      "text/html is not a valid response content-type"
+    );
 
-    it('raises an error if an invalid response content-type header is returned', async () => {
-        const config = await Nodule.testing().fromObject(
-            mockResponse('petstore', 'pet.search', '', {
-                'content-type': 'text/html',
-            }),
-        ).load();
+    expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(1);
+  });
 
-        const client = createOpenAPIClient('petstore', spec);
+  it("retries read operations on error", async () => {
+    const config = await Nodule.testing()
+      .fromObject(mockError("petstore", "pet.search", "Timeout", 504))
+      .fromObject({
+        defaultRetries: 2,
+      })
+      .load();
 
-        await expect(client.pet.search(req)).rejects.toThrow(
-            'text/html is not a valid response content-type',
-        );
+    const client = createOpenAPIClient("petstore", spec);
 
-        expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(1);
-    });
+    await expect(client.pet.search(req)).rejects.toThrow("Timeout");
 
-    it('retries read operations on error', async () => {
-        const config = await Nodule.testing().fromObject(
-            mockError('petstore', 'pet.search', 'Timeout', 504),
-        ).fromObject({
-            defaultRetries: 2,
-        }).load();
+    expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(3);
+  });
 
-        const client = createOpenAPIClient('petstore', spec);
+  it("does not attempt to retry on write operations", async () => {
+    const config = await Nodule.testing()
+      .fromObject(mockError("petstore", "pet.create", "Not Found", 504))
+      .fromObject({
+        defaultRetries: 2,
+      })
+      .load();
 
-        await expect(client.pet.search(req)).rejects.toThrow(
-            'Timeout',
-        );
+    const client = createOpenAPIClient("petstore", spec);
 
-        expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(3);
-    });
+    await expect(client.pet.create(req)).rejects.toThrow("Not Found");
 
-    it('does not attempt to retry on write operations', async () => {
-        const config = await Nodule.testing().fromObject(
-            mockError('petstore', 'pet.create', 'Not Found', 504),
-        ).fromObject({
-            defaultRetries: 2,
-        }).load();
+    expect(config.clients.mock.petstore.pet.create).toHaveBeenCalledTimes(1);
+  });
 
-        const client = createOpenAPIClient('petstore', spec);
+  it("does not attempt to retry errors that shouldnt be retried", async () => {
+    const config = await Nodule.testing()
+      .fromObject(mockError("petstore", "pet.search", "Not Found", 404))
+      .fromObject({
+        defaultRetries: 2,
+      })
+      .load();
 
-        await expect(client.pet.create(req)).rejects.toThrow(
-            'Not Found',
-        );
+    const client = createOpenAPIClient("petstore", spec);
 
-        expect(config.clients.mock.petstore.pet.create).toHaveBeenCalledTimes(1);
-    });
+    await expect(client.pet.search(req)).rejects.toThrow("Not Found");
 
-    it('does not attempt to retry errors that shouldnt be retried', async () => {
-        const config = await Nodule.testing().fromObject(
-            mockError('petstore', 'pet.search', 'Not Found', 404),
-        ).fromObject({
-            defaultRetries: 2,
-        }).load();
+    expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(1);
+  });
 
-        const client = createOpenAPIClient('petstore', spec);
+  it("retries client-side errors", async () => {
+    const config = await Nodule.testing()
+      .fromObject(
+        mockError(
+          "petstore",
+          "pet.search",
+          "Connection aborted",
+          "ECONNABORTED"
+        )
+      )
+      .fromObject({
+        defaultRetries: 2,
+      })
+      .load();
 
-        await expect(client.pet.search(req)).rejects.toThrow(
-            'Not Found',
-        );
+    const client = createOpenAPIClient("petstore", spec);
 
-        expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(1);
-    });
+    await expect(client.pet.search(req)).rejects.toThrow("Connection aborted");
 
-    it('retries client-side errors', async () => {
-        const config = await Nodule.testing().fromObject(
-            mockError('petstore', 'pet.search', 'Connection aborted', 'ECONNABORTED'),
-        ).fromObject({
-            defaultRetries: 2,
-        }).load();
+    expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(3);
+  });
 
-        const client = createOpenAPIClient('petstore', spec);
+  it("retries read operations on proxy error", async () => {
+    const config = await Nodule.testing()
+      .fromObject(
+        mockError("petstore", "pet.search", "Service Unavailable", 503)
+      )
+      .fromObject({
+        defaultProxyRetries: 3,
+        defaultProxyRetriesDelay: 10,
+      })
+      .load();
 
-        await expect(client.pet.search(req)).rejects.toThrow(
-            'Connection aborted',
-        );
+    const client = createOpenAPIClient("petstore", spec);
 
-        expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(3);
-    });
+    await expect(client.pet.search(req)).rejects.toThrow("Service Unavailable");
 
-    it('retries read operations on proxy error', async () => {
-        const config = await Nodule.testing().fromObject(
-            mockError('petstore', 'pet.search', 'Service Unavailable', 503),
-        ).fromObject({
-            defaultProxyRetries: 3,
-            defaultProxyRetriesDelay: 10,
-        }).load();
+    expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(4);
+  });
 
-        const client = createOpenAPIClient('petstore', spec);
+  it("retries write operations on proxy error", async () => {
+    const config = await Nodule.testing()
+      .fromObject(mockError("petstore", "pet.create", "Not Implemented", 501))
+      .fromObject({
+        defaultProxyRetries: 2,
+        defaultProxyRetriesDelay: 10,
+      })
+      .load();
 
-        await expect(client.pet.search(req)).rejects.toThrow(
-            'Service Unavailable',
-        );
+    const client = createOpenAPIClient("petstore", spec);
 
-        expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(4);
-    });
+    await expect(client.pet.create(req)).rejects.toThrow("Not Implemented");
 
-    it('retries write operations on proxy error', async () => {
-        const config = await Nodule.testing().fromObject(
-            mockError('petstore', 'pet.create', 'Not Implemented', 501),
-        ).fromObject({
-            defaultProxyRetries: 2,
-            defaultProxyRetriesDelay: 10,
-        }).load();
-
-        const client = createOpenAPIClient('petstore', spec);
-
-        await expect(client.pet.create(req)).rejects.toThrow(
-            'Not Implemented',
-        );
-
-        expect(config.clients.mock.petstore.pet.create).toHaveBeenCalledTimes(3);
-    });
+    expect(config.clients.mock.petstore.pet.create).toHaveBeenCalledTimes(3);
+  });
 });
