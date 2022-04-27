@@ -2,9 +2,19 @@ import { flatten, range, isNil } from 'lodash';
 import { getConfig, getContainer } from '@globality/nodule-config';
 import { MaxLimitReached } from '../../error';
 import concurrentPaginate from '../concurrency';
+import { Config } from '../../types/config';
 
 const DEFAULT_LIMIT = 20;
 const DEFAULT_PAGING_UPPER_BOUND = 200;
+
+type BaseRequestArgs = {
+    limit?: number;
+    offset?: number;
+}
+
+type Page<Item> = { items: Item[]; offset?: number; limit?: number; count: number };
+
+type BaseRequestFunc<Context, Args, Result> = (context: Context, args: Args) => Promise<Page<Result>>
 
 /**
  * Pagination for search requests that expect parameters to be passed in the body.
@@ -20,20 +30,25 @@ const DEFAULT_PAGING_UPPER_BOUND = 200;
  * In this case searching via URL query is not possible because of URL length limit
  * @body search requests args. Can optionally contain initial 'limit' and 'offset' values
  */
-export async function allForBodySearchRequest(
-    req,
-    { searchRequest, body = {}, maxLimit = null, concurrencyLimit = 1 },
+export async function allForBodySearchRequest<Context, Args extends BaseRequestArgs, Result>(
+    req: Context,
+    { searchRequest, body = {}, maxLimit = null, concurrencyLimit = 1 }: {
+        searchRequest: BaseRequestFunc<Context, { body: Args }, Result>,
+        body: Args | Partial<Args>,
+        maxLimit: number | null,
+        concurrencyLimit: number
+    },
 ) {
     const { limit, offset, ...searchArgs } = body;
 
-    const defaultLimit = getConfig('defaultLmit') || DEFAULT_LIMIT;
+    const defaultLimit = getConfig<Config, "defaultLmit">('defaultLmit') ?? DEFAULT_LIMIT;
 
     let params = {
         body: {
             ...searchArgs,
             limit: limit || defaultLimit,
             offset: offset || 0,
-        },
+        } as Args,
     };
     const firstPage = await searchRequest(req, params);
 
@@ -54,7 +69,7 @@ export async function allForBodySearchRequest(
                     ...searchArgs,
                     limit: limit || defaultLimit,
                     offset: pageOffset,
-                },
+                } as Args,
             };
             return searchRequest(req, params);
         }),
@@ -67,19 +82,24 @@ export async function allForBodySearchRequest(
  * Pagination for search requests that takes parameters in url query
  * @args search requests args. Can optionally contain initial 'limit' and 'offset' values
  */
-export default async function all(
-    req,
-    { searchRequest, args = {}, maxLimit = null, concurrencyLimit = 1 },
+export default async function all<Context, Args extends BaseRequestArgs, Result>(
+    req: Context,
+    { searchRequest, args = {}, maxLimit = null, concurrencyLimit = 1 }: {
+        searchRequest: BaseRequestFunc<Context, Args, Result>,
+        args: Args | Partial<Args>,
+        maxLimit: number | null,
+        concurrencyLimit: number
+    },
 ) {
     const { limit, offset, ...searchArgs } = args;
 
-    const defaultLimit = getConfig('defaultLimit') || DEFAULT_LIMIT;
+    const defaultLimit = getConfig<Config, "defaultLmit">('defaultLmit') || DEFAULT_LIMIT;
 
     const params = {
         ...searchArgs,
         limit: limit || defaultLimit,
         offset: offset || 0,
-    };
+    } as Args;
     const firstPage = await searchRequest(req, params);
 
     if (limit === defaultLimit && firstPage.count > DEFAULT_PAGING_UPPER_BOUND) {

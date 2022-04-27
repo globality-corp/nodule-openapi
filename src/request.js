@@ -212,7 +212,7 @@ export default (context, req, args, options) => {
     );
 
     // Shallow copy args. Some builder functions might affect args.
-    const builderArgs = Object.assign({}, args);
+    const builderArgs = { ...args};
     return Object.keys(builders).reduce(
         (obj, key) => Object.assign(obj, {
             [key]: builders[key](context, req, builderArgs, options),
