@@ -49,8 +49,8 @@ export async function allForBodySearchRequest<Context, Args, Result>(
   }: {
     searchRequest: BaseRequestFunc<Context, { body: Args }, Result>;
     body: Args & Partial<BaseRequestArgs>;
-    maxLimit: number | null;
-    concurrencyLimit: number;
+    maxLimit?: number | null;
+    concurrencyLimit?: number;
   }
 ) {
   const { limit, offset, ...searchArgs } = body;
@@ -115,8 +115,8 @@ export default async function all<Context, Args, Result>(
   }: {
     searchRequest: BaseRequestFunc<Context, Args, Result>;
     args: Args & Partial<BaseRequestArgs>;
-    maxLimit: number | null;
-    concurrencyLimit: number;
+    maxLimit?: number | null;
+    concurrencyLimit?: number;
   }
 ) {
   const { limit, offset, ...searchArgs } = args;
