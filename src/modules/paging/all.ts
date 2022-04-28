@@ -41,18 +41,18 @@ type BaseRequestFunc<Context, Args, Result> = (
  */
 export async function allForBodySearchRequest<
   Context,
-  Args extends BaseRequestArgs,
+  Args extends Partial<BaseRequestArgs>,
   Result
 >(
   req: Context,
   {
     searchRequest,
-    body = {},
+    body,
     maxLimit = null,
     concurrencyLimit = 1,
   }: {
     searchRequest: BaseRequestFunc<Context, { body: Args }, Result>;
-    body: Args | Partial<Args>;
+    body: Args;
     maxLimit: number | null;
     concurrencyLimit: number;
   }
@@ -111,18 +111,18 @@ export async function allForBodySearchRequest<
  */
 export default async function all<
   Context,
-  Args extends BaseRequestArgs,
+  Args extends Partial<BaseRequestArgs>,
   Result
 >(
   req: Context,
   {
     searchRequest,
-    args = {},
+    args,
     maxLimit = null,
     concurrencyLimit = 1,
   }: {
     searchRequest: BaseRequestFunc<Context, Args, Result>;
-    args: Args | Partial<Args>;
+    args: Args;
     maxLimit: number | null;
     concurrencyLimit: number;
   }
