@@ -1,20 +1,26 @@
 import { TooManyResults, NoResults } from "../../error";
 
+type Result<Item> = {
+  items: Item[];
+};
+
 export default async function one<
   Item,
-  RequestFunc extends (...params: any) => Promise<{ items: Item[] }>
+  Context,
+  Args,
+  RequestFn extends (context: Context, args: Args) => Promise<Result<Item>>
 >(
-  req: Parameters<RequestFunc>[0],
+  req: Context,
   {
     searchRequest,
-    args = {},
+    args,
     returnNullOnEmpty = false,
   }: {
-    searchRequest: RequestFunc;
-    args: Parameters<RequestFunc>[1];
+    searchRequest: RequestFn;
+    args: Args;
     returnNullOnEmpty?: boolean;
   }
-): Promise<Item | null> {
+) {
   const page = await searchRequest(req, args);
   if (page.items.length === 1) {
     return page.items[0];
