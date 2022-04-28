@@ -12,7 +12,7 @@ export default async function first<
   }: {
     searchRequest: RequestFunc;
     args: Parameters<RequestFunc>[1];
-    returnNullOnEmpty: boolean;
+    returnNullOnEmpty?: boolean;
   }
 ): Promise<Item | null> {
   const page = await searchRequest(req, args);
