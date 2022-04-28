@@ -41,7 +41,7 @@ type BaseRequestFunc<Context, Args, Result> = (
  */
 export async function allForBodySearchRequest<
   Context,
-  Args extends Partial<BaseRequestArgs>,
+  Args,
   Result
 >(
   req: Context,
@@ -52,7 +52,7 @@ export async function allForBodySearchRequest<
     concurrencyLimit = 1,
   }: {
     searchRequest: BaseRequestFunc<Context, { body: Args }, Result>;
-    body: Args;
+    body: Args & BaseRequestArgs;
     maxLimit: number | null;
     concurrencyLimit: number;
   }
@@ -67,7 +67,7 @@ export async function allForBodySearchRequest<
       ...searchArgs,
       limit: limit || defaultLimit,
       offset: offset || 0,
-    } as Args,
+    } as Args & BaseRequestArgs,
   };
   const firstPage = await searchRequest(req, params);
 
@@ -96,7 +96,7 @@ export async function allForBodySearchRequest<
           ...searchArgs,
           limit: limit || defaultLimit,
           offset: pageOffset,
-        } as Args,
+        } as Args & BaseRequestArgs,
       };
       return searchRequest(req, params);
     }),
@@ -111,7 +111,7 @@ export async function allForBodySearchRequest<
  */
 export default async function all<
   Context,
-  Args extends Partial<BaseRequestArgs>,
+  Args,
   Result
 >(
   req: Context,
@@ -122,7 +122,7 @@ export default async function all<
     concurrencyLimit = 1,
   }: {
     searchRequest: BaseRequestFunc<Context, Args, Result>;
-    args: Args;
+    args: Args & BaseRequestArgs;
     maxLimit: number | null;
     concurrencyLimit: number;
   }
@@ -136,7 +136,7 @@ export default async function all<
     ...searchArgs,
     limit: limit || defaultLimit,
     offset: offset || 0,
-  } as Args;
+  } as Args & BaseRequestArgs;
   const firstPage = await searchRequest(req, params);
 
   if (limit === defaultLimit && firstPage.count > DEFAULT_PAGING_UPPER_BOUND) {
