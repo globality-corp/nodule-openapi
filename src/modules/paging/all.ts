@@ -22,7 +22,7 @@ type Page<Item> = {
 
 type BaseRequestFunc<Context, Args, Result> = (
   context: Context,
-  args: Args
+  args: Args & Partial<BaseRequestArgs>
 ) => Promise<Page<Result>>;
 
 /**
