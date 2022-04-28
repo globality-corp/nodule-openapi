@@ -20,7 +20,7 @@ export default async function first<
     args: Args;
     returnNullOnEmpty?: boolean;
   }
-): Promise<Awaited<ReturnType<RequestFn>>["items"][0] | null> {
+) {
   const page = await searchRequest(req, args);
   if (page.items.length) {
     return page.items[0];
