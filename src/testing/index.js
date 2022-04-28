@@ -1,1 +1,1 @@
-export { mockError, mockResponse } from './openapi';
+export { mockError, mockResponse } from "./openapi";
