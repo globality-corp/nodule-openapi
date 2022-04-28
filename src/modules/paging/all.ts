@@ -39,11 +39,7 @@ type BaseRequestFunc<Context, Args, Result> = (
  * In this case searching via URL query is not possible because of URL length limit
  * @body search requests args. Can optionally contain initial 'limit' and 'offset' values
  */
-export async function allForBodySearchRequest<
-  Context,
-  Args,
-  Result
->(
+export async function allForBodySearchRequest<Context, Args, Result>(
   req: Context,
   {
     searchRequest,
@@ -109,11 +105,7 @@ export async function allForBodySearchRequest<
  * Pagination for search requests that takes parameters in url query
  * @args search requests args. Can optionally contain initial 'limit' and 'offset' values
  */
-export default async function all<
-  Context,
-  Args,
-  Result
->(
+export default async function all<Context, Args, Result>(
   req: Context,
   {
     searchRequest,
