@@ -1,22 +1,25 @@
 import { NoResults } from "../../error";
 
-type Result<Item> = {
+type Page<Item> = {
   items: Item[];
+  offset?: number;
+  limit?: number;
+  count: number;
 };
 
-export default async function first<
-  Item,
-  Context,
-  Args,
-  RequestFn extends (context: Context, args: Args) => Promise<Result<Item>>
->(
+type BaseRequestFunc<Context, Args, Result> = (
+  context: Context,
+  args: Args
+) => Promise<Page<Result>>;
+
+export default async function first<Context, Args, Result>(
   req: Context,
   {
     searchRequest,
     args,
     returnNullOnEmpty = false,
   }: {
-    searchRequest: RequestFn;
+    searchRequest: BaseRequestFunc<Context, Args, Result>;
     args: Args;
     returnNullOnEmpty?: boolean;
   }
