@@ -1,8 +1,8 @@
 import { NoResults } from "../../error";
 
 type Result<Item> = {
-  items: Item[]
-}
+  items: Item[];
+};
 
 export default async function first<
   Item,
@@ -16,7 +16,7 @@ export default async function first<
     args,
     returnNullOnEmpty = false,
   }: {
-    searchRequest: RequestFn
+    searchRequest: RequestFn;
     args: Args;
     returnNullOnEmpty?: boolean;
   }
