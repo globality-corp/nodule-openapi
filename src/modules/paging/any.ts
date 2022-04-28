@@ -1,14 +1,13 @@
-export default async function any<
-  Item,
-  RequestFunc extends (...params: any) => Promise<{ items: Item[] }>
->(
-  req: Parameters<RequestFunc>[0],
+import { BaseRequestFunc } from "./types";
+
+export default async function any<Context, Args, Result>(
+  req: Context,
   {
     searchRequest,
-    args = {},
+    args,
   }: {
-    searchRequest: RequestFunc;
-    args: Parameters<RequestFunc>[1];
+    searchRequest: BaseRequestFunc<Context, Args, Result>;
+    args: Args;
   }
 ): Promise<boolean> {
   const page = await searchRequest(req, args);

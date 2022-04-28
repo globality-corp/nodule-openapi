@@ -1,15 +1,15 @@
 import { TooManyResults } from "../../error";
 
-export default async function none<
-  RequestFunc extends (...params: any) => Promise<{ items: unknown[] }>
->(
-  req: Parameters<RequestFunc>[0],
+import { BaseRequestFunc } from "./types";
+
+export default async function none<Context, Args, Result>(
+  req: Context,
   {
     searchRequest,
-    args = {},
+    args,
   }: {
-    searchRequest: RequestFunc;
-    args: Parameters<RequestFunc>[1];
+    searchRequest: BaseRequestFunc<Context, Args, Result>;
+    args: Args;
   }
 ): Promise<null> {
   const page = await searchRequest(req, args);

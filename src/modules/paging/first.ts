@@ -1,16 +1,6 @@
 import { NoResults } from "../../error";
 
-type Page<Item> = {
-  items: Item[];
-  offset?: number;
-  limit?: number;
-  count: number;
-};
-
-type BaseRequestFunc<Context, Args, Result> = (
-  context: Context,
-  args: Args
-) => Promise<Page<Result>>;
+import { BaseRequestFunc } from "./types";
 
 export default async function first<Context, Args, Result>(
   req: Context,

@@ -5,6 +5,8 @@ import { MaxLimitReached } from "../../error";
 import { Config } from "../../types/config";
 import concurrentPaginate from "../concurrency";
 
+import { BaseRequestFunc } from "./types";
+
 const DEFAULT_LIMIT = 20;
 const DEFAULT_PAGING_UPPER_BOUND = 200;
 
@@ -12,18 +14,6 @@ type BaseRequestArgs = {
   limit?: number;
   offset?: number;
 };
-
-type Page<Item> = {
-  items: Item[];
-  offset?: number;
-  limit?: number;
-  count: number;
-};
-
-type BaseRequestFunc<Context, Args, Result> = (
-  context: Context,
-  args: Args & Partial<BaseRequestArgs>
-) => Promise<Page<Result>>;
 
 /**
  * Pagination for search requests that expect parameters to be passed in the body.
