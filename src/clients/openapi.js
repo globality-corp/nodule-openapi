@@ -143,7 +143,7 @@ export function createOpenAPIClient(name, spec) {
     const config = getConfig(`clients.${name}`) || {};
     const { baseUrl, timeout, retries, namingOverride, namingPath, namingQuery } = config;
 
-    if (!baseUrl && (metadata.testing || metadata.debug)) {
+    if (!baseUrl && (metadata.testing || metadata.debug) && process.env.NODE_ENV !== 'test') {
         // eslint-disable-next-line no-console
         console.warn(
             `Warning - no base url found for client '${name}'
