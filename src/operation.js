@@ -29,7 +29,7 @@ function isMutationOperation(request) {
 function isProxyError(openApiError) {
     return includes(
         [
-            501, // Service unable to handle request due to wong routing
+            501, // Service unable to handle request due to wrong routing
             503, // Service instance does not exist.
         ],
         openApiError.code,
@@ -72,59 +72,70 @@ export default (context, name, operationName) => async (req, args, options) => {
         options,
     );
 
-    const { logger } = getContainer();
-    let errorResponse;
+    const { buildRequestLogs, logSuccess, logFailure } = getContainer('logging') || {};
 
+    let rawResponse;
+    let successResponse;
+    let errorResponse;
     let proxyErrorsCount = 0;
     let serviceErrorsCount = 0;
     let attempt = 0;
+    let openApiError;
+
+    const retryMessages = [];
     const proxyRetriesCount = get(request, 'proxyRetries', 0);
     const proxyRetriesDelayTime = get(request, 'proxyRetriesDelay', 0);
     const retriesCount = isMutationOperation(request) ? 0 : get(request, 'retries', 0);
+    const executeStartTime = process.hrtime();
+    const requestLogs = buildRequestLogs ?
+        buildRequestLogs(req, name, operationName, request) :
+        null;
 
     while (proxyErrorsCount <= proxyRetriesCount && serviceErrorsCount <= retriesCount) {
         try {
             /* eslint-disable no-await-in-loop */
-            const response = await http(request);
-            return buildResponse(requestContext)(
-                response,
+            rawResponse = await http(request);
+            successResponse = buildResponse(requestContext)(
+                rawResponse,
                 requestContext,
                 req,
                 options,
             );
+            break;
         } catch (error) {
             errorResponse = error;
             attempt += 1;
-            const openApiError = normalizeError(error);
+            openApiError = normalizeError(error);
 
             if (isProxyError(openApiError)) {
                 proxyErrorsCount += 1;
-
-                if (logger) {
-                    logger.warning(
-                        req,
-                        `API request failed; proxy error; attempt ${attempt}`,
-                        { method: request.method, url: request.url, code: openApiError.code },
-                    );
-                }
-
+                retryMessages.push(`Proxy error; code: ${openApiError.code}, attempt: ${attempt}`);
                 await sleep(proxyRetriesDelayTime); // Delay next request
             } else {
-                if (!isRetryableOperation(openApiError)) break;
-
                 serviceErrorsCount += 1;
-
-                if (logger) {
-                    logger.warning(
-                        req,
-                        `API request failed; attempt ${attempt}`,
-                        { method: request.method, url: request.url },
-                    );
+                if (!isRetryableOperation(openApiError)) {
+                    break;
                 }
+                retryMessages.push(`API request failed; code: ${openApiError.code}, attempt: ${attempt}`);
             }
         }
     }
 
+    if (requestLogs) {
+        requestLogs.failureMessages = retryMessages;
+        requestLogs.proxyErrorsCount = proxyErrorsCount;
+        requestLogs.serviceErrorsCount = serviceErrorsCount;
+    }
+
+    if (successResponse) {
+        if (logSuccess) {
+            logSuccess(req, request, rawResponse, requestLogs, executeStartTime);
+        }
+        return successResponse;
+    }
+    if (logFailure) {
+        logFailure(req, request, openApiError, requestLogs);
+    }
     return buildError(requestContext)(
         errorResponse,
         requestContext,

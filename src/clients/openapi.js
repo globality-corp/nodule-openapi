@@ -3,6 +3,7 @@ import axios from 'axios';
 import { get } from 'lodash';
 import OpenAPI from '../client';
 import { NAMING_OPTION } from '../naming';
+import { OpenAPIError } from '../error';
 
 
 /* Inject mock and testing adapters.
@@ -82,54 +83,16 @@ export function validateResponse(response) {
     return [true, null];
 }
 
-export function http(req, serviceName, operationName) {
-    return (request) => {
-        const metadata = getMetadata();
-        if (metadata.testing) {
-            return axios(
-                request,
-            ).then((response) => {
-                const [validResponse, message] = validateResponse(response);
-                if (!validResponse) {
-                    throw new Error(message);
-                }
-                return response;
-            });
+export function http() {
+    return request => axios(
+        request,
+    ).then((response) => {
+        const [validResponse, message] = validateResponse(response);
+        if (!validResponse) {
+            throw new OpenAPIError(message, 'invalid_response');
         }
-        const executeStartTime = process.hrtime();
-        const { buildRequestLogs, logSuccess, logFailure } = getContainer('logging');
-
-        const requestLogs = buildRequestLogs ?
-            buildRequestLogs(req, serviceName, operationName, request) :
-            null;
-
-        return axios(
-            request,
-        ).then((response) => {
-            const [validResponse, message] = validateResponse(response);
-            if (!validResponse) {
-                if (logFailure) {
-                    const error = {
-                        message,
-                        status: response.status,
-                    };
-                    logFailure(req, request, error, requestLogs);
-                }
-                throw new Error(message);
-            }
-            if (logSuccess) {
-                logSuccess(req, request, response, requestLogs, executeStartTime);
-            }
-            return response;
-        }).catch((error) => {
-            if (logFailure) {
-                logFailure(req, request, error, requestLogs);
-            }
-
-            // re-raise
-            throw error;
-        });
-    };
+        return response;
+    });
 }
 
 /* Create a new OpenAPI client using standard conventions:
