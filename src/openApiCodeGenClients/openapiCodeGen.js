@@ -4,7 +4,7 @@ import CallableOperationWrapper from './operation';
 
 import axios from 'axios';
 
-export const OpenAPIClient = (options, name, resourceApis) => {
+export const OpenAPIClient = (options, serviceName, resourceApis) => {
     // This is where we create the ApiClient
     let openApiClient = {};
     console.log('ApiClient123');
@@ -28,7 +28,7 @@ export const OpenAPIClient = (options, name, resourceApis) => {
                 ...openApiClient,
                 [resourceApiLabel]: {
                     ...openApiClient[resourceApiLabel],
-                    [operationName]: CallableOperationWrapper(axiosInstance, ResourceApi, options, context, resourceApiLabel, operationName),
+                    [operationName]: CallableOperationWrapper(axiosInstance, ResourceApi, options, context, resourceApiLabel, operationName, serviceName),
                 },
             };
 

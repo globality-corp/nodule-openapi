@@ -2,23 +2,53 @@
  */
 import { assign, get, includes, lowerCase } from 'lodash';
 import axios from 'axios';
+import { getConfig, getMetadata } from '@globality/nodule-config/lib';
 // import { getContainer } from '@globality/nodule-config';
 // import axios from 'axios';
 
 
+// TODO - move this function elsewhere / use the existing function
+function buildAdapter(context) {
+    console.log(context);
+    console.log('running build adapter1234');
+    const { name, operationName } = context;
+    const metadata = getMetadata();
+    if (!metadata.testing) {
+        return null;
+    }
+
+    const key = `clients.mock.${name}.${operationName}`;
+    const mock = getConfig(key);
+
+    if (mock) {
+        return mock;
+    }
+
+    return () => {
+        throw new Error(`OpenAPI operation ${name}.${operationName} is not mocked`);
+    };
+}
+
 /* Create a new callable operation that return a Promise.
  */
-export default (axiosInstance, ResourceApi, config, context, name, operationName) => async (req, args, options) => {
+export default (axiosInstance, ResourceApi, config, context, resourceName, operation, serviceName) => async (req, args, options) => {
     // validate inputs
     // Validator(context)(req, operationName, args);
 
     // allow overriding the http implementation
     // const http = get(context, 'options.http', () => axios)(req, name, operationName);
+    console.log(`${resourceName}.${operation}`);
+    const axiosRequestConfig = {
+        adapter: buildAdapter({
+            name: serviceName,
+            operationName: `${resourceName}.${operation}`,
+        }),
+    };
 
     // enhance the context with service and operation name
     const requestContext = assign({}, context, {
-        name,
-        operationName,
+        operation,
+        resourceName,
     });
     const version = '/api/v2'; // we might be able to grab this from the apiClient...
     const fixedBaseUrl = `${config.baseUrl}${version}`;
@@ -29,7 +59,7 @@ export default (axiosInstance, ResourceApi, config, context, name, operationName
     console.log('Im about to execute...');
     console.log(args);
     const { body } = args;
-    return resourceApiObj[operationName]('', body);
+    return resourceApiObj[operation]('', body, axiosRequestConfig);
 
     // const request = buildRequest(
     //     requestContext,
