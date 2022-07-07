@@ -1,8 +1,9 @@
 import { getConfig } from '@globality/nodule-config';
-import CallableOperationWrapper from './operation';
-
 import axios from 'axios';
 import { get } from 'lodash';
+
+import CallableOperationWrapper from './operation';
+
 
 export const OpenAPIClient = (options, serviceName, resourceApis, spec) => {
     // This is where we create the ApiClient
@@ -52,7 +53,5 @@ export function createOpenAPIClientV2(name, resourceApis, spec) {
         // retries, TODO: Need to implement
     };
 
-    const result = OpenAPIClient(options, name, resourceApis, spec);
-    console.log(result);
-    return result;
+    return OpenAPIClient(options, name, resourceApis, spec);
 }

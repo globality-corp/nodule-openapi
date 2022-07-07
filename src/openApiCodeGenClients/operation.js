@@ -1,15 +1,13 @@
 /* Callable operations.
  */
 import { assign } from 'lodash';
-import { getConfig, getContainer, getMetadata } from '@globality/nodule-config/lib';
+import { getConfig, getMetadata } from '@globality/nodule-config/lib';
 import { buildHeaders } from '../clients/openapi';
-import buildError from './error';
+import buildError from '../error';
 
 
 // TODO - move this function elsewhere / use the existing function
 function buildAdapter(context) {
-    console.log(context);
-    console.log('running build adapter1234');
     const { name, operationName } = context;
     const metadata = getMetadata();
     if (!metadata.testing) {
@@ -40,9 +38,7 @@ export default (
     serviceName,
     basePath,
 ) => async (req, args, options) => {
-    console.log(`${resourceName}.${operation}`);
-
-    // TODO - allow options being based in to merge with / override
+    // TODO - allow options to be passed in to merge with and override
     // the requestConfig that gets created here
     const axiosRequestConfig = {
         adapter: buildAdapter({
