@@ -103,12 +103,7 @@ export function http() {
  */
 export function createOpenAPIClient(name, spec) {
     const metadata = getMetadata();
-    // const metadata = {
-    //     testing: true,
-    //     debug: true,
-    // };
     const config = getConfig(`clients.${name}`) || {};
-    // console.log(config);
     const { baseUrl, timeout, retries, namingOverride, namingPath, namingQuery } = config;
 
     if (!baseUrl && (metadata.testing || metadata.debug)) {
@@ -138,8 +133,5 @@ export function createOpenAPIClient(name, spec) {
         retries,
         naming,
     };
-    const result = OpenAPI(spec, name, options);
-    // console.log('old OpenAPI result:');
-    // console.log(result);
-    return result;
+    return OpenAPI(spec, name, options);
 }
