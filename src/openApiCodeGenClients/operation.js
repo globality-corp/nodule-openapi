@@ -1,30 +1,8 @@
 /* Callable operations.
  */
 import { assign } from 'lodash';
-import { getConfig, getMetadata } from '@globality/nodule-config/lib';
-import { buildHeaders } from '../clients/openapi';
+import { buildAdapter, buildHeaders } from '../clients/openapi';
 import buildError from '../error';
-
-
-// TODO - move this function elsewhere / use the existing function
-function buildAdapter(context) {
-    const { name, operationName } = context;
-    const metadata = getMetadata();
-    if (!metadata.testing) {
-        return null;
-    }
-
-    const key = `clients.mock.${name}.${operationName}`;
-    const mock = getConfig(key);
-
-    if (mock) {
-        return mock;
-    }
-
-    return () => {
-        throw new Error(`OpenAPI operation ${name}.${operationName} is not mocked`);
-    };
-}
 
 /* Create a new callable operation that return a Promise.
  */
