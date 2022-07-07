@@ -31,7 +31,7 @@ function buildAdapter(context) {
 
 /* Create a new callable operation that return a Promise.
  */
-export default (axiosInstance, ResourceApi, config, context, resourceName, operation, serviceName) => async (req, args, options) => {
+export default (axiosInstance, ResourceApi, config, context, resourceName, operation, serviceName, basePath) => async (req, args, options) => {
     // validate inputs
     // Validator(context)(req, operationName, args);
 
@@ -50,8 +50,8 @@ export default (axiosInstance, ResourceApi, config, context, resourceName, opera
         operation,
         resourceName,
     });
-    const version = '/api/v2'; // we might be able to grab this from the apiClient...
-    const fixedBaseUrl = `${config.baseUrl}${version}`;
+
+    const fixedBaseUrl = `${config.baseUrl}${basePath}`;
     console.log(fixedBaseUrl);
 
     const resourceApiObj = new ResourceApi({}, fixedBaseUrl, axiosInstance);
@@ -59,7 +59,9 @@ export default (axiosInstance, ResourceApi, config, context, resourceName, opera
     console.log('Im about to execute...');
     console.log(args);
     const { body } = args;
-    return resourceApiObj[operation]('', body, axiosRequestConfig);
+
+    // Next thing - the body only works for create operations - doesn't work for search operations
+    return resourceApiObj[operation](...args, axiosRequestConfig);
 
     // const request = buildRequest(
     //     requestContext,

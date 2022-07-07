@@ -3,8 +3,9 @@ import ApiClient from './apiClient';
 import CallableOperationWrapper from './operation';
 
 import axios from 'axios';
+import { get } from 'lodash';
 
-export const OpenAPIClient = (options, serviceName, resourceApis) => {
+export const OpenAPIClient = (options, serviceName, resourceApis, spec) => {
     // This is where we create the ApiClient
     let openApiClient = {};
     console.log('ApiClient123');
@@ -13,6 +14,8 @@ export const OpenAPIClient = (options, serviceName, resourceApis) => {
         timeout: options.timeout,
         headers: { 'X-Custom-Header': 'foobar' },
     });
+
+    const basePath = get(spec, 'basePath', '');
     Object.keys(resourceApis).forEach((resourceApiLabel) => {
         console.log(`resourceApiLabel: ${resourceApiLabel}`);
         const { operations, resourceApi: ResourceApi } = resourceApis[resourceApiLabel];
@@ -28,7 +31,7 @@ export const OpenAPIClient = (options, serviceName, resourceApis) => {
                 ...openApiClient,
                 [resourceApiLabel]: {
                     ...openApiClient[resourceApiLabel],
-                    [operationName]: CallableOperationWrapper(axiosInstance, ResourceApi, options, context, resourceApiLabel, operationName, serviceName),
+                    [operationName]: CallableOperationWrapper(axiosInstance, ResourceApi, options, context, resourceApiLabel, operationName, serviceName, basePath),
                 },
             };
 
@@ -42,7 +45,7 @@ export const OpenAPIClient = (options, serviceName, resourceApis) => {
 };
 
 // eslint-disable-line import/prefer-default-export
-export function createOpenAPIClientV2(name, resourceApis) {
+export function createOpenAPIClientV2(name, resourceApis, spec) {
     console.log('createOpenAPIClientV2...');
 
     const config = getConfig(`clients.${name}`) || {};
@@ -55,7 +58,7 @@ export function createOpenAPIClientV2(name, resourceApis) {
         // retries,
     };
 
-    const result = OpenAPIClient(options, name, resourceApis);
+    const result = OpenAPIClient(options, name, resourceApis, spec);
     console.log(result);
     return result;
 }
