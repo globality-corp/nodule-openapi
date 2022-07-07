@@ -1,10 +1,9 @@
 /* Callable operations.
  */
-import { assign, get, includes, lowerCase } from 'lodash';
-import axios from 'axios';
-import { getConfig, getMetadata } from '@globality/nodule-config/lib';
-// import { getContainer } from '@globality/nodule-config';
-// import axios from 'axios';
+import { assign } from 'lodash';
+import { getConfig, getContainer, getMetadata } from '@globality/nodule-config/lib';
+import { buildHeaders } from '../clients/openapi';
+import buildError from './error';
 
 
 // TODO - move this function elsewhere / use the existing function
@@ -31,17 +30,28 @@ function buildAdapter(context) {
 
 /* Create a new callable operation that return a Promise.
  */
-export default (axiosInstance, ResourceApi, config, context, resourceName, operation, serviceName, basePath) => async (req, args, options) => {
-    // validate inputs
-    // Validator(context)(req, operationName, args);
-
-    // allow overriding the http implementation
-    // const http = get(context, 'options.http', () => axios)(req, name, operationName);
+export default (
+    axiosInstance,
+    ResourceApi,
+    config,
+    context,
+    resourceName,
+    operation,
+    serviceName,
+    basePath,
+) => async (req, args, options) => {
     console.log(`${resourceName}.${operation}`);
+
+    // TODO - allow options being based in to merge with / override
+    // the requestConfig that gets created here
     const axiosRequestConfig = {
         adapter: buildAdapter({
             name: serviceName,
             operationName: `${resourceName}.${operation}`,
+        }),
+        headers: buildHeaders({
+            context,
+            req,
         }),
     };
 
@@ -52,59 +62,23 @@ export default (axiosInstance, ResourceApi, config, context, resourceName, opera
     });
 
     const fixedBaseUrl = `${config.baseUrl}${basePath}`;
-    console.log(fixedBaseUrl);
-
     const resourceApiObj = new ResourceApi({}, fixedBaseUrl, axiosInstance);
 
-    console.log('Im about to execute...');
-    console.log(args);
-    const { body } = args;
+    let errorResponse;
+    try {
+        /* eslint-disable no-await-in-loop */
+        const response = await resourceApiObj[operation](...args, axiosRequestConfig);
 
-    // Next thing - the body only works for create operations - doesn't work for search operations
-    return resourceApiObj[operation](...args, axiosRequestConfig);
+        // TODO - add in a build response
+        return response.data;
+    } catch (error) {
+        errorResponse = error;
+    }
 
-    // const request = buildRequest(
-    //     requestContext,
-    //     req,
-    //     args,
-    //     options,
-    // );
-    // const retries = getRetries(request);
-    // const attempts = retries + 1;
-
-    // const { logger } = getContainer();
-    // let errorResponse;
-    // for (let attempt = 0; attempt < attempts; attempt++) {
-    //     try {
-    //         /* eslint-disable no-await-in-loop */
-    //         const response = await http(request);
-    //         return buildResponse(requestContext)(
-    //             response,
-    //             requestContext,
-    //             req,
-    //             options,
-    //         );
-    //     } catch (error) {
-    //         errorResponse = error;
-
-    //         if (!isErrorRetryable(error)) {
-    //             break;
-    //         }
-
-    //         if (logger) {
-    //             logger.warning(
-    //                 req,
-    //                 `API request failed; attempt ${attempt + 1}`,
-    //                 { method: request.method, url: request.url },
-    //             );
-    //         }
-    //     }
-    // }
-
-    // return buildError(requestContext)(
-    //     errorResponse,
-    //     requestContext,
-    //     req,
-    //     options,
-    // );
+    return buildError(requestContext)(
+        errorResponse,
+        requestContext,
+        req,
+        options,
+    );
 };
