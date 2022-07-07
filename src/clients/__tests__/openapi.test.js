@@ -213,4 +213,38 @@ describe('createOpenAPIClient', () => {
 
         expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(3);
     });
+
+    it('retries read operations on proxy error', async () => {
+        const config = await Nodule.testing().fromObject(
+            mockError('petstore', 'pet.search', 'Service Unavailable', 503),
+        ).fromObject({
+            defaultProxyRetries: 3,
+            defaultProxyRetriesDelay: 10,
+        }).load();
+
+        const client = createOpenAPIClient('petstore', spec);
+
+        await expect(client.pet.search(req)).rejects.toThrow(
+            'Service Unavailable',
+        );
+
+        expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(4);
+    });
+
+    it('retries write operations on proxy error', async () => {
+        const config = await Nodule.testing().fromObject(
+            mockError('petstore', 'pet.create', 'Not Implemented', 501),
+        ).fromObject({
+            defaultProxyRetries: 2,
+            defaultProxyRetriesDelay: 10,
+        }).load();
+
+        const client = createOpenAPIClient('petstore', spec);
+
+        await expect(client.pet.create(req)).rejects.toThrow(
+            'Not Implemented',
+        );
+
+        expect(config.clients.mock.petstore.pet.create).toHaveBeenCalledTimes(3);
+    });
 });

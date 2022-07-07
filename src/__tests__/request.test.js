@@ -28,6 +28,8 @@ describe('buildRequest', () => {
             method: 'post',
             params: null,
             retries: 0,
+            proxyRetries: 0,
+            proxyRetriesDelay: 1000,
             timeout: 5000,
             url: 'http://localhost/api/v2/chatroom',
         });
@@ -39,6 +41,8 @@ describe('buildRequest', () => {
             path: '/chatroom',
             method: 'post',
             options: {
+                retries: 5,
+                proxyRetries: 6,
                 buildHeaders: () => ({ baz: 'qux' }),
             },
         };
@@ -60,7 +64,9 @@ describe('buildRequest', () => {
             maxContentLength: -1,
             method: 'post',
             params: null,
-            retries: 0,
+            retries: 5,
+            proxyRetries: 6,
+            proxyRetriesDelay: 1000,
             timeout: 5000,
             url: 'http://localhost/api/v2/chatroom',
         });
@@ -91,6 +97,8 @@ describe('buildRequest', () => {
             },
             retries: 0,
             timeout: 5000,
+            proxyRetries: 0,
+            proxyRetriesDelay: 1000,
             url: 'http://localhost/api/v2/chatroom/bar',
         });
     });
