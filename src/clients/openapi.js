@@ -11,6 +11,7 @@ import { OpenAPIError } from '../error';
 export function buildAdapter(context) {
     const { name, operationName } = context;
     const metadata = getMetadata();
+
     if (!metadata.testing) {
         return null;
     }

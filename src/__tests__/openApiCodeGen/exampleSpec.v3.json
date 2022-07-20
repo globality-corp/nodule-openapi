@@ -1,0 +1,180 @@
+{
+    "paths": {
+        "/api/health": {
+            "get": {
+                "tags": [
+                    "/landing_page"
+                ],
+                "parameters": [
+                    {
+                        "required": false,
+                        "schema": {
+                            "title": "Full",
+                            "type": "boolean",
+                            "default": false
+                        },
+                        "name": "full",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/private/v1/cheesy_pizza": {
+            "get": {
+                "tags": [
+                    "/private/v1"
+                ],
+                "summary": "Cheesy Pizza search",
+                "description": "Lists Cheesy Pizzas",
+                "operationId": "partial_api_private_v1_cheesy_pizza_get",
+                "parameters": [
+                    {
+                        "required": false,
+                        "schema": {
+                            "title": "Offset",
+                            "type": "integer",
+                            "default": 0
+                        },
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "required": false,
+                        "schema": {
+                            "title": "Limit",
+                            "type": "integer",
+                            "default": 100
+                        },
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "required": false,
+                        "schema": {
+                            "title": "Pizza Id",
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "name": "pizza_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CheesyPizzaSchemaList"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/public/v1/cheesy_pizza/{cheesy_pizza_id}": {
+            "get": {
+                "operationId": "cheesy_pizza_retrieve",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "required": true,
+                        "name": "cheesy_pizza_id",
+                        "in": "path"
+                    }
+                ],
+                "tags": ["cheesy_pizza", "public_v1"],
+                "responses": {
+                    "200": {
+                        "schema": { "$ref": "#/definitions/CheesyPizzaSchema" },
+                        "description": "Successful Response"
+                    },
+                    "default": {
+                        "schema": { "$ref": "#/definitions/Error" },
+                        "description": "Default Response"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "HTTPValidationError": {
+                "title": "HTTPValidationError",
+                "type": "object",
+                "properties": {
+                    "detail": {
+                        "title": "Detail",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        }
+                    }
+                }
+            },
+            "CheesyPizzaSchema": {
+                "title": "CheesyPizzaSchema",
+                "required": [
+                  "id"
+                ],
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "title": "Id",
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "pizzaType": {
+                    "title": "Pizzatype",
+                    "type": "string",
+                    "default": "CHEESE"
+                  }
+                }
+              },
+              "CheesyPizzaSchemaList": {
+                "title": "CheesyPizzaSchemaList",
+                "required": [
+                  "items"
+                ],
+                "type": "object",
+                "properties": {
+                  "items": {
+                    "$ref": "#/components/schemas/CheesyPizzaSchema"
+                  }
+                }
+              }
+        }
+    }
+}
