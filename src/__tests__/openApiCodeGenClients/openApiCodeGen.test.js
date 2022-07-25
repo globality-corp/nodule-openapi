@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import { clearBinding, Nodule } from '@globality/nodule-config/lib';
-import { OpenAPIClient } from '../../openApiCodeGenClients/openApiCodeGen';
+import { OpenAPIClient } from '../../openApiCodeGenClients';
 import exampleV3Spec from './exampleSpec.v3.json';
 import { mockResponse } from '../../testing';
 
@@ -59,11 +59,14 @@ describe('OpenAPIClient', () => {
             ],
         });
 
-        expect(config.clients.mock.myNewService.publicV1Api.cheesyPizzaRetrieve).toHaveBeenCalledTimes(1);
-        expect(config.clients.mock.myNewService.publicV1Api.cheesyPizzaRetrieve.mock.calls[0][0].headers).toMatchObject({
-            Accept: 'application/json, text/plain, */*',
-            'Content-Type': 'application/json; charset=utf-8',
-            'X-Request-Service': 'test',
-        });
+        const myNewServiceMock = config.clients.mock.myNewService.publicV1Api.cheesyPizzaRetrieve;
+        expect(myNewServiceMock)
+            .toHaveBeenCalledTimes(1);
+        expect(myNewServiceMock.mock.calls[0][0].headers)
+            .toMatchObject({
+                Accept: 'application/json, text/plain, */*',
+                'Content-Type': 'application/json; charset=utf-8',
+                'X-Request-Service': 'test',
+            });
     });
 });

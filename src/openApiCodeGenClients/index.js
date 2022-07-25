@@ -1,1 +1,1 @@
-export { createOpenAPIClientV2 } from './openapiCodeGen'; // eslint-disable-line import/prefer-default-export
+export { createOpenAPIClientV2, OpenAPIClient } from './openapiClient'; // eslint-disable-line import/prefer-default-export
