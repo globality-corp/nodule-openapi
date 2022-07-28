@@ -87,7 +87,15 @@ export default (
     while (attempt <= retriesCount) {
         try {
             /* eslint-disable no-await-in-loop */
-            rawResponse = await resourceApiObj[operation](...args, axiosRequestConfig);
+            if (Array.isArray(args)) {
+                // args can be passed in as an array of a single object
+                // determined by the `useSingleRequestParameter` typescript-axios
+                // api client config setting
+                rawResponse = await resourceApiObj[operation](...args, axiosRequestConfig);
+            } else {
+                rawResponse = await resourceApiObj[operation](args, axiosRequestConfig);
+            }
+
 
             successResponse = buildResponse(requestContext)(
                 rawResponse,
