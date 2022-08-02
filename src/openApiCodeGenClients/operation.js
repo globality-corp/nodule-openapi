@@ -38,8 +38,6 @@ export default (
     requestMethod, // e.g get, post, put etc.
     path, // This is the path defined on the spec for the given operation
 ) => async (req, args, options) => {
-    // TODO - allow options to be passed in to merge with and override
-    // the requestConfig that gets created here
     const operationName = `${resourceName}.${operation}`;
     const axiosRequestConfig = {
         adapter: buildAdapter({
