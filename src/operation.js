@@ -36,7 +36,7 @@ function isProxyError(openApiError) {
     );
 }
 
-function isRetryableOperation(openApiError) {
+export function isRetryableOperation(openApiError) {
     return includes(
         [
             // Client timeout/error, retry

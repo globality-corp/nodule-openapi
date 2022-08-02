@@ -20,7 +20,7 @@ jobs:
             echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}" > .npmrc
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "yarn.lock" }}
+          - v1-dependencies-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
 
       - run:
           name: Install Dependencies
@@ -29,7 +29,7 @@ jobs:
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "yarn.lock" }}
+          key: v1-dependencies-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
 
       - persist_to_workspace:
           root: ~/repo
@@ -76,7 +76,7 @@ jobs:
           root: ~/repo
           <<: *whitelist
 
-  deploy_rc:
+  deploy_rc_to_npmjs:
     <<: *defaults
 
     steps:
@@ -87,6 +87,21 @@ jobs:
           name: Publish to NPM
           command: |
             sed  -i '/version/s/[^.]*$/'"0-dev${CIRCLE_BUILD_NUM}\",/" package.json
+            npm publish
+
+  deploy_rc_to_jfrog:
+    <<: *defaults
+
+    steps:
+      - attach_workspace:
+          at: ~/repo
+
+      - run:
+          name: Publish to NPM
+          command: |
+            sed  -i '/version/s/[^.]*$/'"0-dev${CIRCLE_BUILD_NUM}\",/" package.json
+            curl -s -u$JFROG_AUTH https://globality.jfrog.io/globality/api/npm/auth > .npmrc
+            echo "registry=https://globality.jfrog.io/globality/api/npm/npm"       >> .npmrc
             npm publish
 
   publish_library_to_npmjs:
@@ -138,7 +153,12 @@ workflows:
           requires:
             - lint
             - test
-      - deploy_rc:
+      - deploy_rc_to_npmjs:
+          context:
+            - Globality-Common
+          requires:
+            - build
+      - deploy_rc_to_jfrog:
           context:
             - Globality-Common
           requires:
