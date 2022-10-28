@@ -1,4 +1,4 @@
-import { includes, isNil, lowerCase } from 'lodash';
+import { camelCase, includes, isNil, lowerCase } from 'lodash';
 
 
 export function isMutationOperation(requestMethod) {
@@ -72,11 +72,8 @@ export function capitalizeFirstLetter(string) {
 export function convertOperationIdToOperationName(operationId) {
     // e.g operationId = partial_api_public_v1_cheesy_pizza_get
     // associated operation would then be: partialApiPublicV1CheesyPizzaGet
-    const operationWords = operationId.split('_');
-    const upperCased = operationWords.map(name => capitalizeFirstLetter(name));
 
-    // lower case first word in the array e.g Public -> public
-    upperCased[0] = upperCased[0].toLowerCase();
-
-    return upperCased.join('');
+    // e.g operationId = downloadLink
+    // associated operation name would be: downloadLink
+    return camelCase(operationId);
 }
