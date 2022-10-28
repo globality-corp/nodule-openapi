@@ -110,6 +110,7 @@ describe('capitalizeFirstLetter', () => {
 describe('convertOperationIdToOperationName', () => {
     it.each([
         ['partial_api_public_v1_cheesy_pizza_get', 'partialApiPublicV1CheesyPizzaGet'],
+        ['downloadLink', 'downloadLink'],
     ])('correctly converts operation id to operation name', (input, expectedOutput) => {
         const output = convertOperationIdToOperationName(input);
         expect(output).toEqual(expectedOutput);
