@@ -44,10 +44,10 @@ export default (
             name: serviceName,
             operationName,
         }),
-        headers: buildHeaders({
+        headers: buildHeaders(
             context,
             req,
-        }),
+        ),
     };
 
     const { buildRequestLogs, logSuccess, logFailure } = getContainer('logging') || {};
