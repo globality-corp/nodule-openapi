@@ -127,7 +127,7 @@ export default (context, name, operationName) => async (req, args, options) => {
         requestLogs.serviceErrorsCount = serviceErrorsCount;
     }
 
-    if (successResponse) {
+    if (successResponse !== undefined) {
         if (logSuccess) {
             logSuccess(req, request, rawResponse, requestLogs, executeStartTime);
         }

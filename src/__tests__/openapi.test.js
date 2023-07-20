@@ -11,6 +11,7 @@ describe('OpenAPI initialization', () => {
                 create: expect.anything(),
                 retrieve: expect.anything(),
                 search: expect.anything(),
+                delete: expect.anything(),
             },
         });
     });
@@ -27,6 +28,17 @@ describe('OpenAPI invocation', () => {
 
         const client = OpenAPI(spec, 'test', options);
         const result = await client.chatroom.search();
+        expect(result).toEqual(data);
+    });
+    it('handles empty data', async () => {
+        const data = '';
+
+        const options = {
+            adapter: () => Promise.resolve({ data }),
+        };
+
+        const client = OpenAPI(spec, 'test', options);
+        const result = await client.chatroom.delete(undefined, { chatroomId: 1 });
         expect(result).toEqual(data);
     });
     it('raises error', async () => {
