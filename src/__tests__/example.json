@@ -184,6 +184,32 @@
           "tags": [
             "chatroom"
           ]
+        },
+        "delete": {
+          "operationId": "delete",
+          "parameters": [
+            {
+              "format": "uuid",
+              "in": "path",
+              "name": "chatroom_id",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": "Delete a chatroom by id"
+            },
+            "default": {
+              "description": "An error occurred",
+              "schema": {
+                "$ref": "#/definitions/Error"
+              }
+            }
+          },
+          "tags": [
+            "chatroom"
+          ]
         }
       }
     },
