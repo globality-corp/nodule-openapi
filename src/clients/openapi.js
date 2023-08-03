@@ -51,7 +51,7 @@ function defaultExtendHeaders(req, headers) {
         extendHeaders['X-Request-User'] = userId;
     }
 
-    // pass the current user (if any)
+    // pass the tenant id from the user (if any)
     const tenantId = get(req, 'locals.user.tenantId');
     if (tenantId) {
         extendHeaders['X-Request-Tenant-Id'] = tenantId;
