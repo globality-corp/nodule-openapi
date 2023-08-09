@@ -51,10 +51,10 @@ function defaultExtendHeaders(req, headers) {
         extendHeaders['X-Request-User'] = userId;
     }
 
-    // pass the tenant id from the user (if any)
-    const tenantId = get(req, 'locals.user.tenantId');
-    if (tenantId) {
-        extendHeaders['X-Request-Tenant-Id'] = tenantId;
+    // pass the client id from the user (if any)
+    const clientId = get(req, 'locals.user.clientId');
+    if (clientId) {
+        extendHeaders['X-Request-Client'] = clientId;
     }
 
     // pass the jwt

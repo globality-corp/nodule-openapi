@@ -17,7 +17,7 @@ describe('createOpenAPIClient', () => {
         id: 'request-id',
         locals: {
             user: {
-                tenantId: 'client-tenant-id-123',
+                clientId: 'client-id-123',
             },
         },
     };
@@ -47,6 +47,6 @@ describe('createOpenAPIClient', () => {
         });
         expect(spy).toHaveBeenCalledTimes(1);
         expect(spy.mock.calls[0][1].headers['X-Request-Id']).toBe('request-id');
-        expect(spy.mock.calls[0][1].headers['X-Request-Tenant-Id']).toBe('client-tenant-id-123');
+        expect(spy.mock.calls[0][1].headers['X-Request-Client']).toBe('client-id-123');
     });
 });
