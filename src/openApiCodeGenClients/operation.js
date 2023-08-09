@@ -118,7 +118,7 @@ export default (
     if (requestLogs) {
         requestLogs.failureMessages = retryMessages;
     }
-    if (successResponse) {
+    if (successResponse !== undefined) {
         if (logSuccess) {
             logSuccess(req, methodAndUrl, rawResponse, requestLogs, executeStartTime);
         }
