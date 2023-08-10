@@ -52,7 +52,14 @@ function defaultExtendHeaders(req, headers) {
     }
 
     // pass the client id from the user (if any)
-    const clientId = get(req, 'locals.user.clientId');
+    let clientId = get(req, 'locals.user.clientId');
+
+    // Client id can also be part of the locals.client object
+    // so let's also try to grab from there
+    if (!clientId) {
+        clientId = get(req, 'locals.client.id');
+    }
+
     if (clientId) {
         extendHeaders['X-Request-Client'] = clientId;
     }

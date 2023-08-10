@@ -283,4 +283,40 @@ describe('createOpenAPIClient', () => {
             'X-Request-Client': 'client-id-123',
         });
     });
+
+    it('adds x-request-client header from client obj', async () => {
+        const config = await Nodule.testing().fromObject(
+            mockResponse('petstore', 'pet.search', {
+                items: [
+                    REX,
+                ],
+            }),
+        ).load();
+
+        const client = createOpenAPIClient('petstore', spec);
+
+        const req2 = {
+            id: 'request-id',
+            locals: {
+                client: {
+                    id: 'client-id-123',
+                },
+            },
+        };
+        const result = await client.pet.search(req2);
+        expect(result).toEqual({
+            items: [
+                REX,
+            ],
+        });
+
+        expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(1);
+        expect(config.clients.mock.petstore.pet.search.mock.calls[0][0].headers).toMatchObject({
+            Accept: 'application/json, text/plain, */*',
+            'Content-Type': 'application/json; charset=utf-8',
+            'X-Request-Service': 'test',
+            'X-Request-Id': 'request-id',
+            'X-Request-Client': 'client-id-123',
+        });
+    });
 });
