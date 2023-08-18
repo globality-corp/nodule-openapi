@@ -10,9 +10,10 @@ function createHeaders(req, context, options) {
         context,
         req,
     );
+
     return {
         ...initialHeaders,
-        ...options.additionalHeaders,
+        ...(options && options.additionalHeaders ? options.additionalHeaders : {}),
     };
 }
 

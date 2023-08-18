@@ -2,7 +2,7 @@
  */
 import { getContainer } from '@globality/nodule-config/lib';
 import { assign, get } from 'lodash';
-import { buildAdapter, buildHeaders } from '../clients/openapi';
+import { buildAdapter } from '../clients/openapi';
 import buildError, { normalizeError } from '../error';
 import { isRetryableOperation } from '../operation';
 import buildResponse from '../response';
