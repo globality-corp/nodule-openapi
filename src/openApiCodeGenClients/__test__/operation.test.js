@@ -91,4 +91,32 @@ describe('createOpenAPIClient', () => {
         expect(spy).toHaveBeenCalledTimes(1);
         expect(spy.mock.calls[0][1].headers['X-Request-Client']).toBe(undefined);
     });
+
+    it('includes additional headers from options', async () => {
+        await Nodule.testing().load();
+
+        const spy = jest.spyOn(PetApi.prototype, 'search');
+
+        const client = createOpenAPIClientV2('petstore', { petApi: PetApi }, spec);
+        const reqWithNoClientData = {
+            id: 'request-id',
+            locals: {
+                user: {},
+            },
+        };
+        const result = await client.petApi.search(reqWithNoClientData, null, {
+            additionalHeaders: {
+                'X-Request-Test-Header': 'test',
+            },
+        });
+
+        expect(result).toEqual({
+            items: [
+                REX,
+            ],
+        });
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(spy.mock.calls[0][1].headers['X-Request-Client']).toBe(undefined);
+        expect(spy.mock.calls[0][1].headers['X-Request-Test-Header']).toBe('test');
+    });
 });

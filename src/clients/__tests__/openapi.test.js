@@ -283,4 +283,33 @@ describe('createOpenAPIClient', () => {
             'X-Request-Client': 'client-id-123',
         });
     });
+
+    it('Adds additional headers from options', async () => {
+        const config = await Nodule.testing().fromObject(
+            mockResponse('petstore', 'pet.search', {
+                items: [
+                    'abc',
+                ],
+            }),
+        ).load();
+
+        const client = createOpenAPIClient('petstore', spec);
+
+        const result = await client.pet.search(req, { name: 'abc' }, {
+            additionalHeaders: {
+                'X-Request-Test': 'test',
+            },
+        });
+        expect(result).toEqual({
+            items: ['abc'],
+        });
+
+        expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(1);
+        expect(config.clients.mock.petstore.pet.search.mock.calls[0][0].headers).toMatchObject({
+            Accept: 'application/json, text/plain, */*',
+            'Content-Type': 'application/json; charset=utf-8',
+            'X-Request-Service': 'test',
+            'X-Request-Test': 'test',
+        });
+    });
 });
