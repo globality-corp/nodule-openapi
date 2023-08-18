@@ -1,6 +1,8 @@
 import { NoResults } from '../../error';
 
-export default async function first(req, { searchRequest, args = {}, returnNullOnEmpty = false, options = {} }) {
+export default async function first(
+    req, { searchRequest, args = {}, returnNullOnEmpty = false, options = {} },
+) {
     const page = await searchRequest(req, args, options);
     if (page.items.length) {
         return page.items[0];
