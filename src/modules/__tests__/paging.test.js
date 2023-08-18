@@ -15,8 +15,8 @@ jest.mock('@globality/nodule-config', () => ({
     getMetadata: () => ({
         testing: false,
     }),
-    bind: () => {},
-    setDefaults: () => {},
+    bind: () => { },
+    setDefaults: () => { },
     getConfig: () => null,
     getContainer: () => ({
         logger: {
@@ -55,6 +55,45 @@ describe('Pagination', () => {
     });
 
     it('test search all items', async () => {
+        const res = await all(req, {
+            searchRequest,
+            args: { limit: 40 },
+            options: {
+                additionalHeaders: {
+                    'x-test-header': 'test',
+                },
+            },
+        });
+        expect(res).toEqual(items);
+
+        expect(searchRequest).toHaveBeenCalledTimes(3);
+        expect(searchRequest).toHaveBeenCalledWith(req, {
+            offset: 0,
+            limit: 40,
+        }, {
+            additionalHeaders: {
+                'x-test-header': 'test',
+            },
+        });
+        expect(searchRequest).toHaveBeenCalledWith(req, {
+            offset: 40,
+            limit: 40,
+        }, {
+            additionalHeaders: {
+                'x-test-header': 'test',
+            },
+        });
+        expect(searchRequest).toHaveBeenCalledWith(req, {
+            offset: 80,
+            limit: 40,
+        }, {
+            additionalHeaders: {
+                'x-test-header': 'test',
+            },
+        });
+    });
+
+    it('test search all items: with additional headers', async () => {
         const res = await all(req, { searchRequest, args: { limit: 40 } });
         expect(res).toEqual(items);
 
@@ -62,15 +101,15 @@ describe('Pagination', () => {
         expect(searchRequest).toHaveBeenCalledWith(req, {
             offset: 0,
             limit: 40,
-        });
+        }, {});
         expect(searchRequest).toHaveBeenCalledWith(req, {
             offset: 40,
             limit: 40,
-        });
+        }, {});
         expect(searchRequest).toHaveBeenCalledWith(req, {
             offset: 80,
             limit: 40,
-        });
+        }, {});
     });
 
     it('test search all items with large dataset logs warning', async () => {
@@ -98,7 +137,7 @@ describe('Pagination', () => {
             offset: 0,
             limit: 200,
             param: 'eter',
-        });
+        }, {});
     });
 
     it('test none', async () => {
@@ -108,7 +147,7 @@ describe('Pagination', () => {
         expect(searchRequestNone).toHaveBeenCalledTimes(1);
         expect(searchRequestNone).toHaveBeenCalledWith(req, {
             param: 'eter',
-        });
+        }, {});
     });
 
     it('test none: too many results', async () => {
@@ -124,7 +163,7 @@ describe('Pagination', () => {
         expect(searchRequestTwo).toHaveBeenCalledTimes(1);
         expect(searchRequestTwo).toHaveBeenCalledWith(req, {
             param: 'eter',
-        });
+        }, {});
     });
 
     it('test one', async () => {
@@ -134,6 +173,30 @@ describe('Pagination', () => {
         expect(searchRequestOne).toHaveBeenCalledTimes(1);
         expect(searchRequestOne).toHaveBeenCalledWith(req, {
             param: 'eter',
+        }, {});
+    });
+
+    it('test one: with additional headers', async () => {
+        const res = await one(
+            req,
+            {
+                searchRequest: searchRequestOne,
+                args: { param: 'eter' },
+                options: {
+                    additionalHeaders: {
+                        'x-test-header': 'test',
+                    },
+                },
+            },
+        );
+        expect(res).toEqual({ id: 1 });
+
+        expect(searchRequestOne).toHaveBeenCalledTimes(1);
+        expect(searchRequestOne).toHaveBeenCalledWith(req, {
+            param: 'eter',
+
+        }, {
+            additionalHeaders: { 'x-test-header': 'test' },
         });
     });
 
@@ -150,7 +213,7 @@ describe('Pagination', () => {
         expect(searchRequestNone).toHaveBeenCalledTimes(1);
         expect(searchRequestNone).toHaveBeenCalledWith(req, {
             param: 'eter',
-        });
+        }, {});
     });
 
     it('test one: too many results', async () => {
@@ -166,7 +229,7 @@ describe('Pagination', () => {
         expect(searchRequestTwo).toHaveBeenCalledTimes(1);
         expect(searchRequestTwo).toHaveBeenCalledWith(req, {
             param: 'eter',
-        });
+        }, {});
     });
 
     it('test any: no results', async () => {
@@ -197,7 +260,7 @@ describe('Pagination', () => {
         expect(searchRequestNone).toHaveBeenCalledTimes(1);
         expect(searchRequestNone).toHaveBeenCalledWith(req, {
             param: 'eter',
-        });
+        }, {});
     });
 
 });
