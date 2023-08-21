@@ -2,26 +2,12 @@
  */
 import { getContainer } from '@globality/nodule-config/lib';
 import { assign, get } from 'lodash';
-import { buildAdapter, buildHeaders } from '../clients/openapi';
+import { buildAdapter } from '../clients/openapi';
 import buildError, { normalizeError } from '../error';
 import { isRetryableOperation } from '../operation';
 import buildResponse from '../response';
+import { createHeaders, createParamsWrapper } from './helpers';
 
-function createParamsWrapper(args) {
-    let paramsWrapper;
-    if (Array.isArray(args)) {
-        // Whilst args is an array we need to convert it to an object
-        paramsWrapper = {
-            params: args.reduce((a, v) => ({ ...a, [v]: v }), {}),
-        };
-    } else {
-        // assuming args is an object (i.e next gen typescript api client generation)
-        paramsWrapper = {
-            params: args,
-        };
-    }
-    return paramsWrapper;
-}
 
 /* Create a new callable operation that return a Promise.
  */
@@ -44,10 +30,7 @@ export default (
             name: serviceName,
             operationName,
         }),
-        headers: buildHeaders(
-            context,
-            req,
-        ),
+        headers: createHeaders(req, context, options),
     };
 
     const { buildRequestLogs, logSuccess, logFailure } = getContainer('logging') || {};

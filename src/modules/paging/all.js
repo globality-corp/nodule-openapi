@@ -22,7 +22,7 @@ const DEFAULT_PAGING_UPPER_BOUND = 200;
  */
 export async function allForBodySearchRequest(
     req,
-    { searchRequest, body = {}, maxLimit = null, concurrencyLimit = 1 },
+    { searchRequest, body = {}, maxLimit = null, concurrencyLimit = 1, options = {} },
 ) {
     const { limit, offset, ...searchArgs } = body;
 
@@ -35,7 +35,7 @@ export async function allForBodySearchRequest(
             offset: offset || 0,
         },
     };
-    const firstPage = await searchRequest(req, params);
+    const firstPage = await searchRequest(req, params, options);
 
     if (isNil(firstPage.offset) || isNil(firstPage.limit) || isNil(firstPage.count)) {
         return firstPage.items;
@@ -56,7 +56,7 @@ export async function allForBodySearchRequest(
                     offset: pageOffset,
                 },
             };
-            return searchRequest(req, params);
+            return searchRequest(req, params, options);
         }),
         concurrencyLimit,
     );
@@ -69,7 +69,7 @@ export async function allForBodySearchRequest(
  */
 export default async function all(
     req,
-    { searchRequest, args = {}, maxLimit = null, concurrencyLimit = 1 },
+    { searchRequest, args = {}, maxLimit = null, concurrencyLimit = 1, options = {} },
 ) {
     const { limit, offset, ...searchArgs } = args;
 
@@ -80,7 +80,7 @@ export default async function all(
         limit: limit || defaultLimit,
         offset: offset || 0,
     };
-    const firstPage = await searchRequest(req, params);
+    const firstPage = await searchRequest(req, params, options);
 
     if (limit === defaultLimit && firstPage.count > DEFAULT_PAGING_UPPER_BOUND) {
         const { logger } = getContainer();
@@ -107,7 +107,7 @@ export default async function all(
 
     const offsets = range(firstPage.offset + firstPage.limit, firstPage.count, firstPage.limit);
     const nextPages = await concurrentPaginate(
-        offsets.map(pageOffset => searchRequest(req, { ...params, offset: pageOffset })),
+        offsets.map(pageOffset => searchRequest(req, { ...params, offset: pageOffset }, options)),
         concurrencyLimit,
     );
     return flatten([firstPage, ...nextPages].map(page => page.items));

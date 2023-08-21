@@ -15,6 +15,11 @@ class PetApi {
 describe('createOpenAPIClient', () => {
     const req = {
         id: 'request-id',
+        locals: {
+            user: {
+                clientId: 'client-id-123',
+            },
+        },
     };
 
     const REX = {
@@ -23,6 +28,7 @@ describe('createOpenAPIClient', () => {
     };
 
     beforeEach(() => {
+        jest.clearAllMocks();
         clearBinding('config');
     });
 
@@ -42,5 +48,75 @@ describe('createOpenAPIClient', () => {
         });
         expect(spy).toHaveBeenCalledTimes(1);
         expect(spy.mock.calls[0][1].headers['X-Request-Id']).toBe('request-id');
+    });
+
+    it('passes proper x-request-client in header based on req data', async () => {
+        await Nodule.testing().load();
+
+        // First we need to reset spy
+        const spy = jest.spyOn(PetApi.prototype, 'search');
+        // spy.mockClear();
+
+        const client = createOpenAPIClientV2('petstore', { petApi: PetApi }, spec);
+        const result = await client.petApi.search(req);
+
+        expect(result).toEqual({
+            items: [
+                REX,
+            ],
+        });
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(spy.mock.calls[0][1].headers['X-Request-Client']).toBe('client-id-123');
+    });
+
+    it('if no client id found then x-request-client header is not included', async () => {
+        await Nodule.testing().load();
+
+        const spy = jest.spyOn(PetApi.prototype, 'search');
+
+        const client = createOpenAPIClientV2('petstore', { petApi: PetApi }, spec);
+        const reqWithNoClientData = {
+            id: 'request-id',
+            locals: {
+                user: {},
+            },
+        };
+        const result = await client.petApi.search(reqWithNoClientData);
+
+        expect(result).toEqual({
+            items: [
+                REX,
+            ],
+        });
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(spy.mock.calls[0][1].headers['X-Request-Client']).toBe(undefined);
+    });
+
+    it('includes additional headers from options', async () => {
+        await Nodule.testing().load();
+
+        const spy = jest.spyOn(PetApi.prototype, 'search');
+
+        const client = createOpenAPIClientV2('petstore', { petApi: PetApi }, spec);
+        const reqWithNoClientData = {
+            id: 'request-id',
+            locals: {
+                user: {},
+            },
+        };
+        const result = await client.petApi.search(reqWithNoClientData, null, {
+            additionalHeaders: {
+                'X-Request-Test-Header': 'test',
+            },
+        });
+
+        expect(result).toEqual({
+            items: [
+                REX,
+            ],
+        });
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(spy.mock.calls[0][1].headers['X-Request-Client']).toBe(undefined);
+        expect(spy.mock.calls[0][1].headers['X-Request-Test-Header']).toBe('test');
     });
 });

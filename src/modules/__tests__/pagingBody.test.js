@@ -26,19 +26,19 @@ describe('Pagination', () => {
                 offset: 0,
                 limit: 40,
             },
-        });
+        }, {});
         expect(searchRequest).toHaveBeenCalledWith(req, {
             body: {
                 offset: 40,
                 limit: 40,
             },
-        });
+        }, {});
         expect(searchRequest).toHaveBeenCalledWith(req, {
             body: {
                 offset: 80,
                 limit: 40,
             },
-        });
+        }, {});
     });
 
     it('test search items passes params', async () => {
@@ -52,6 +52,6 @@ describe('Pagination', () => {
                 limit: 200,
                 param: 'eter',
             },
-        });
+        }, {});
     });
 });

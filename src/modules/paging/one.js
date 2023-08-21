@@ -1,7 +1,8 @@
 import { TooManyResults, NoResults } from '../../error';
 
-export default async function one(req, { searchRequest, args = {}, returnNullOnEmpty = false }) {
-    const page = await searchRequest(req, args);
+export default async function one(req,
+    { searchRequest, args = {}, returnNullOnEmpty = false, options = {} }) {
+    const page = await searchRequest(req, args, options);
     if (page.items.length === 1) {
         return page.items[0];
     }

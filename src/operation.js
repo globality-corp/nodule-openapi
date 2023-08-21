@@ -50,6 +50,23 @@ export function isRetryableOperation(openApiError) {
     );
 }
 
+export function extendHeadersFromOptions(request, options) {
+    /**
+     * Extend request headers based on the addtional headers
+     * passed in via the options object
+     */
+    if (options && options.additionalHeaders) {
+        return {
+            ...request,
+            headers: {
+                ...request.headers,
+                ...options.additionalHeaders,
+            },
+        };
+    }
+    return request;
+}
+
 /* Create a new callable operation that return a Promise.
  */
 export default (context, name, operationName) => async (req, args, options) => {
@@ -65,12 +82,16 @@ export default (context, name, operationName) => async (req, args, options) => {
         operationName,
     });
 
-    const request = buildRequest(
+    let request = buildRequest(
         requestContext,
         req,
         args,
         options,
     );
+
+    // Extend headers from options
+    // Allows for passing in specific headers for a given request
+    request = extendHeadersFromOptions(request, options);
 
     const { buildRequestLogs, logSuccess, logFailure } = getContainer('logging') || {};
 
