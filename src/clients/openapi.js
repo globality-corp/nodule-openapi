@@ -53,7 +53,7 @@ function defaultExtendHeaders(req, headers) {
 
     // pass the client id from the user (if any)
     // this is so we can identify which client is making the request
-    const clientId = get(req, 'locals.user.clientId');
+    const clientId = get(req, 'locals.client.id');
     if (clientId) {
         extendHeaders['X-Request-Client'] = clientId;
     }
