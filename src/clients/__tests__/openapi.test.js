@@ -262,8 +262,8 @@ describe('createOpenAPIClient', () => {
         const req2 = {
             id: 'request-id',
             locals: {
-                user: {
-                    clientId: 'client-id-123',
+                client: {
+                    id: 'client-id-123',
                 },
             },
         };
