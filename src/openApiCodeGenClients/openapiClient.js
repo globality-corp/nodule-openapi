@@ -11,6 +11,8 @@ export const OpenAPIClient = (options, serviceName, resourceApis, spec) => {
     const axiosInstance = axios.create({
         baseURL: options.baseUrl,
         timeout: options.timeout,
+        httpAgent: options.httpAgent,
+        httpsAgent: options.httpsAgent,
     });
 
     const basePath = get(spec, 'basePath', '');
