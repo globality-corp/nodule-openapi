@@ -30,7 +30,8 @@
         "eslint": "^4.18.2",
         "eslint-config-airbnb-base": "^12.1.0",
         "eslint-plugin-import": "^2.9.0",
-        "jest": "^24.9.0"
+        "jest": "^24.9.0",
+        "typescript": "^5.4.5"
     },
     "jest": {
         "testURL": "http://localhost/"
