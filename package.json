@@ -7,7 +7,7 @@
     "author": "Globality Engineering",
     "license": "MIT",
     "scripts": {
-        "build": "babel src --out-dir lib --ignore '**/__tests__/*,**/__mocks__/*'",
+        "build": "tsc -p tsconfig.build.json && babel src --out-dir lib --ignore '**/__tests__/*,**/__mocks__/*' --extensions='.js,.ts'",
         "lint": "eslint src --cache",
         "test": "jest -w 1",
         "verify": "yarn lint && yarn test"
