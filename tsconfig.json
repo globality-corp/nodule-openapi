@@ -1,22 +1,12 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
-    "strict": true,
-    "esModuleInterop": true,
-    "noImplicitAny": true,
-    "moduleResolution": "node",
-    "sourceMap": true,
-    "noImplicitReturns": true,
-    "resolveJsonModule": true,
     "baseUrl": "./src",
     "outDir": "lib",
     "declaration": true,
     "emitDeclarationOnly": true,
     "isolatedModules": true,
     "allowJs": true,
-
     "types": ["node", "jest"],
     "typeRoots": ["src/types", "node_modules/@types"]
   },
