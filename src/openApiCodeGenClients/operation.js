@@ -7,6 +7,7 @@ import buildError, { normalizeError } from '../error';
 import { isRetryableOperation } from '../operation';
 import buildResponse from '../response';
 import { createHeaders, createParamsWrapper } from './helpers';
+import { checkTimeout } from './utils';
 
 
 /* Create a new callable operation that return a Promise.
@@ -24,6 +25,7 @@ export default (
     requestMethod, // e.g get, post, put etc.
     path, // This is the path defined on the spec for the given operation
 ) => async (req, args, options) => {
+    checkTimeout(req);
     const operationName = `${resourceName}.${operation}`;
     const axiosRequestConfig = {
         adapter: buildAdapter({

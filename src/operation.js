@@ -8,6 +8,7 @@ import buildError, { normalizeError } from './error';
 import buildRequest from './request';
 import buildResponse from './response';
 import Validator from './validation';
+import { checkTimeout } from './openApiCodeGenClients/utils';
 
 
 function sleep(time) {
@@ -70,6 +71,8 @@ export function extendHeadersFromOptions(request, options) {
 /* Create a new callable operation that return a Promise.
  */
 export default (context, name, operationName) => async (req, args, options) => {
+    checkTimeout(req);
+
     // validate inputs
     Validator(context)(req, operationName, args);
 
