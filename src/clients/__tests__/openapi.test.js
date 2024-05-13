@@ -326,7 +326,7 @@ describe('createOpenAPIClient', () => {
             id: 'request-id',
             locals: {
                 user: {},
-                startTime: process.hrtime(),
+                startTime: process.hrtime.bigint(),
                 requestTotalMaxTimeInMillis: 100,
             },
         };
