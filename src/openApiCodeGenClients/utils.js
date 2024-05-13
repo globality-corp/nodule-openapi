@@ -1,4 +1,5 @@
 import { camelCase, has, includes, isNil, lowerCase } from 'lodash';
+/* global BigInt */
 
 // eslint-disable-next-line radix
 export const TIMEOUT_IN_MILLIS = parseInt(
@@ -23,8 +24,8 @@ export function checkTimeout(req) {
         return;
     }
 
-    const currentTime = process.hrtime(req.locals.startTime);
-    const elapsedTimeInMillis = (currentTime[0] * 1000) + (currentTime[1] / 1e6);
+    const currentTime = process.hrtime.bigint();
+    const elapsedTimeInMillis = (currentTime - req.locals.startTime) / BigInt(1e6);
     const timeout = req.locals.requestTotalMaxTimeInMillis || TIMEOUT_IN_MILLIS;
 
     if (elapsedTimeInMillis > timeout) {
