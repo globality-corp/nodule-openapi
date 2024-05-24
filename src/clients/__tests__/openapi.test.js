@@ -312,4 +312,54 @@ describe('createOpenAPIClient', () => {
             'X-Request-Test': 'test',
         });
     });
+
+    it('timeout', async () => {
+        const config = await Nodule.testing().fromObject(
+            mockResponse('petstore', 'pet.search', {
+                items: [
+                    'abc',
+                ],
+            }),
+        ).load();
+
+        const reqTimeout = {
+            id: 'request-id',
+            locals: {
+                user: {},
+                startTime: process.hrtime.bigint(),
+                requestTotalMaxTimeInMillis: 100,
+            },
+        };
+
+        const client = createOpenAPIClient('petstore', spec);
+
+        const result = await client.pet.search(reqTimeout, { name: 'abc' }, {
+            additionalHeaders: {
+                'X-Request-Test': 'test',
+            },
+        });
+        expect(result).toEqual({
+            items: ['abc'],
+        });
+
+        expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(1);
+        expect(config.clients.mock.petstore.pet.search.mock.calls[0][0].headers).toMatchObject({
+            Accept: 'application/json, text/plain, */*',
+            'Content-Type': 'application/json; charset=utf-8',
+            'X-Request-Service': 'test',
+            'X-Request-Test': 'test',
+        });
+
+        await new Promise(r => setTimeout(r, 101));
+
+        await expect(client.pet.search(reqTimeout, { name: 'abc' }, {
+            additionalHeaders: {
+                'X-Request-Test': 'test',
+            },
+        })).rejects.toThrow(
+            'Request took longer than allowed',
+        );
+
+        expect(config.clients.mock.petstore.pet.search).toHaveBeenCalledTimes(1);
+    });
 });

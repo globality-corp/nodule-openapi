@@ -11,7 +11,6 @@ class PetApi {
     }
 }
 
-
 describe('createOpenAPIClient', () => {
     const req = {
         id: 'request-id',
@@ -118,5 +117,48 @@ describe('createOpenAPIClient', () => {
         expect(spy).toHaveBeenCalledTimes(1);
         expect(spy.mock.calls[0][1].headers['X-Request-Client']).toBe(undefined);
         expect(spy.mock.calls[0][1].headers['X-Request-Test-Header']).toBe('test');
+    });
+
+
+    it('timeout', async () => {
+        await Nodule.testing().load();
+
+        const spy = jest.spyOn(PetApi.prototype, 'search');
+
+        const client = createOpenAPIClientV2('petstore', { petApi: PetApi }, spec);
+        const reqTimeout = {
+            id: 'request-id',
+            locals: {
+                user: {},
+                startTime: process.hrtime.bigint(),
+                requestTotalMaxTimeInMillis: 100,
+            },
+        };
+        const result = await client.petApi.search(reqTimeout, null, {
+            additionalHeaders: {
+                'X-Request-Test-Header': 'test',
+            },
+        });
+
+        expect(result).toEqual({
+            items: [
+                REX,
+            ],
+        });
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(spy.mock.calls[0][1].headers['X-Request-Client']).toBe(undefined);
+        expect(spy.mock.calls[0][1].headers['X-Request-Test-Header']).toBe('test');
+
+        await new Promise(r => setTimeout(r, 101));
+
+        await expect(client.petApi.search(reqTimeout, null, {
+            additionalHeaders: {
+                'X-Request-Test-Header': 'test',
+            },
+        })).rejects.toThrow(
+            'Request took longer than allowed',
+        );
+
+        expect(spy).toHaveBeenCalledTimes(1);
     });
 });

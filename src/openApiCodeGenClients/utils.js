@@ -1,5 +1,10 @@
-import { camelCase, includes, isNil, lowerCase } from 'lodash';
+import { camelCase, has, includes, isNil, lowerCase } from 'lodash';
+/* global BigInt */
 
+// eslint-disable-next-line radix
+export const TIMEOUT_IN_MILLIS = parseInt(
+    process.env.REQUESTS__TOTAL_MAX_TIME_IN_MILLIS || `${60000}`,
+);
 
 export function isMutationOperation(requestMethod) {
     return includes(
@@ -13,6 +18,20 @@ export function isMutationOperation(requestMethod) {
     );
 }
 
+export function checkTimeout(req) {
+    // if not set, just exit, backwards compatibility
+    if (!has(req, 'locals') || !has(req.locals, 'startTime')) {
+        return;
+    }
+
+    const currentTime = process.hrtime.bigint();
+    const elapsedTimeInMillis = (currentTime - req.locals.startTime) / BigInt(1e6);
+    const timeout = req.locals.requestTotalMaxTimeInMillis || TIMEOUT_IN_MILLIS;
+
+    if (elapsedTimeInMillis > timeout) {
+        throw new Error('Request took longer than allowed');
+    }
+}
 
 export function convertResourceNameToBaseTags(ResourceApi) {
     // e.g ResourceApi = PublicV1Api
