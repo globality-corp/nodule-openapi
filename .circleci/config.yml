@@ -1,7 +1,7 @@
 defaults: &defaults
   working_directory: ~/repo
   docker:
-    - image: circleci/node:14.15.4
+    - image: cimg/node:current
 
 whitelist: &whitelist
   paths: .
@@ -20,7 +20,7 @@ jobs:
             echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}" > .npmrc
       - restore_cache:
           keys:
-          - v1-dependencies-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
+            - v1-dependencies-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
 
       - run:
           name: Install Dependencies
