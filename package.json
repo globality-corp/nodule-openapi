@@ -6,6 +6,7 @@
     "repository": "git@github.com:globality-corp/nodule-openapi.git",
     "author": "Globality Engineering",
     "license": "MIT",
+    "types": "./lib/index.d.ts",
     "scripts": {
         "build": "tsc -p tsconfig.build.json && babel src --out-dir lib --ignore '**/__tests__/*,**/__mocks__/*' --extensions='.js,.ts'",
         "lint": "eslint src --cache",
