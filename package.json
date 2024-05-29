@@ -18,8 +18,8 @@
         "axios": "^0.26.1",
         "http-status-codes": "^1.3.0",
         "lodash": "^4.17.5",
-        "throat": "^4.1.0",
-        "ts-results": "^3.3.0"
+        "neverthrow": "^6.2.1",
+        "throat": "^4.1.0"
     },
     "peerDependencies": {
         "@globality/nodule-config": ">= 2.3.0 < 3"
