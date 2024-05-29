@@ -1,27 +1,26 @@
 /* eslint-disable import/prefer-default-export */
 // @ts-check
-import { Ok, Err } from 'ts-results';
-import { TooManyResults, NoResults } from '../../error';
-
-/**
- * @typedef {(req: any, args: any, options: any) => Promise<{items: any[]}>} SearchRequest
- */
+import { okAsync, errAsync, ResultAsync } from 'neverthrow';
+import { TooManyResults, NoResults, OpenAPIError } from '../../error';
 
 /**
  * @param {any} req
- * @param {{searchRequest: SearchRequest, args: any, options: any}} args
- * @returns {Promise<import('ts-results').Result<any, import('../../error').OpenAPIError>>}
+ * @param {{
+ *  searchRequest: (req: any, args: any, options: any) => Promise<{items: any[]}>,
+ *  args: Record<string, unknown>,
+ *  options?: Record<string, unknown>
+ * }} args
  */
-export async function oneSafe(req, { searchRequest, args = {}, options = {} }) {
-    const page = await searchRequest(req, args, options);
+export function oneSafe(req, { searchRequest, args = {}, options = {} }) {
+    return ResultAsync.fromPromise(searchRequest(req, args, options), () => new OpenAPIError('...')).andThen((page) => {
+        if (page.items.length === 1) {
+            return okAsync(page.items[0]);
+        }
 
-    if (page.items.length === 1) {
-        return Ok(page.items[0]);
-    }
+        if (page.items.length > 1) {
+            return errAsync(new TooManyResults(`Too many results found for search: ${page.items.length}`));
+        }
 
-    if (page.items.length > 1) {
-        return Err(new TooManyResults(`Too many results found for search: ${page.items.length}`));
-    }
-
-    return Err(new NoResults('No results found for search'));
+        return errAsync(new NoResults('No results found for search'));
+    });
 }

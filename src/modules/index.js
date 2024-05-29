@@ -5,5 +5,6 @@ export {
     first,
     none,
     one,
+    oneSafe,
 } from './paging';
 export { default as concurrentPaginate } from './concurrency';
