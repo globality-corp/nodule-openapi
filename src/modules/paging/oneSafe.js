@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 // @ts-check
 import { okAsync, errAsync, ResultAsync } from 'neverthrow';
-import { TooManyResults, NoResults, OpenAPIError } from '../../error';
+import { NoResults, OpenAPIError, TooManyResults } from '../../error';
 
 /**
  * @param {any} req
@@ -10,6 +10,7 @@ import { TooManyResults, NoResults, OpenAPIError } from '../../error';
  *  args: Record<string, unknown>,
  *  options?: Record<string, unknown>
  * }} args
+ * @returns {ResultAsync<any, NoResults | TooManyResults>}
  */
 export function oneSafe(req, { searchRequest, args = {}, options = {} }) {
     return ResultAsync.fromPromise(searchRequest(req, args, options), () => new OpenAPIError('...')).andThen((page) => {
@@ -18,9 +19,9 @@ export function oneSafe(req, { searchRequest, args = {}, options = {} }) {
         }
 
         if (page.items.length > 1) {
-            return errAsync(new TooManyResults(`Too many results found for search: ${page.items.length}`));
+            return errAsync(new TooManyResults());
         }
 
-        return errAsync(new NoResults('No results found for search'));
+        return errAsync(new NoResults());
     });
 }
