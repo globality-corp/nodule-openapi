@@ -13,7 +13,10 @@ import { NoResults, OpenAPIError, TooManyResults } from '../../error';
  * @returns {ResultAsync<any, NoResults | TooManyResults>}
  */
 export function oneSafe(req, { searchRequest, args = {}, options = {} }) {
-    return ResultAsync.fromPromise(searchRequest(req, args, options), () => new OpenAPIError('...')).andThen((page) => {
+    return ResultAsync.fromPromise(
+        searchRequest(req, args, options),
+        err => new OpenAPIError(`calling searchRequest threw an error: ${err}`),
+    ).andThen((page) => {
         if (page.items.length === 1) {
             return okAsync(page.items[0]);
         }
