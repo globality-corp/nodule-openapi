@@ -14,7 +14,7 @@
         "verify": "yarn lint && yarn test"
     },
     "dependencies": {
-        "@globality/nodule-config": "^2.15.4-dev.32",
+        "@globality/nodule-config": "^2.15.4",
         "axios": "^1.7.2",
         "http-status-codes": "^1.3.0",
         "lodash": "^4.17.5",
