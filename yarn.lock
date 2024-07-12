@@ -699,10 +699,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@globality/nodule-config@^2.15.3":
-  version "2.15.3"
-  resolved "https://globality.jfrog.io/globality/api/npm/npm/@globality/nodule-config/-/@globality/nodule-config-2.15.3.tgz#9a9a2c4efff2f798b5180d25449e1c33869b28b3"
-  integrity sha512-v+FA9dmw9VK6jOV4/8uC3L5e/p6Z6r1MoUPwATRhR/9K6Y1WTmBIeESov26IqRPoT7d78JrToNkoSFnpgTsCNA==
+"@globality/nodule-config@^2.15.4-dev.31":
+  version "2.15.4-dev.32"
+  resolved "https://globality.jfrog.io/globality/api/npm/npm/@globality/nodule-config/-/@globality/nodule-config-2.15.4-dev.32.tgz#c08b6c80a8b43aec7de5a84498befc288f1165ae"
+  integrity sha512-ssLBYYcta9jSLCGxQkA+twcVwxOi6rEjFwgFqkBgSXs201XfENTeLM6Z4VTMYZ7/m3dxrT14lWkjFB0cNw+UdA==
   dependencies:
     aws-sdk "^2.1658.0"
     bottlejs "1.7.2"
