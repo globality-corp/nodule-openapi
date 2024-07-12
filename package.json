@@ -39,6 +39,9 @@
         "typescript": "^5.4.5"
     },
     "jest": {
-        "testURL": "http://localhost/"
+        "testURL": "http://localhost/",
+        "moduleNameMapper": {
+            "^axios$": "axios/dist/node/axios.cjs"
+        }
     }
 }
