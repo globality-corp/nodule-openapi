@@ -115,15 +115,6 @@ export function createOpenAPIClient(name, spec) {
     const config = getConfig(`clients.${name}`) || {};
     const { baseUrl, timeout, retries, namingOverride, namingPath, namingQuery } = config;
 
-    if (!baseUrl && (metadata.testing || metadata.debug)) {
-        // eslint-disable-next-line no-console
-        console.warn(
-            `Warning - no base url found for client '${name}'
-            - initializing a client in a non-development environment without
-            a base url present would lead to an exception being raised`,
-        );
-    }
-
     if (!baseUrl && !metadata.testing && !metadata.debug) {
         throw new Error(`OpenAPI client ${name} does not have a configured baseUrl`);
     }
