@@ -77,11 +77,22 @@ describe('safe paging functions', () => {
         test('some results', async () => {
             const res = await firstSafe(req, { searchRequest: searchRequestTwo, args: { param: 'eter' } });
             expect(res).toEqual(ok({ id: 1 }));
+
+
+            expect(searchRequestTwo).toHaveBeenCalledTimes(1);
+            expect(searchRequestTwo).toHaveBeenCalledWith(req, {
+                param: 'eter',
+            }, {});
         });
 
         test('no results', async () => {
             const res = await firstSafe(req, { searchRequest: searchRequestNone, args: { param: 'eter' } });
             expect(res).toEqual(err(new NoResults('No results found for search')));
+
+            expect(searchRequestNone).toHaveBeenCalledTimes(1);
+            expect(searchRequestNone).toHaveBeenCalledWith(req, {
+                param: 'eter',
+            }, {});
         });
     });
 });
