@@ -22,7 +22,7 @@
     },
     "peerDependencies": {
         "@globality/nodule-config": ">= 2.15.4 < 3",
-        "neverthrow": "^6.2.2"
+        "neverthrow": "^7.1.0"
     },
     "devDependencies": {
         "@babel/cli": "^7.7.0",
@@ -35,7 +35,7 @@
         "eslint-config-airbnb-base": "^12.1.0",
         "eslint-plugin-import": "^2.9.0",
         "jest": "^24.9.0",
-        "neverthrow": "^6.2.2",
+        "neverthrow": "^7.1.0",
         "typescript": "^5.4.5"
     },
     "jest": {
@@ -43,5 +43,6 @@
         "moduleNameMapper": {
             "^axios$": "axios/dist/node/axios.cjs"
         }
-    }
+    },
+    "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
