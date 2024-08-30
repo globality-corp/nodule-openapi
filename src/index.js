@@ -15,6 +15,7 @@ export {
     none,
     one,
     oneSafe,
+    firstSafe,
 } from './modules';
 export {
     mockError,
