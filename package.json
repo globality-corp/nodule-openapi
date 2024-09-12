@@ -14,14 +14,13 @@
         "verify": "yarn lint && yarn test"
     },
     "dependencies": {
-        "@globality/nodule-config": "^2.15.4",
         "axios": "^1.7.2",
         "http-status-codes": "^1.3.0",
         "lodash": "^4.17.5",
         "throat": "^4.1.0"
     },
     "peerDependencies": {
-        "@globality/nodule-config": ">= 2.15.4 < 3",
+        "@globality/nodule-config": "^2.16.0",
         "neverthrow": "^7.1.0"
     },
     "devDependencies": {
@@ -29,6 +28,7 @@
         "@babel/core": "^7.7.2",
         "@babel/node": "^7.7.0",
         "@babel/preset-env": "^7.7.1",
+        "@globality/nodule-config": "^2.16.0",
         "@types/jest": "^24",
         "@types/node": "^18",
         "eslint": "^4.18.2",
