@@ -1,10 +1,9 @@
 import { getConfig, getContainer, getMetadata } from '@globality/nodule-config';
 import axios from 'axios';
-import { get } from 'lodash';
-import OpenAPI from '../client';
-import { NAMING_OPTION } from '../naming';
-import { OpenAPIError } from '../error';
-
+import { get } from 'lodash-es';
+import OpenAPI from '../client.js';
+import { NAMING_OPTION } from '../naming.js';
+import { OpenAPIError } from '../error.js';
 
 /* Inject mock and testing adapters.
  */
@@ -77,6 +76,7 @@ export function buildHeaders(context, req) {
 
     const extendHeaders = getContainer('extendHeaders') || defaultExtendHeaders;
     if (extendHeaders) {
+        // @ts-ignore
         headers = extendHeaders(req, headers);
     }
 
@@ -93,11 +93,12 @@ export function validateResponse(response) {
 }
 
 export function http() {
-    return request => axios(
+    return (request) => axios(
         request,
     ).then((response) => {
         const [validResponse, message] = validateResponse(response);
         if (!validResponse) {
+            // @ts-ignore
             throw new OpenAPIError(message, 'invalid_response');
         }
         return response;

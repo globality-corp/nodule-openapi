@@ -1,5 +1,5 @@
-import buildError, { OpenAPIError } from '../error';
-
+// @ts-nocheck
+import buildError, { OpenAPIError } from '../error.js';
 
 describe('buildError', () => {
 

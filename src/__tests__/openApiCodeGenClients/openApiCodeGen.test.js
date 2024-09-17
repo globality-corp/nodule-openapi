@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-import { clearBinding, Nodule } from '@globality/nodule-config/lib';
-import { OpenAPIClient } from '../../openApiCodeGenClients';
+import { clearBinding, Nodule } from '@globality/nodule-config/lib/index.js';
+import { OpenAPIClient } from '../../openApiCodeGenClients/index.js';
 import exampleV3Spec from './exampleSpec.v3.json';
-import { mockResponse } from '../../testing';
+import { mockResponse } from '../../testing/index.js';
 
 const exampleOptions = {
     baseUrl: 'localhost:5000',
@@ -20,7 +20,6 @@ class PublicV1Api {
 const resourceApis = {
     publicV1Api: PublicV1Api,
 };
-
 
 describe('OpenAPIClient', () => {
     const req = {};

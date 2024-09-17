@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 /* Error handling.
  */
 import {
@@ -5,7 +6,7 @@ import {
     INTERNAL_SERVER_ERROR,
     NOT_FOUND,
 } from 'http-status-codes';
-import { get, omitBy } from 'lodash';
+import { get, omitBy } from 'lodash-es';
 
 // We are accidentally leaking auth headers to loggly when throwing
 // an OpenAPIError. We want to fix this properly in the long term,
@@ -21,7 +22,11 @@ function pruneAuthorizationHeaders(headers) {
 }
 
 export class OpenAPIError extends Error {
+    /**
+     * @param {string | null} [message=null]
+     */
     constructor(message = null, code = 500, data = null, headers = null) {
+        // @ts-ignore
         super(message);
         Error.captureStackTrace(this, this.constructor);
         this.name = this.constructor.name;
@@ -31,13 +36,11 @@ export class OpenAPIError extends Error {
     }
 }
 
-
 export class TooManyResults extends OpenAPIError {
     constructor(message = 'Too Many Results') {
         super(message, INTERNAL_SERVER_ERROR);
     }
 }
-
 
 export class NoResults extends OpenAPIError {
     constructor(message = 'No Results') {
@@ -45,13 +48,11 @@ export class NoResults extends OpenAPIError {
     }
 }
 
-
 export class MaxLimitReached extends OpenAPIError {
     constructor(message = 'Max Limit Reached') {
         super(message, GATEWAY_TIMEOUT);
     }
 }
-
 
 /* Extract the most useful fields from an error.
  */
@@ -65,10 +66,9 @@ export function normalizeError(error) {
     return new OpenAPIError(message, code, data, headers);
 }
 
-
 /* Build error from response data.
  */
-export default context => get(
+export default (context) => get(
     context,
     'options.buildError',
     (error) => {

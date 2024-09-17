@@ -1,1 +1,1 @@
-export { mockError, mockResponse, mockResponseVitest, mockErrorVitest } from './openapi';
+export { mockError, mockResponse, mockResponseVitest, mockErrorVitest } from './openapi.js';

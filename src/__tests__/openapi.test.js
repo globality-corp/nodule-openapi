@@ -1,6 +1,5 @@
 import spec from './example.json';
-import OpenAPI from '..';
-
+import OpenAPI from '../index.js';
 
 describe('OpenAPI initialization', () => {
     it('generates client with dotted operation names', () => {
@@ -16,7 +15,6 @@ describe('OpenAPI initialization', () => {
         });
     });
 });
-
 
 describe('OpenAPI invocation', () => {
     it('returns json', async () => {
@@ -51,6 +49,7 @@ describe('OpenAPI invocation', () => {
             await client.chatroom.search();
             throw new Error('error expected');
         } catch (error) {
+            // @ts-ignore
             expect(error.message).toEqual('errcode');
         }
     });

@@ -1,6 +1,5 @@
 import spec from './example.json';
-import Validator from '../validation';
-
+import Validator from '../validation.js';
 
 describe('validation', () => {
     const req = {};
@@ -8,6 +7,7 @@ describe('validation', () => {
     it('does not raise an error on valid input', () => {
         const method = 'get';
         const path = '/chatroom';
+        // @ts-ignore
         const validate = Validator({ spec, method, path });
 
         expect(validate(req, 'chatroom.search', {})).toBe(true);
@@ -16,6 +16,7 @@ describe('validation', () => {
     it('enforces that input parameters are expected', () => {
         const method = 'get';
         const path = '/chatroom';
+        // @ts-ignore
         const validate = Validator({ spec, method, path });
 
         expect(() => validate(req, 'chatroom.search', { foo: 'bar' })).toThrow(
@@ -26,6 +27,7 @@ describe('validation', () => {
     it('enforces that required parameters are inputed', () => {
         const method = 'get';
         const path = '/chatroom/{chatroom_id}';
+        // @ts-ignore
         const validate = Validator({ spec, method, path });
 
         expect(() => validate(req, 'chatroom.retrieve', {})).toThrow(
@@ -36,6 +38,7 @@ describe('validation', () => {
     it('enforces that required parameters are non-null', () => {
         const method = 'get';
         const path = '/chatroom/{chatroom_id}';
+        // @ts-ignore
         const validate = Validator({ spec, method, path });
 
         expect(() => validate(req, 'chatroom.retrieve', { chatroomId: null })).toThrow(
@@ -46,6 +49,7 @@ describe('validation', () => {
     it('enforces that required falsey parameters pass', () => {
         const method = 'get';
         const path = '/chatroom/{chatroom_id}';
+        // @ts-ignore
         const validate = Validator({ spec, method, path });
 
         expect(validate(req, 'chatroom.retrieve', { chatroomId: 0 })).toBe(true);

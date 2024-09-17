@@ -1,16 +1,13 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "./node_modules/@total-typescript/tsconfig/tsc/no-dom/library.json",
   "compilerOptions": {
     "baseUrl": "./src",
     "outDir": "lib",
-    "declaration": true,
-    "emitDeclarationOnly": true,
-    "esModuleInterop": true,
-    "isolatedModules": true,
-    "allowJs": true,
-    "resolveJsonModule": true,
-    "types": ["node", "jest"],
-    "typeRoots": ["src/types", "node_modules/@types"]
+    "checkJs": true,
+    "noImplicitAny": false,
+    "types": ["node", "jest"]
   },
+  "include": ["src"],
   "exclude": ["lib"]
 }

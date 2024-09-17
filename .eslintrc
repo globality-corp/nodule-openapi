@@ -1,5 +1,8 @@
 {
     "extends": "airbnb-base",
+    "parserOptions": {
+        "ecmaVersion": "2022"
+    },
     "rules": {
         "comma-dangle": [2, {
           "arrays": "always-multiline",
@@ -13,9 +16,13 @@
         "object-curly-newline": ["error", {"consistent": true}],
         "indent": ["error", 4, { "SwitchCase": 1 }],
         "space-before-function-paren": 0,
-        "padded-blocks": 0
+        "padded-blocks": 0,
+
+        // handled by tsc
+        "import/extensions": "off",
+        "import/no-unresolved": "off"
     },
     "env": {
         "jest": true
-    },
+    }
 }

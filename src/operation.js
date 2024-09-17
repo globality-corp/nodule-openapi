@@ -1,18 +1,18 @@
 /* Callable operations.
  */
-import { assign, get, includes, lowerCase } from 'lodash';
+import { assign, get, includes, lowerCase } from 'lodash-es';
 import { getContainer } from '@globality/nodule-config';
 import axios from 'axios';
 
-import buildError, { normalizeError } from './error';
-import buildRequest from './request';
-import buildResponse from './response';
-import Validator from './validation';
-import { checkTimeout } from './openApiCodeGenClients/utils';
-
+import buildError, { normalizeError } from './error.js';
+import buildRequest from './request.js';
+import buildResponse from './response.js';
+import Validator from './validation.js';
+import { checkTimeout } from './openApiCodeGenClients/utils.js';
 
 function sleep(time) {
-    return new Promise(resolve => setTimeout(resolve, time));
+    // eslint-disable-next-line no-promise-executor-return
+    return new Promise((resolve) => setTimeout(resolve, time));
 }
 
 function isMutationOperation(request) {
@@ -111,9 +111,9 @@ export default (context, name, operationName) => async (req, args, options) => {
     const proxyRetriesDelayTime = get(request, 'proxyRetriesDelay', 0);
     const retriesCount = isMutationOperation(request) ? 0 : get(request, 'retries', 0);
     const executeStartTime = process.hrtime();
-    const requestLogs = buildRequestLogs ?
-        buildRequestLogs(req, name, operationName, request) :
-        null;
+    const requestLogs = buildRequestLogs
+        ? buildRequestLogs(req, name, operationName, request)
+        : null;
 
     while (proxyErrorsCount <= proxyRetriesCount && serviceErrorsCount <= retriesCount) {
         try {

@@ -1,14 +1,13 @@
 /* Callable operations.
  */
-import { getContainer } from '@globality/nodule-config/lib';
-import { assign, get } from 'lodash';
-import { buildAdapter } from '../clients/openapi';
-import buildError, { normalizeError } from '../error';
-import { isRetryableOperation } from '../operation';
-import buildResponse from '../response';
-import { createHeaders, createParamsWrapper } from './helpers';
-import { checkTimeout } from './utils';
-
+import { getContainer } from '@globality/nodule-config';
+import { assign, get } from 'lodash-es';
+import { buildAdapter } from '../clients/openapi.js';
+import buildError, { normalizeError } from '../error.js';
+import { isRetryableOperation } from '../operation.js';
+import buildResponse from '../response.js';
+import { createHeaders, createParamsWrapper } from './helpers.js';
+import { checkTimeout } from './utils.js';
 
 /* Create a new callable operation that return a Promise.
  */
@@ -49,9 +48,9 @@ export default (
     const executeStartTime = process.hrtime();
 
     const paramsWrapper = createParamsWrapper(args);
-    const requestLogs = buildRequestLogs ?
-        buildRequestLogs(req, serviceName, operationName, paramsWrapper) :
-        null;
+    const requestLogs = buildRequestLogs
+        ? buildRequestLogs(req, serviceName, operationName, paramsWrapper)
+        : null;
 
     // enhance the context with service and operation name
     const requestContext = assign({}, context, {
@@ -78,7 +77,6 @@ export default (
             } else {
                 rawResponse = await resourceApiObj[operation](args, axiosRequestConfig);
             }
-
 
             successResponse = buildResponse(requestContext)(
                 rawResponse,

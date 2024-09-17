@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 // @ts-check
 import { okAsync, errAsync, ResultAsync } from 'neverthrow';
-import { NoResults, OpenAPIError, TooManyResults } from '../../error';
+import { NoResults, OpenAPIError, TooManyResults } from '../../error.js';
 
 /**
  * @param {any} req
@@ -15,7 +15,7 @@ import { NoResults, OpenAPIError, TooManyResults } from '../../error';
 export function oneSafe(req, { searchRequest, args = {}, options = {} }) {
     return ResultAsync.fromPromise(
         searchRequest(req, args, options),
-        err => new OpenAPIError(`calling searchRequest threw an error: ${err}`),
+        (err) => new OpenAPIError(`calling searchRequest threw an error: ${err}`),
     ).andThen((page) => {
         if (page.items.length === 1) {
             return okAsync(page.items[0]);

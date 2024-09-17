@@ -1,4 +1,6 @@
-import { capitalizeFirstLetter, convertOperationIdToOperationName, convertResourceNameToBaseTags, doTagsMatch, findAllOperationIds, findAllOperationIdsUsingBaseTag, isMutationOperation } from '../../openApiCodeGenClients/utils';
+/* eslint-disable max-classes-per-file */
+
+import { capitalizeFirstLetter, convertOperationIdToOperationName, convertResourceNameToBaseTags, doTagsMatch, findAllOperationIds, findAllOperationIdsUsingBaseTag, isMutationOperation } from '../../openApiCodeGenClients/utils.js';
 import exampleV3Spec from './exampleSpec.v3.json';
 
 describe('isMutationOperation', () => {
@@ -47,7 +49,6 @@ describe('convertResourceNameToBaseTags', () => {
     });
 });
 
-
 describe('doTagsMatch', () => {
     it.each([
         [['public', 'v1'], ['public/v1'], true],
@@ -61,7 +62,6 @@ describe('doTagsMatch', () => {
         expect(output).toEqual(expectedOutput);
     });
 });
-
 
 describe('findAllOperationIdsUsingBaseTag', () => {
     it('correctly finds all operation ids', () => {

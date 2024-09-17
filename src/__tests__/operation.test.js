@@ -1,4 +1,4 @@
-import { extendHeadersFromOptions } from '../operation';
+import { extendHeadersFromOptions } from '../operation.js';
 
 describe('extendHeadersFromOptions function', () => {
 
@@ -25,7 +25,6 @@ describe('extendHeadersFromOptions function', () => {
             'X-Custom-Header': 'CustomValue',
             'X-Another-Header': 'AnotherValue',
         };
-
 
         const { headers } = extendHeadersFromOptions(request, options);
         expect(headers).toEqual(expectedHeaders);

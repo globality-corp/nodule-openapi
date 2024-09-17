@@ -1,4 +1,4 @@
-import { buildHeaders } from '../clients/openapi';
+import { buildHeaders } from '../clients/openapi.js';
 
 function createHeaders(req, context, options) {
     /**

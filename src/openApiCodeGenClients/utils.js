@@ -1,4 +1,4 @@
-import { camelCase, has, includes, isNil, lowerCase } from 'lodash';
+import { camelCase, has, includes, isNil, lowerCase } from 'lodash-es';
 /* global BigInt */
 
 // eslint-disable-next-line radix
@@ -41,7 +41,7 @@ export function convertResourceNameToBaseTags(ResourceApi) {
 
     const baseResourceName = resourceName.replace('Api', ''); // PublicV1
     const names = baseResourceName.split(/(?=[A-Z])/); // ['Public', 'V1']
-    return names.map(name => name.toLowerCase()); // ['public', 'v1']
+    return names.map((name) => name.toLowerCase()); // ['public', 'v1']
 }
 
 export function doTagsMatch(baseTags, tags) {

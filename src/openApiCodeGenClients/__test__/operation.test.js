@@ -1,9 +1,8 @@
-
 import { clearBinding, Nodule } from '@globality/nodule-config';
+import { jest } from '@jest/globals';
 
 import spec from '../../testing/petstore.json';
-import { createOpenAPIClientV2 } from '../../index';
-
+import { createOpenAPIClientV2 } from '../../index.js';
 
 class PetApi {
     search(args, axiosRequestConfig) { // eslint-disable-line class-methods-use-this, no-unused-vars
@@ -31,7 +30,6 @@ describe('createOpenAPIClient', () => {
         clearBinding('config');
     });
 
-
     it('passes proper x-request-id in header based on req.id', async () => {
         await Nodule.testing().load();
 
@@ -46,6 +44,7 @@ describe('createOpenAPIClient', () => {
             ],
         });
         expect(spy).toHaveBeenCalledTimes(1);
+        // @ts-ignore
         expect(spy.mock.calls[0][1].headers['X-Request-Id']).toBe('request-id');
     });
 
@@ -65,6 +64,7 @@ describe('createOpenAPIClient', () => {
             ],
         });
         expect(spy).toHaveBeenCalledTimes(1);
+        // @ts-ignore
         expect(spy.mock.calls[0][1].headers['X-Request-Client']).toBe('client-id-123');
     });
 
@@ -88,6 +88,7 @@ describe('createOpenAPIClient', () => {
             ],
         });
         expect(spy).toHaveBeenCalledTimes(1);
+        // @ts-ignore
         expect(spy.mock.calls[0][1].headers['X-Request-Client']).toBe(undefined);
     });
 
@@ -115,10 +116,11 @@ describe('createOpenAPIClient', () => {
             ],
         });
         expect(spy).toHaveBeenCalledTimes(1);
+        // @ts-ignore
         expect(spy.mock.calls[0][1].headers['X-Request-Client']).toBe(undefined);
+        // @ts-ignore
         expect(spy.mock.calls[0][1].headers['X-Request-Test-Header']).toBe('test');
     });
-
 
     it('timeout', async () => {
         await Nodule.testing().load();
@@ -146,10 +148,13 @@ describe('createOpenAPIClient', () => {
             ],
         });
         expect(spy).toHaveBeenCalledTimes(1);
+        // @ts-ignore
         expect(spy.mock.calls[0][1].headers['X-Request-Client']).toBe(undefined);
+        // @ts-ignore
         expect(spy.mock.calls[0][1].headers['X-Request-Test-Header']).toBe('test');
 
-        await new Promise(r => setTimeout(r, 101));
+        // eslint-disable-next-line no-promise-executor-return
+        await new Promise((r) => setTimeout(r, 101));
 
         await expect(client.petApi.search(reqTimeout, null, {
             additionalHeaders: {

@@ -1,4 +1,4 @@
-import { NoResults } from '../../error';
+import { NoResults } from '../../error.js';
 
 export default async function first(
     req, { searchRequest, args = {}, returnNullOnEmpty = false, options = {} },

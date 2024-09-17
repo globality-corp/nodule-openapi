@@ -1,8 +1,8 @@
-import { range } from 'lodash';
-import { all, any, one, none, first } from '../paging';
+import { jest } from '@jest/globals';
+import { range } from 'lodash-es';
 
-const items = range(100).map(id => ({ id }));
-const largeItems = range(201).map(id => ({ id }));
+const items = range(100).map((id) => ({ id }));
+const largeItems = range(201).map((id) => ({ id }));
 const req = {};
 let searchRequest;
 let searchRequestNone;
@@ -11,7 +11,7 @@ let searchRequestTwo;
 let searchLargeDataSet;
 
 const mockWarning = jest.fn();
-jest.mock('@globality/nodule-config', () => ({
+jest.unstable_mockModule('@globality/nodule-config', () => ({
     getMetadata: () => ({
         testing: false,
     }),
@@ -24,6 +24,9 @@ jest.mock('@globality/nodule-config', () => ({
         },
     }),
 }));
+
+// necessary to ensure that we have loaded the mock
+const { all, any, one, none, first } = await import('../paging/index.js');
 
 describe('Pagination', () => {
 
@@ -158,6 +161,7 @@ describe('Pagination', () => {
             caughtError = thrownError;
         }
 
+        // @ts-ignore
         expect(caughtError.message).toBe('Too many results found for search: 2');
 
         expect(searchRequestTwo).toHaveBeenCalledTimes(1);
@@ -208,6 +212,7 @@ describe('Pagination', () => {
             caughtError = thrownError;
         }
 
+        // @ts-ignore
         expect(caughtError.message).toBe('No results found for search');
 
         expect(searchRequestNone).toHaveBeenCalledTimes(1);
@@ -224,6 +229,7 @@ describe('Pagination', () => {
             caughtError = thrownError;
         }
 
+        // @ts-ignore
         expect(caughtError.message).toBe('Too many results found for search: 2');
 
         expect(searchRequestTwo).toHaveBeenCalledTimes(1);
@@ -255,6 +261,7 @@ describe('Pagination', () => {
             caughtError = thrownError;
         }
 
+        // @ts-ignore
         expect(caughtError.message).toBe('No results found for search');
 
         expect(searchRequestNone).toHaveBeenCalledTimes(1);

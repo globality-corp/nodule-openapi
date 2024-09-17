@@ -1,7 +1,6 @@
 /* Naming conventions.
  */
-import { camelCase, get, snakeCase } from 'lodash';
-
+import { camelCase, get, snakeCase } from 'lodash-es';
 
 /* Generate a suitable dotted operation name.
  */
@@ -17,7 +16,6 @@ export function operationNameFor(subject, operationId) {
     return `${camelCase(subject)}.${camelCase(operationId)}`;
 }
 
-
 /* Define naming convention for path parameters.
  *
  * The `fromUser` argument indicates whether to convert from user input to swagger
@@ -26,7 +24,6 @@ export function operationNameFor(subject, operationId) {
 export function pathParameterNameFor(value, fromUser) {
     return fromUser ? snakeCase(value) : camelCase(value);
 }
-
 
 /* Define naming convention for query parameters.
  *
@@ -40,14 +37,14 @@ export function queryParameterNameFor(value, fromUser) {
 /* Preserve parameter name
  *
  */
-const preserveParameterName = value => value;
+const preserveParameterName = (value) => value;
 
 const DEFAULT_NAMING = {
     path: pathParameterNameFor,
     query: queryParameterNameFor,
 };
 
-const NAMING_OPTION = {
+export const NAMING_OPTION = {
     preserveParameterName,
     pathParameterNameFor,
     queryParameterNameFor,
@@ -60,5 +57,3 @@ export default (name, type, fromUser, options) => {
     const nameFor = get(overrides, type, DEFAULT_NAMING[type]);
     return nameFor ? nameFor(name, fromUser) : name;
 };
-
-exports.NAMING_OPTION = NAMING_OPTION;

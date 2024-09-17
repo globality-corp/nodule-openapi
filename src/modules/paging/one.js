@@ -1,4 +1,4 @@
-import { TooManyResults, NoResults } from '../../error';
+import { TooManyResults, NoResults } from '../../error.js';
 
 export default async function one(req,
     { searchRequest, args = {}, returnNullOnEmpty = false, options = {} }) {

@@ -1,10 +1,10 @@
-import { get } from 'lodash';
+import { get } from 'lodash-es';
 import naming, {
     operationNameFor,
     pathParameterNameFor,
     queryParameterNameFor,
     NAMING_OPTION,
-} from '../naming';
+} from '../naming.js';
 
 describe('operationNameFor', () => {
     it('converts to camelCase', () => {
@@ -22,7 +22,6 @@ describe('operationNameFor', () => {
         );
     });
 });
-
 
 describe('pathParameterNameFor', () => {
     it('converts to camelCase', () => {
@@ -54,7 +53,6 @@ describe('pathParameterNameFor', () => {
         );
     });
 });
-
 
 describe('queryParameterNameFor', () => {
     it('converts to camelCase', () => {

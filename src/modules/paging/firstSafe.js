@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import { ResultAsync, errAsync, okAsync } from 'neverthrow';
-import { NoResults, OpenAPIError } from '../../error';
+import { NoResults, OpenAPIError } from '../../error.js';
 
 /**
  * @param {unknown} req
@@ -14,7 +14,7 @@ import { NoResults, OpenAPIError } from '../../error';
 export function firstSafe(
     req, { searchRequest, args = {}, options = {}, returnNullOnEmpty = false },
 ) {
-    const search = ResultAsync.fromThrowable(searchRequest, err => new OpenAPIError(`Search error: ${err}`));
+    const search = ResultAsync.fromThrowable(searchRequest, (err) => new OpenAPIError(`Search error: ${err}`));
 
     return search(req, args, options).andThen((page) => {
         if (page.items.length === 0) {

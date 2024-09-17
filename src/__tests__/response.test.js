@@ -1,5 +1,4 @@
-import buildResponse from '../response';
-
+import buildResponse from '../response.js';
 
 describe('buildRequest', () => {
     it('uses default builder', () => {

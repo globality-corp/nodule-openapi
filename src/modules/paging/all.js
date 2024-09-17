@@ -1,7 +1,7 @@
-import { flatten, range, isNil } from 'lodash';
+import { flatten, range, isNil } from 'lodash-es';
 import { getConfig, getContainer } from '@globality/nodule-config';
-import { MaxLimitReached } from '../../error';
-import concurrentPaginate from '../concurrency';
+import { MaxLimitReached } from '../../error.js';
+import concurrentPaginate from '../concurrency.js';
 
 const DEFAULT_LIMIT = 20;
 const DEFAULT_PAGING_UPPER_BOUND = 200;
@@ -24,6 +24,7 @@ export async function allForBodySearchRequest(
     req,
     { searchRequest, body = {}, maxLimit = null, concurrencyLimit = 1, options = {} },
 ) {
+    // @ts-ignore
     const { limit, offset, ...searchArgs } = body;
 
     const defaultLimit = getConfig('defaultLmit') || DEFAULT_LIMIT;
@@ -58,9 +59,10 @@ export async function allForBodySearchRequest(
             };
             return searchRequest(req, params, options);
         }),
+        // @ts-ignore
         concurrencyLimit,
     );
-    return flatten([firstPage, ...nextPages].map(page => page.items));
+    return flatten([firstPage, ...nextPages].map((page) => page.items));
 }
 
 /**
@@ -71,6 +73,7 @@ export default async function all(
     req,
     { searchRequest, args = {}, maxLimit = null, concurrencyLimit = 1, options = {} },
 ) {
+    // @ts-ignore
     const { limit, offset, ...searchArgs } = args;
 
     const defaultLimit = getConfig('defaultLimit') || DEFAULT_LIMIT;
@@ -107,8 +110,9 @@ export default async function all(
 
     const offsets = range(firstPage.offset + firstPage.limit, firstPage.count, firstPage.limit);
     const nextPages = await concurrentPaginate(
-        offsets.map(pageOffset => searchRequest(req, { ...params, offset: pageOffset }, options)),
+        offsets.map((pageOffset) => searchRequest(req, { ...params, offset: pageOffset }, options)),
+        // @ts-ignore
         concurrencyLimit,
     );
-    return flatten([firstPage, ...nextPages].map(page => page.items));
+    return flatten([firstPage, ...nextPages].map((page) => page.items));
 }

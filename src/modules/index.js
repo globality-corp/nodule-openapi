@@ -7,5 +7,5 @@ export {
     one,
     oneSafe,
     firstSafe,
-} from './paging';
-export { default as concurrentPaginate } from './concurrency';
+} from './paging/index.js';
+export { default as concurrentPaginate } from './concurrency.js';
