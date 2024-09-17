@@ -1,3 +1,5 @@
+/* eslint-disable max-classes-per-file */
+
 import { capitalizeFirstLetter, convertOperationIdToOperationName, convertResourceNameToBaseTags, doTagsMatch, findAllOperationIds, findAllOperationIdsUsingBaseTag, isMutationOperation } from '../../openApiCodeGenClients/utils.js';
 import exampleV3Spec from './exampleSpec.v3.json';
 

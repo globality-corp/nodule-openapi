@@ -153,6 +153,7 @@ describe('createOpenAPIClient', () => {
         // @ts-ignore
         expect(spy.mock.calls[0][1].headers['X-Request-Test-Header']).toBe('test');
 
+        // eslint-disable-next-line no-promise-executor-return
         await new Promise((r) => setTimeout(r, 101));
 
         await expect(client.petApi.search(reqTimeout, null, {

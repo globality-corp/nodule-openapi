@@ -349,6 +349,7 @@ describe('createOpenAPIClient', () => {
             'X-Request-Test': 'test',
         });
 
+        // eslint-disable-next-line no-promise-executor-return
         await new Promise((r) => setTimeout(r, 101));
 
         await expect(client.pet.search(reqTimeout, { name: 'abc' }, {

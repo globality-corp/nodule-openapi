@@ -11,6 +11,7 @@ import Validator from './validation.js';
 import { checkTimeout } from './openApiCodeGenClients/utils.js';
 
 function sleep(time) {
+    // eslint-disable-next-line no-promise-executor-return
     return new Promise((resolve) => setTimeout(resolve, time));
 }
 
