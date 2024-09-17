@@ -1,6 +1,6 @@
 /* Validate request arguments.
  */
-import { get, isNil, omit } from 'lodash';
+import { get, isNil, omit } from 'lodash-es';
 
 import { OpenAPIError } from './error.js';
 import nameFor from './naming.js';

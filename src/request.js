@@ -8,7 +8,7 @@ import {
     lowerCase,
     mapKeys,
     mapValues,
-} from 'lodash';
+} from 'lodash-es';
 
 import nameFor from './naming.js';
 

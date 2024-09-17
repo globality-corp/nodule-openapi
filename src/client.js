@@ -2,7 +2,7 @@
  *
  * Generate an OpenAPI client for a spec.
  */
-import { set } from 'lodash';
+import { set } from 'lodash-es';
 
 import { operationNameFor } from './naming.js';
 import CallableOperation from './operation.js';

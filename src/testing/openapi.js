@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 // @ts-ignore
-import { isFunction, set } from 'lodash';
+import { isFunction, set } from 'lodash-es';
 
 import { OpenAPIError } from '../error.js';
 

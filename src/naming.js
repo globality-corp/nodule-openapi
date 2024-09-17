@@ -1,6 +1,6 @@
 /* Naming conventions.
  */
-import { camelCase, get, snakeCase } from 'lodash';
+import { camelCase, get, snakeCase } from 'lodash-es';
 
 
 /* Generate a suitable dotted operation name.

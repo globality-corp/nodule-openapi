@@ -5,7 +5,7 @@ import {
     INTERNAL_SERVER_ERROR,
     NOT_FOUND,
 } from 'http-status-codes';
-import { get, omitBy } from 'lodash';
+import { get, omitBy } from 'lodash-es';
 
 // We are accidentally leaking auth headers to loggly when throwing
 // an OpenAPIError. We want to fix this properly in the long term,

@@ -1,6 +1,6 @@
 /* Response handling.
  */
-import { get } from 'lodash';
+import { get } from 'lodash-es';
 
 
 /* Build JSON from response data.

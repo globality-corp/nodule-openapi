@@ -1,4 +1,4 @@
-import { flatten, range, isNil } from 'lodash';
+import { flatten, range, isNil } from 'lodash-es';
 import { getConfig, getContainer } from '@globality/nodule-config';
 import { MaxLimitReached } from '../../error.js';
 import concurrentPaginate from '../concurrency.js';

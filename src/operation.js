@@ -1,6 +1,6 @@
 /* Callable operations.
  */
-import { assign, get, includes, lowerCase } from 'lodash';
+import { assign, get, includes, lowerCase } from 'lodash-es';
 import { getContainer } from '@globality/nodule-config';
 import axios from 'axios';
 

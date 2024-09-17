@@ -1,4 +1,4 @@
-import { camelCase, has, includes, isNil, lowerCase } from 'lodash';
+import { camelCase, has, includes, isNil, lowerCase } from 'lodash-es';
 /* global BigInt */
 
 // eslint-disable-next-line radix

@@ -1,6 +1,6 @@
 import { getConfig, getContainer, getMetadata } from '@globality/nodule-config';
 import axios from 'axios';
-import { get } from 'lodash';
+import { get } from 'lodash-es';
 import OpenAPI from '../client.js';
 import { NAMING_OPTION } from '../naming.js';
 import { OpenAPIError } from '../error.js';

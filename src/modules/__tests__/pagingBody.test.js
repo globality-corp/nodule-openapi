@@ -1,4 +1,4 @@
-import { range } from 'lodash';
+import { range } from 'lodash-es';
 import { allForBodySearchRequest } from '../paging/index.js';
 
 const items = range(100).map(id => ({ id }));

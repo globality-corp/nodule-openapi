@@ -1,7 +1,7 @@
 /* Callable operations.
  */
 import { getContainer } from '@globality/nodule-config';
-import { assign, get } from 'lodash';
+import { assign, get } from 'lodash-es';
 import { buildAdapter } from '../clients/openapi.js';
 import buildError, { normalizeError } from '../error.js';
 import { isRetryableOperation } from '../operation.js';

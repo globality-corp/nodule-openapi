@@ -1,6 +1,6 @@
 import { getConfig } from '@globality/nodule-config';
 import axios from 'axios';
-import { get } from 'lodash';
+import { get } from 'lodash-es';
 
 import CallableOperationWrapper from './operation.js';
 import { convertOperationIdToOperationName, findAllOperationIds, isMutationOperation } from './utils.js';
