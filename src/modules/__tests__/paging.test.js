@@ -1,6 +1,5 @@
 import { jest } from '@jest/globals';
 import { range } from 'lodash-es';
-import { all, any, one, none, first } from '../paging/index.js';
 
 const items = range(100).map(id => ({ id }));
 const largeItems = range(201).map(id => ({ id }));
@@ -12,7 +11,7 @@ let searchRequestTwo;
 let searchLargeDataSet;
 
 const mockWarning = jest.fn();
-jest.mock('@globality/nodule-config', () => ({
+jest.unstable_mockModule('@globality/nodule-config', () => ({
     getMetadata: () => ({
         testing: false,
     }),
@@ -25,6 +24,9 @@ jest.mock('@globality/nodule-config', () => ({
         },
     }),
 }));
+
+// necessary to ensure that we have loaded the mock
+const { all, any, one, none, first } = await import('../paging/index.js');
 
 describe('Pagination', () => {
 

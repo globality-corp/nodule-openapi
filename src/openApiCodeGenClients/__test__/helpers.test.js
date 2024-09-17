@@ -1,13 +1,14 @@
 import { jest } from '@jest/globals';
-import { createHeaders } from '../helpers.js';
 
-
-jest.mock('@globality/nodule-config', () => ({
+jest.unstable_mockModule('@globality/nodule-config', () => ({
     getMetadata: () => ({
         name: 'my-service',
     }),
     getContainer: () => { },
+    getConfig: () => { }
 }));
+
+const { createHeaders } = await import('../helpers.js');
 
 describe('createHeaders function', () => {
     it('should merge initialHeaders with options.additionalHeaders', () => {
