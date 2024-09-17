@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 import { range } from 'lodash-es';
 import { allForBodySearchRequest } from '../paging/index.js';
 
-const items = range(100).map(id => ({ id }));
+const items = range(100).map((id) => ({ id }));
 const req = {};
 let searchRequest;
 

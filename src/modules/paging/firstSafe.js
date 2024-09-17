@@ -14,7 +14,7 @@ import { NoResults, OpenAPIError } from '../../error.js';
 export function firstSafe(
     req, { searchRequest, args = {}, options = {}, returnNullOnEmpty = false },
 ) {
-    const search = ResultAsync.fromThrowable(searchRequest, err => new OpenAPIError(`Search error: ${err}`));
+    const search = ResultAsync.fromThrowable(searchRequest, (err) => new OpenAPIError(`Search error: ${err}`));
 
     return search(req, args, options).andThen((page) => {
         if (page.items.length === 0) {

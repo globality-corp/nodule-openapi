@@ -10,9 +10,8 @@ import buildResponse from './response.js';
 import Validator from './validation.js';
 import { checkTimeout } from './openApiCodeGenClients/utils.js';
 
-
 function sleep(time) {
-    return new Promise(resolve => setTimeout(resolve, time));
+    return new Promise((resolve) => setTimeout(resolve, time));
 }
 
 function isMutationOperation(request) {
@@ -111,9 +110,9 @@ export default (context, name, operationName) => async (req, args, options) => {
     const proxyRetriesDelayTime = get(request, 'proxyRetriesDelay', 0);
     const retriesCount = isMutationOperation(request) ? 0 : get(request, 'retries', 0);
     const executeStartTime = process.hrtime();
-    const requestLogs = buildRequestLogs ?
-        buildRequestLogs(req, name, operationName, request) :
-        null;
+    const requestLogs = buildRequestLogs
+        ? buildRequestLogs(req, name, operationName, request)
+        : null;
 
     while (proxyErrorsCount <= proxyRetriesCount && serviceErrorsCount <= retriesCount) {
         try {

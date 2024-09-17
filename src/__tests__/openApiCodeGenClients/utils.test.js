@@ -47,7 +47,6 @@ describe('convertResourceNameToBaseTags', () => {
     });
 });
 
-
 describe('doTagsMatch', () => {
     it.each([
         [['public', 'v1'], ['public/v1'], true],
@@ -61,7 +60,6 @@ describe('doTagsMatch', () => {
         expect(output).toEqual(expectedOutput);
     });
 });
-
 
 describe('findAllOperationIdsUsingBaseTag', () => {
     it('correctly finds all operation ids', () => {

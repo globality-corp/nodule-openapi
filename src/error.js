@@ -35,13 +35,11 @@ export class OpenAPIError extends Error {
     }
 }
 
-
 export class TooManyResults extends OpenAPIError {
     constructor(message = 'Too Many Results') {
         super(message, INTERNAL_SERVER_ERROR);
     }
 }
-
 
 export class NoResults extends OpenAPIError {
     constructor(message = 'No Results') {
@@ -49,13 +47,11 @@ export class NoResults extends OpenAPIError {
     }
 }
 
-
 export class MaxLimitReached extends OpenAPIError {
     constructor(message = 'Max Limit Reached') {
         super(message, GATEWAY_TIMEOUT);
     }
 }
-
 
 /* Extract the most useful fields from an error.
  */
@@ -69,10 +65,9 @@ export function normalizeError(error) {
     return new OpenAPIError(message, code, data, headers);
 }
 
-
 /* Build error from response data.
  */
-export default context => get(
+export default (context) => get(
     context,
     'options.buildError',
     (error) => {

@@ -11,7 +11,6 @@ import {
     expandPath,
 } from '../request.js';
 
-
 describe('buildData', () => {
     it('returns verbatim for non-get', () => {
         const context = {};
@@ -41,7 +40,6 @@ describe('buildData', () => {
     });
 });
 
-
 describe('buildHeaders', () => {
     it('returns standard headers', () => {
         expect(
@@ -51,7 +49,6 @@ describe('buildHeaders', () => {
         });
     });
 });
-
 
 describe('buildMethod', () => {
     it('returns standard headers', () => {
@@ -65,7 +62,6 @@ describe('buildMethod', () => {
         );
     });
 });
-
 
 describe('buildParams', () => {
     it('returns null if not get or delete', () => {
@@ -110,7 +106,6 @@ describe('buildParams', () => {
         });
     });
 });
-
 
 describe('buildUrl', () => {
     it('construct a url', () => {
@@ -221,7 +216,6 @@ describe('buildRetries', () => {
         );
     });
 });
-
 
 describe('expandPath', () => {
     const context = {};

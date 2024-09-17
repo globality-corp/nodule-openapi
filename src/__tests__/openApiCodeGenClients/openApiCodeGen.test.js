@@ -21,7 +21,6 @@ const resourceApis = {
     publicV1Api: PublicV1Api,
 };
 
-
 describe('OpenAPIClient', () => {
     const req = {};
 

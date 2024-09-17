@@ -23,7 +23,6 @@ describe('operationNameFor', () => {
     });
 });
 
-
 describe('pathParameterNameFor', () => {
     it('converts to camelCase', () => {
         expect(
@@ -54,7 +53,6 @@ describe('pathParameterNameFor', () => {
         );
     });
 });
-
 
 describe('queryParameterNameFor', () => {
     it('converts to camelCase', () => {

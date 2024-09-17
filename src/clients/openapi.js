@@ -5,7 +5,6 @@ import OpenAPI from '../client.js';
 import { NAMING_OPTION } from '../naming.js';
 import { OpenAPIError } from '../error.js';
 
-
 /* Inject mock and testing adapters.
  */
 export function buildAdapter(context) {
@@ -94,7 +93,7 @@ export function validateResponse(response) {
 }
 
 export function http() {
-    return request => axios(
+    return (request) => axios(
         request,
     ).then((response) => {
         const [validResponse, message] = validateResponse(response);

@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
 import { range } from 'lodash-es';
 
-const items = range(100).map(id => ({ id }));
-const largeItems = range(201).map(id => ({ id }));
+const items = range(100).map((id) => ({ id }));
+const largeItems = range(201).map((id) => ({ id }));
 const req = {};
 let searchRequest;
 let searchRequestNone;

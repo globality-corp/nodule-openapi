@@ -2,7 +2,6 @@
  */
 import { camelCase, get, snakeCase } from 'lodash-es';
 
-
 /* Generate a suitable dotted operation name.
  */
 export function operationNameFor(subject, operationId) {
@@ -17,7 +16,6 @@ export function operationNameFor(subject, operationId) {
     return `${camelCase(subject)}.${camelCase(operationId)}`;
 }
 
-
 /* Define naming convention for path parameters.
  *
  * The `fromUser` argument indicates whether to convert from user input to swagger
@@ -26,7 +24,6 @@ export function operationNameFor(subject, operationId) {
 export function pathParameterNameFor(value, fromUser) {
     return fromUser ? snakeCase(value) : camelCase(value);
 }
-
 
 /* Define naming convention for query parameters.
  *
@@ -40,7 +37,7 @@ export function queryParameterNameFor(value, fromUser) {
 /* Preserve parameter name
  *
  */
-const preserveParameterName = value => value;
+const preserveParameterName = (value) => value;
 
 const DEFAULT_NAMING = {
     path: pathParameterNameFor,

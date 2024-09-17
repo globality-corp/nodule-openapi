@@ -26,7 +26,6 @@ describe('extendHeadersFromOptions function', () => {
             'X-Another-Header': 'AnotherValue',
         };
 
-
         const { headers } = extendHeadersFromOptions(request, options);
         expect(headers).toEqual(expectedHeaders);
     });

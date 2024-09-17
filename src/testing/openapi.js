@@ -5,13 +5,12 @@ import { isFunction, set } from 'lodash-es';
 
 import { OpenAPIError } from '../error.js';
 
-
 /* Mock a client (OpenAPI) response.
  */
 export function mockResponse(name, operationId, data, headers = { 'content-type': 'application/json' }) {
     const obj = {};
 
-    set(obj, `clients.mock.${name}.${operationId}`, jest.fn(async req => ({
+    set(obj, `clients.mock.${name}.${operationId}`, jest.fn(async (req) => ({
         data: isFunction(data) ? data(req.params || JSON.parse(req.data || null), req.url) : data,
         headers,
     })));
@@ -23,14 +22,13 @@ export function mockResponseVitest(name, operationId, data, headers = { 'content
     const obj = {};
 
     // @ts-ignore
-    set(obj, `clients.mock.${name}.${operationId}`, vitest.fn(async req => ({
+    set(obj, `clients.mock.${name}.${operationId}`, vitest.fn(async (req) => ({
         data: isFunction(data) ? data(req.params || JSON.parse(req.data || null), req.url) : data,
         headers,
     })));
 
     return obj;
 }
-
 
 /* Mock a client (OpenAPI) error.
  */

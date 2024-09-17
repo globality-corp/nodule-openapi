@@ -5,7 +5,7 @@ jest.unstable_mockModule('@globality/nodule-config', () => ({
         name: 'my-service',
     }),
     getContainer: () => { },
-    getConfig: () => { }
+    getConfig: () => { },
 }));
 
 const { createHeaders } = await import('../helpers.js');
