@@ -4,6 +4,7 @@
   "compilerOptions": {
     "baseUrl": "./src",
     "outDir": "lib",
+    "checkJs": true,
     "types": ["node", "jest"]
   },
   "include": ["src"],
