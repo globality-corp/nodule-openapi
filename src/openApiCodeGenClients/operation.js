@@ -1,6 +1,6 @@
 /* Callable operations.
  */
-import { getContainer } from '@globality/nodule-config/lib/index.js';
+import { getContainer } from '@globality/nodule-config';
 import { assign, get } from 'lodash';
 import { buildAdapter } from '../clients/openapi.js';
 import buildError, { normalizeError } from '../error.js';
