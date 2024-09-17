@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+// @ts-ignore
 import { isFunction, set } from 'lodash';
 
 import { OpenAPIError } from '../error.js';
@@ -19,7 +21,7 @@ export function mockResponse(name, operationId, data, headers = { 'content-type'
 export function mockResponseVitest(name, operationId, data, headers = { 'content-type': 'application/json' }) {
     const obj = {};
 
-    // eslint-disable-next-line no-undef
+    // @ts-ignore
     set(obj, `clients.mock.${name}.${operationId}`, vitest.fn(async req => ({
         data: isFunction(data) ? data(req.params || JSON.parse(req.data || null), req.url) : data,
         headers,
@@ -44,7 +46,7 @@ export function mockError(name, operationId, message, code, data = null) {
 export function mockErrorVitest(name, operationId, message, code, data = null) {
     const obj = {};
 
-    // eslint-disable-next-line no-undef
+    // @ts-ignore
     set(obj, `clients.mock.${name}.${operationId}`, vitest.fn(async () => {
         throw new OpenAPIError(message, code, data);
     }));

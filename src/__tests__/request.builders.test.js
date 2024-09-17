@@ -44,9 +44,8 @@ describe('buildData', () => {
 
 describe('buildHeaders', () => {
     it('returns standard headers', () => {
-        const context = {};
         expect(
-            buildHeaders(context),
+            buildHeaders(),
         ).toEqual({
             'Content-Type': 'application/json; charset=utf-8',
         });

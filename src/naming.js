@@ -47,7 +47,7 @@ const DEFAULT_NAMING = {
     query: queryParameterNameFor,
 };
 
-const NAMING_OPTION = {
+export const NAMING_OPTION = {
     preserveParameterName,
     pathParameterNameFor,
     queryParameterNameFor,
@@ -60,5 +60,3 @@ export default (name, type, fromUser, options) => {
     const nameFor = get(overrides, type, DEFAULT_NAMING[type]);
     return nameFor ? nameFor(name, fromUser) : name;
 };
-
-exports.NAMING_OPTION = NAMING_OPTION;

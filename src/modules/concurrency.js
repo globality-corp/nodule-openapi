@@ -12,16 +12,19 @@ function getConcurrency(concurrencyLimit) {
     if (!isNil(concurrencyLimit)) {
         return concurrencyLimit;
     }
+    // @ts-ignore
     return parseInt(getConfig('concurrency.limit') || DEFAULT_CONCURRENCY, 10);
 }
 
 
 export default function concurrentPaginate(promises, concurrencyLimit = null) {
+    // @ts-ignore
     const throatWithPromise = throat(Promise);
 
     const concurrency = getConcurrency(concurrencyLimit);
     const funneledThroat = throatWithPromise(concurrency);
     return Promise.all(
+        // @ts-ignore
         promises.map(promise => funneledThroat(() => promise)),
     );
 }

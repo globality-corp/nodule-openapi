@@ -77,6 +77,7 @@ export function buildHeaders(context, req) {
 
     const extendHeaders = getContainer('extendHeaders') || defaultExtendHeaders;
     if (extendHeaders) {
+        // @ts-ignore
         headers = extendHeaders(req, headers);
     }
 
@@ -98,6 +99,7 @@ export function http() {
     ).then((response) => {
         const [validResponse, message] = validateResponse(response);
         if (!validResponse) {
+            // @ts-ignore
             throw new OpenAPIError(message, 'invalid_response');
         }
         return response;

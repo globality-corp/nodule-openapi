@@ -46,6 +46,7 @@ describe('createOpenAPIClient', () => {
             ],
         });
         expect(spy).toHaveBeenCalledTimes(1);
+        // @ts-ignore
         expect(spy.mock.calls[0][1].headers['X-Request-Id']).toBe('request-id');
     });
 
@@ -65,6 +66,7 @@ describe('createOpenAPIClient', () => {
             ],
         });
         expect(spy).toHaveBeenCalledTimes(1);
+        // @ts-ignore
         expect(spy.mock.calls[0][1].headers['X-Request-Client']).toBe('client-id-123');
     });
 
@@ -88,6 +90,7 @@ describe('createOpenAPIClient', () => {
             ],
         });
         expect(spy).toHaveBeenCalledTimes(1);
+        // @ts-ignore
         expect(spy.mock.calls[0][1].headers['X-Request-Client']).toBe(undefined);
     });
 
@@ -115,7 +118,9 @@ describe('createOpenAPIClient', () => {
             ],
         });
         expect(spy).toHaveBeenCalledTimes(1);
+        // @ts-ignore
         expect(spy.mock.calls[0][1].headers['X-Request-Client']).toBe(undefined);
+        // @ts-ignore
         expect(spy.mock.calls[0][1].headers['X-Request-Test-Header']).toBe('test');
     });
 
@@ -146,7 +151,9 @@ describe('createOpenAPIClient', () => {
             ],
         });
         expect(spy).toHaveBeenCalledTimes(1);
+        // @ts-ignore
         expect(spy.mock.calls[0][1].headers['X-Request-Client']).toBe(undefined);
+        // @ts-ignore
         expect(spy.mock.calls[0][1].headers['X-Request-Test-Header']).toBe('test');
 
         await new Promise(r => setTimeout(r, 101));

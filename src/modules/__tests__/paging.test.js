@@ -158,6 +158,7 @@ describe('Pagination', () => {
             caughtError = thrownError;
         }
 
+        // @ts-ignore
         expect(caughtError.message).toBe('Too many results found for search: 2');
 
         expect(searchRequestTwo).toHaveBeenCalledTimes(1);
@@ -208,6 +209,7 @@ describe('Pagination', () => {
             caughtError = thrownError;
         }
 
+        // @ts-ignore
         expect(caughtError.message).toBe('No results found for search');
 
         expect(searchRequestNone).toHaveBeenCalledTimes(1);
@@ -224,6 +226,7 @@ describe('Pagination', () => {
             caughtError = thrownError;
         }
 
+        // @ts-ignore
         expect(caughtError.message).toBe('Too many results found for search: 2');
 
         expect(searchRequestTwo).toHaveBeenCalledTimes(1);
@@ -255,6 +258,7 @@ describe('Pagination', () => {
             caughtError = thrownError;
         }
 
+        // @ts-ignore
         expect(caughtError.message).toBe('No results found for search');
 
         expect(searchRequestNone).toHaveBeenCalledTimes(1);

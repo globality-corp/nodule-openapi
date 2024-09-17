@@ -51,6 +51,7 @@ describe('OpenAPI invocation', () => {
             await client.chatroom.search();
             throw new Error('error expected');
         } catch (error) {
+            // @ts-ignore
             expect(error.message).toEqual('errcode');
         }
     });

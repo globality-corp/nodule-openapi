@@ -21,7 +21,11 @@ function pruneAuthorizationHeaders(headers) {
 }
 
 export class OpenAPIError extends Error {
+    /**
+     * @param {string | null} [message=null]
+     */
     constructor(message = null, code = 500, data = null, headers = null) {
+        // @ts-ignore
         super(message);
         Error.captureStackTrace(this, this.constructor);
         this.name = this.constructor.name;

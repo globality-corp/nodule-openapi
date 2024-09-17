@@ -24,6 +24,7 @@ export async function allForBodySearchRequest(
     req,
     { searchRequest, body = {}, maxLimit = null, concurrencyLimit = 1, options = {} },
 ) {
+    // @ts-ignore
     const { limit, offset, ...searchArgs } = body;
 
     const defaultLimit = getConfig('defaultLmit') || DEFAULT_LIMIT;
@@ -58,6 +59,7 @@ export async function allForBodySearchRequest(
             };
             return searchRequest(req, params, options);
         }),
+        // @ts-ignore
         concurrencyLimit,
     );
     return flatten([firstPage, ...nextPages].map(page => page.items));
@@ -71,6 +73,7 @@ export default async function all(
     req,
     { searchRequest, args = {}, maxLimit = null, concurrencyLimit = 1, options = {} },
 ) {
+    // @ts-ignore
     const { limit, offset, ...searchArgs } = args;
 
     const defaultLimit = getConfig('defaultLimit') || DEFAULT_LIMIT;
@@ -108,6 +111,7 @@ export default async function all(
     const offsets = range(firstPage.offset + firstPage.limit, firstPage.count, firstPage.limit);
     const nextPages = await concurrentPaginate(
         offsets.map(pageOffset => searchRequest(req, { ...params, offset: pageOffset }, options)),
+        // @ts-ignore
         concurrencyLimit,
     );
     return flatten([firstPage, ...nextPages].map(page => page.items));
