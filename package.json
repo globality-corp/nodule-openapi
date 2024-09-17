@@ -3,7 +3,9 @@
     "version": "1.0.0",
     "description": "Opinionated OpenAPI (Swagger) Client",
     "main": "lib/index.js",
-    "files": ["lib"],
+    "files": [
+        "lib"
+    ],
     "type": "module",
     "repository": "git@github.com:globality-corp/nodule-openapi.git",
     "author": "Globality Engineering",
@@ -31,6 +33,7 @@
         "@babel/core": "^7.7.2",
         "@babel/node": "^7.7.0",
         "@babel/preset-env": "^7.7.1",
+        "@total-typescript/tsconfig": "^1.0.4",
         "@types/jest": "^24",
         "@types/node": "^18",
         "eslint": "^4.18.2",
