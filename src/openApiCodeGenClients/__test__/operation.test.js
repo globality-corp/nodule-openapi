@@ -1,5 +1,6 @@
 
 import { clearBinding, Nodule } from '@globality/nodule-config';
+import { jest } from '@jest/globals';
 
 import spec from '../../testing/petstore.json';
 import { createOpenAPIClientV2 } from '../../index.js';

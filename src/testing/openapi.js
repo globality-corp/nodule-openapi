@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
-// @ts-ignore
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { jest } from '@jest/globals';
 import { isFunction, set } from 'lodash-es';
 
 import { OpenAPIError } from '../error.js';

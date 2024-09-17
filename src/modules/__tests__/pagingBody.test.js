@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { range } from 'lodash-es';
 import { allForBodySearchRequest } from '../paging/index.js';
 

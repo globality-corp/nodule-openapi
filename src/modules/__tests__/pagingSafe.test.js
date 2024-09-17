@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { err, ok } from 'neverthrow';
 
 import { firstSafe, oneSafe } from '../paging/index.js';
