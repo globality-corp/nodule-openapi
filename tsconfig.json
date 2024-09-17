@@ -5,6 +5,7 @@
     "baseUrl": "./src",
     "outDir": "lib",
     "checkJs": true,
+    "noImplicitAny": false,
     "types": ["node", "jest"]
   },
   "include": ["src"],
