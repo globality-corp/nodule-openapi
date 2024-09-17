@@ -12,7 +12,7 @@
     "license": "MIT",
     "types": "./lib/index.d.ts",
     "scripts": {
-        "build": "tsc -p tsconfig.build.json && babel src --out-dir lib --ignore '**/__tests__/*,**/__mocks__/*'",
+        "build": "tsc -p tsconfig.build.json",
         "lint": "eslint src --cache",
         "test": "jest -w 1",
         "verify": "yarn lint && yarn test"
