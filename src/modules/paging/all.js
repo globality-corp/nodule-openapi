@@ -1,7 +1,7 @@
 import { flatten, range, isNil } from 'lodash';
 import { getConfig, getContainer } from '@globality/nodule-config';
-import { MaxLimitReached } from '../../error';
-import concurrentPaginate from '../concurrency';
+import { MaxLimitReached } from '../../error.js';
+import concurrentPaginate from '../concurrency.js';
 
 const DEFAULT_LIMIT = 20;
 const DEFAULT_PAGING_UPPER_BOUND = 200;

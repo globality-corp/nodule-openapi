@@ -1,5 +1,5 @@
 import spec from './example.json';
-import buildRequest from '../request';
+import buildRequest from '../request.js';
 
 
 describe('buildRequest', () => {

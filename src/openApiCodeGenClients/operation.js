@@ -1,13 +1,13 @@
 /* Callable operations.
  */
-import { getContainer } from '@globality/nodule-config/lib';
+import { getContainer } from '@globality/nodule-config/lib/index.js';
 import { assign, get } from 'lodash';
-import { buildAdapter } from '../clients/openapi';
-import buildError, { normalizeError } from '../error';
-import { isRetryableOperation } from '../operation';
-import buildResponse from '../response';
-import { createHeaders, createParamsWrapper } from './helpers';
-import { checkTimeout } from './utils';
+import { buildAdapter } from '../clients/openapi.js';
+import buildError, { normalizeError } from '../error.js';
+import { isRetryableOperation } from '../operation.js';
+import buildResponse from '../response.js';
+import { createHeaders, createParamsWrapper } from './helpers.js';
+import { checkTimeout } from './utils.js';
 
 
 /* Create a new callable operation that return a Promise.

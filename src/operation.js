@@ -4,11 +4,11 @@ import { assign, get, includes, lowerCase } from 'lodash';
 import { getContainer } from '@globality/nodule-config';
 import axios from 'axios';
 
-import buildError, { normalizeError } from './error';
-import buildRequest from './request';
-import buildResponse from './response';
-import Validator from './validation';
-import { checkTimeout } from './openApiCodeGenClients/utils';
+import buildError, { normalizeError } from './error.js';
+import buildRequest from './request.js';
+import buildResponse from './response.js';
+import Validator from './validation.js';
+import { checkTimeout } from './openApiCodeGenClients/utils.js';
 
 
 function sleep(time) {

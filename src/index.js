@@ -1,11 +1,11 @@
-import Client from './client';
+import Client from './client.js';
 
 export {
     OpenAPIError,
     MaxLimitReached,
     TooManyResults,
     NoResults,
-} from './error';
+} from './error.js';
 export {
     all,
     allForBodySearchRequest,
@@ -16,13 +16,13 @@ export {
     one,
     oneSafe,
     firstSafe,
-} from './modules';
+} from './modules/index.js';
 export {
     mockError,
     mockResponse,
     mockResponseVitest,
     mockErrorVitest,
-} from './testing';
-export { createOpenAPIClient } from './clients';
-export { createOpenAPIClientV2 } from './openApiCodeGenClients';
+} from './testing/index.js';
+export { createOpenAPIClient } from './clients/index.js';
+export { createOpenAPIClientV2 } from './openApiCodeGenClients/index.js';
 export default Client;

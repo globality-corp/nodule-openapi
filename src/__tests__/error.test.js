@@ -1,4 +1,4 @@
-import buildError, { OpenAPIError } from '../error';
+import buildError, { OpenAPIError } from '../error.js';
 
 
 describe('buildError', () => {

@@ -1,4 +1,4 @@
-import { createHeaders } from '../helpers';
+import { createHeaders } from '../helpers.js';
 
 
 jest.mock('@globality/nodule-config', () => ({

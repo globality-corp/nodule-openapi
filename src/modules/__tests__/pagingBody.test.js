@@ -1,5 +1,5 @@
 import { range } from 'lodash';
-import { allForBodySearchRequest } from '../paging';
+import { allForBodySearchRequest } from '../paging/index.js';
 
 const items = range(100).map(id => ({ id }));
 const req = {};

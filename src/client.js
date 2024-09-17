@@ -4,8 +4,8 @@
  */
 import { set } from 'lodash';
 
-import { operationNameFor } from './naming';
-import CallableOperation from './operation';
+import { operationNameFor } from './naming.js';
+import CallableOperation from './operation.js';
 
 
 /* Generate a mapping from (dotted) operation names to callable operations.

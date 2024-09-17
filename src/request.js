@@ -10,7 +10,7 @@ import {
     mapValues,
 } from 'lodash';
 
-import nameFor from './naming';
+import nameFor from './naming.js';
 
 
 const DEFAULT_TIMEOUT = 5000;

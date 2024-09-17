@@ -1,5 +1,5 @@
 import { range } from 'lodash';
-import { all, any, one, none, first } from '../paging';
+import { all, any, one, none, first } from '../paging/index.js';
 
 const items = range(100).map(id => ({ id }));
 const largeItems = range(201).map(id => ({ id }));

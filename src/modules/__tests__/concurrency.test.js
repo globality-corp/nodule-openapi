@@ -1,4 +1,4 @@
-import concurrentPaginate from '../concurrency';
+import concurrentPaginate from '../concurrency.js';
 
 describe('concurrentPaginate', () => {
 

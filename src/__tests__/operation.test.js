@@ -1,4 +1,4 @@
-import { extendHeadersFromOptions } from '../operation';
+import { extendHeadersFromOptions } from '../operation.js';
 
 describe('extendHeadersFromOptions function', () => {
 

@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 // @ts-check
 import { okAsync, errAsync, ResultAsync } from 'neverthrow';
-import { NoResults, OpenAPIError, TooManyResults } from '../../error';
+import { NoResults, OpenAPIError, TooManyResults } from '../../error.js';
 
 /**
  * @param {any} req

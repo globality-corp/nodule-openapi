@@ -1,7 +1,7 @@
 import { clearBinding, Nodule } from '@globality/nodule-config';
 
 import spec from '../../testing/petstore.json';
-import { createOpenAPIClient, mockError, mockResponse } from '../../index';
+import { createOpenAPIClient, mockError, mockResponse } from '../../index.js';
 
 
 describe('createOpenAPIClient', () => {

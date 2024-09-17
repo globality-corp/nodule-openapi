@@ -1,6 +1,6 @@
 import { isFunction, set } from 'lodash';
 
-import { OpenAPIError } from '../error';
+import { OpenAPIError } from '../error.js';
 
 
 /* Mock a client (OpenAPI) response.

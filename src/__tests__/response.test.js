@@ -1,4 +1,4 @@
-import buildResponse from '../response';
+import buildResponse from '../response.js';
 
 
 describe('buildRequest', () => {

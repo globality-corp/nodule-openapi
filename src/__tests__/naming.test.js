@@ -4,7 +4,7 @@ import naming, {
     pathParameterNameFor,
     queryParameterNameFor,
     NAMING_OPTION,
-} from '../naming';
+} from '../naming.js';
 
 describe('operationNameFor', () => {
     it('converts to camelCase', () => {

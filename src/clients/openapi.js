@@ -1,9 +1,9 @@
 import { getConfig, getContainer, getMetadata } from '@globality/nodule-config';
 import axios from 'axios';
 import { get } from 'lodash';
-import OpenAPI from '../client';
-import { NAMING_OPTION } from '../naming';
-import { OpenAPIError } from '../error';
+import OpenAPI from '../client.js';
+import { NAMING_OPTION } from '../naming.js';
+import { OpenAPIError } from '../error.js';
 
 
 /* Inject mock and testing adapters.

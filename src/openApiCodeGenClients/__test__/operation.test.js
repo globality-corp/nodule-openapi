@@ -2,7 +2,7 @@
 import { clearBinding, Nodule } from '@globality/nodule-config';
 
 import spec from '../../testing/petstore.json';
-import { createOpenAPIClientV2 } from '../../index';
+import { createOpenAPIClientV2 } from '../../index.js';
 
 
 class PetApi {

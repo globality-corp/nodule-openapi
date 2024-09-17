@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import { ResultAsync, errAsync, okAsync } from 'neverthrow';
-import { NoResults, OpenAPIError } from '../../error';
+import { NoResults, OpenAPIError } from '../../error.js';
 
 /**
  * @param {unknown} req

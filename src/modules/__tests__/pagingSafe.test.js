@@ -1,7 +1,7 @@
 import { err, ok } from 'neverthrow';
 
-import { firstSafe, oneSafe } from '../paging';
-import { NoResults, TooManyResults } from '../../error';
+import { firstSafe, oneSafe } from '../paging/index.js';
+import { NoResults, TooManyResults } from '../../error.js';
 
 const mockWarning = jest.fn();
 jest.mock('@globality/nodule-config', () => ({

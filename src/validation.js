@@ -2,8 +2,8 @@
  */
 import { get, isNil, omit } from 'lodash';
 
-import { OpenAPIError } from './error';
-import nameFor from './naming';
+import { OpenAPIError } from './error.js';
+import nameFor from './naming.js';
 
 
 function isQueryOrPathParameter(parameter) {

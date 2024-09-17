@@ -1,5 +1,5 @@
 import spec from './example.json';
-import Validator from '../validation';
+import Validator from '../validation.js';
 
 
 describe('validation', () => {

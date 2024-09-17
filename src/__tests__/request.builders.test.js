@@ -9,7 +9,7 @@ import {
     buildTimeout,
     buildUrl,
     expandPath,
-} from '../request';
+} from '../request.js';
 
 
 describe('buildData', () => {

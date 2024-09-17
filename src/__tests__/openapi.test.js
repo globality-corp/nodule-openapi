@@ -1,5 +1,5 @@
 import spec from './example.json';
-import OpenAPI from '..';
+import OpenAPI from '../index.js';
 
 
 describe('OpenAPI initialization', () => {
