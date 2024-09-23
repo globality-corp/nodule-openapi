@@ -6,7 +6,7 @@ name: default
 # Common step to inject the Docker image for the required Node version.
 # Override by setting `builder_node_version` in `.globality/build.json`.
 image: &image
-  image: node:18.20.3
+  image: node:20.16.0
 
 steps:
 
