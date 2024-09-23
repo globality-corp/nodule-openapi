@@ -10,27 +10,26 @@ image: &image
 
 steps:
 
-  # Add JFrog credentials to `.npmrc` so that:
+  # Add CodeArtifact credentials to `.npmrc` so that:
   # - we can access other private dependencies stored there
   # - we can publish the package (modules shouldn't be publicly shared on NPM)
-  - name: authenticate-jfrog
+  - name: authenticate-codeartifact
     <<: *image
     environment:
-      ARTIFACTORY_USERNAME:
-        from_secret: ARTIFACTORY_USERNAME
-      ARTIFACTORY_PASSWORD:
-        from_secret: ARTIFACTORY_PASSWORD
+      CODEARTIFACT_AUTH_TOKEN:
+        from_secret: CODEARTIFACT_AUTH_TOKEN
     commands:
-        - curl -u$ARTIFACTORY_USERNAME:$ARTIFACTORY_PASSWORD https://globality.jfrog.io/globality/api/npm/auth > .npmrc
-        - echo "registry=https://globality.jfrog.io/globality/api/npm/npm" >> .npmrc
+      - echo "registry=https://globality-308798440167.d.codeartifact.us-east-1.amazonaws.com/npm/globality-npm-local/" > .npmrc
+      - echo "//globality-308798440167.d.codeartifact.us-east-1.amazonaws.com/npm/globality-npm-local/:always-auth=true" >> .npmrc
+      - echo "//globality-308798440167.d.codeartifact.us-east-1.amazonaws.com/npm/globality-npm-local/:_authToken=$CODEARTIFACT_AUTH_TOKEN" >> .npmrc
 
-  # Install dependencies (first and third party) from NPM and JFrog
+  # Install dependencies (first and third party) from NPM and Codeartifact
   - name: install-node-dependencies
     <<: *image
     commands:
       - yarn install
     depends_on:
-      - authenticate-jfrog
+      - authenticate-codeartifact
 
   # Next three steps run in parallel
   #               ↓
@@ -109,14 +108,7 @@ steps:
 
 ---
 kind: secret
-name: ARTIFACTORY_USERNAME
+name: CODEARTIFACT_AUTH_TOKEN
 get:
-  path: secrets/dev/drone
-  name: DRONE_ARTIFACTORY_USERNAME
-
----
-kind: secret
-name: ARTIFACTORY_PASSWORD
-get:
-  path: secrets/dev/drone
-  name: DRONE_ARTIFACTORY_PASSWORD
+  path: secrets/dev/codeartifact
+  name: CODEARTIFACT_AUTH_TOKEN
